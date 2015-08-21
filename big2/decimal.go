@@ -48,9 +48,15 @@ import (
 // the number +0.0 exactly, with precision 0 and rounding mode ToNearestEven.
 //
 type Decimal struct {
+	// context
 	prec uint32
 	mode big.RoundingMode
 	acc  big.Accuracy
+
+	// value
+	abs   big.Int
+	scale uint32
+	neg   bool
 }
 
 // TODO: should float64 be default to create decimal? Or string? Or int64
