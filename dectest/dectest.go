@@ -20,6 +20,9 @@ import (
 // testcase environment
 // see http://speleotrove.com/decimal/dtfile.html#direct
 type testEnv struct {
+	// configuration
+	supportNaN bool
+
 	// required directives with no default values
 	precision   uint
 	rounding    string
@@ -225,9 +228,13 @@ func generate(in io.Reader, out io.Writer) error {
 		switch t := stmt.(type) {
 		case *test:
 			foundTest = true
-			fmt.Fprintf(w, "\t// %s\n", t.src)
-			fmt.Fprintf(w, "\t"+`{"%s", "%s", "%s", %d, big.%s},`+"\n",
-				t.id, t.operands[0], t.result, env.precision, rounding2Mode(env.rounding))
+			if strings.Index(t.src, "NaN") >= 0 && !env.supportNaN {
+				fmt.Fprintf(w, "\t// SKIP: %s\n", t.src)
+			} else {
+				fmt.Fprintf(w, "\t// %s\n", t.src)
+				fmt.Fprintf(w, "\t"+`{"%s", "%s", "%s", %d, big.%s},`+"\n",
+					t.id, t.operands[0], t.result, env.precision, rounding2Mode(env.rounding))
+			}
 
 		case *directive:
 			// ? fmt.Fprintf(w, "\t// %s\n", t)

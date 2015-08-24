@@ -61,6 +61,8 @@ minExponent: -999
 
 -- Sanity check
 cpnx001 copynegate       +7.50  -> -7.50
+cpnx021 copynegate         NaN  -> -NaN
+
 `
 
 	err := generate(strings.NewReader(file), os.Stdout)
@@ -84,5 +86,6 @@ cpnx001 copynegate       +7.50  -> -7.50
 	// }{
 	// 	// cpnx001 copynegate       +7.50  -> -7.50
 	// 	{"cpnx001", "+7.50", "-7.50", 9, big.ToPositiveInf},
+	// 	// SKIP: cpnx021 copynegate         NaN  -> -NaN
 	// }
 }
