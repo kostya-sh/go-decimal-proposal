@@ -81,6 +81,17 @@ func (t *test) String() string {
 	return t.src
 }
 
+func normalizeNumber(s string) string {
+	s = strings.Trim(s, `"'`)
+	if s == "Infinity" || s == "+Infinity" {
+		s = "Inf"
+	}
+	if s == "-Infinity" {
+		s = "-Inf"
+	}
+	return s
+}
+
 // parseTestLine parses line in the follow format
 //   id operation operand1 operand2 operand3 -> result conditions
 // and returns parsed test or invalid in case if the like cannot be parsed
@@ -105,7 +116,7 @@ func parseTestLine(line string) statement {
 
 	// operands
 	for ss.Scan() && ss.Text() != "->" {
-		t.operands = append(t.operands, strings.Trim(ss.Text(), `"'`))
+		t.operands = append(t.operands, normalizeNumber(ss.Text()))
 	}
 	if len(t.operands) == 0 {
 		return invalid(line)
@@ -115,7 +126,7 @@ func parseTestLine(line string) statement {
 	if !ss.Scan() {
 		return invalid(line)
 	}
-	t.result = strings.Trim(ss.Text(), `"'`)
+	t.result = normalizeNumber(ss.Text())
 
 	// conditions
 	t.conditions = make([]string, 0)

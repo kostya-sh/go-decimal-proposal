@@ -21,6 +21,7 @@ simp002  multiply  2 2 -> 4
 simp003  divide    1 3 -> 0.333333333  Inexact Rounded
 simp004  divide    1 0 -> NaN Division_by_zero
 simp005  toSci  ’1..2’ -> NaN Conversion_syntax
+simp006  multiply  Infinity "-Infinity" -> Infinity
 
 
 `
@@ -44,6 +45,7 @@ simp005  toSci  ’1..2’ -> NaN Conversion_syntax
 	// *main.test (&main.test{src:"simp003  divide    1 3 -> 0.333333333  Inexact Rounded", id:"simp003", operation:"divide", operands:[]string{"1", "3"}, result:"0.333333333", conditions:[]string{"inexact", "rounded"}, comment:""})
 	// *main.test (&main.test{src:"simp004  divide    1 0 -> NaN Division_by_zero", id:"simp004", operation:"divide", operands:[]string{"1", "0"}, result:"NaN", conditions:[]string{"division_by_zero"}, comment:""})
 	// *main.test (&main.test{src:"simp005  toSci  ’1..2’ -> NaN Conversion_syntax", id:"simp005", operation:"tosci", operands:[]string{"’1..2’"}, result:"NaN", conditions:[]string{"conversion_syntax"}, comment:""})
+	// *main.test (&main.test{src:"simp006  multiply  Infinity \"-Infinity\" -> Infinity", id:"simp006", operation:"multiply", operands:[]string{"Inf", "-Inf"}, result:"Inf", conditions:[]string{}, comment:""})
 
 }
 
