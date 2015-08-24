@@ -32,6 +32,8 @@ var stringTests = []struct {
 	{in: "+1.23", out: "1.23", ok: true},
 	{in: "-1.23", ok: true},
 	{in: "1.000", ok: true},
+	{in: "inf", out: "Inf", ok: true},
+	{in: "-Inf", ok: true},
 	// TODO: scientic notation
 }
 

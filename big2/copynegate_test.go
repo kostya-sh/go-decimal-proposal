@@ -15,35 +15,23 @@ var copynegateTests = []struct {
 	{"cpnx001", "+7.50", "-7.50", 9, big.ToPositiveInf},
 	// Infinities
 	// cpnx011 copynegate  Infinity    -> -Infinity
-	{"cpnx011", "Infinity", "-Infinity", 9, big.ToPositiveInf},
+	{"cpnx011", "Inf", "-Inf", 9, big.ToPositiveInf},
 	// cpnx012 copynegate  -Infinity   -> Infinity
-	{"cpnx012", "-Infinity", "Infinity", 9, big.ToPositiveInf},
+	{"cpnx012", "-Inf", "Inf", 9, big.ToPositiveInf},
 	// NaNs, 0 payload
-	// cpnx021 copynegate         NaN  -> -NaN
-	{"cpnx021", "NaN", "-NaN", 9, big.ToPositiveInf},
-	// cpnx022 copynegate        -NaN  -> NaN
-	{"cpnx022", "-NaN", "NaN", 9, big.ToPositiveInf},
-	// cpnx023 copynegate        sNaN  -> -sNaN
-	{"cpnx023", "sNaN", "-sNaN", 9, big.ToPositiveInf},
-	// cpnx024 copynegate       -sNaN  -> sNaN
-	{"cpnx024", "-sNaN", "sNaN", 9, big.ToPositiveInf},
+	// SKIP: cpnx021 copynegate         NaN  -> -NaN
+	// SKIP: cpnx022 copynegate        -NaN  -> NaN
+	// SKIP: cpnx023 copynegate        sNaN  -> -sNaN
+	// SKIP: cpnx024 copynegate       -sNaN  -> sNaN
 	// NaNs, non-0 payload
-	// cpnx031 copynegate       NaN13  -> -NaN13
-	{"cpnx031", "NaN13", "-NaN13", 9, big.ToPositiveInf},
-	// cpnx032 copynegate      -NaN13  -> NaN13
-	{"cpnx032", "-NaN13", "NaN13", 9, big.ToPositiveInf},
-	// cpnx033 copynegate      sNaN13  -> -sNaN13
-	{"cpnx033", "sNaN13", "-sNaN13", 9, big.ToPositiveInf},
-	// cpnx034 copynegate     -sNaN13  -> sNaN13
-	{"cpnx034", "-sNaN13", "sNaN13", 9, big.ToPositiveInf},
-	// cpnx035 copynegate       NaN70  -> -NaN70
-	{"cpnx035", "NaN70", "-NaN70", 9, big.ToPositiveInf},
-	// cpnx036 copynegate      -NaN70  -> NaN70
-	{"cpnx036", "-NaN70", "NaN70", 9, big.ToPositiveInf},
-	// cpnx037 copynegate      sNaN101 -> -sNaN101
-	{"cpnx037", "sNaN101", "-sNaN101", 9, big.ToPositiveInf},
-	// cpnx038 copynegate     -sNaN101 -> sNaN101
-	{"cpnx038", "-sNaN101", "sNaN101", 9, big.ToPositiveInf},
+	// SKIP: cpnx031 copynegate       NaN13  -> -NaN13
+	// SKIP: cpnx032 copynegate      -NaN13  -> NaN13
+	// SKIP: cpnx033 copynegate      sNaN13  -> -sNaN13
+	// SKIP: cpnx034 copynegate     -sNaN13  -> sNaN13
+	// SKIP: cpnx035 copynegate       NaN70  -> -NaN70
+	// SKIP: cpnx036 copynegate      -NaN70  -> NaN70
+	// SKIP: cpnx037 copynegate      sNaN101 -> -sNaN101
+	// SKIP: cpnx038 copynegate     -sNaN101 -> sNaN101
 	// finites
 	// cpnx101 copynegate          7   -> -7
 	{"cpnx101", "7", "-7", 9, big.ToPositiveInf},

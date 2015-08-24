@@ -39,6 +39,13 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		z.neg = false
 	}
 
+	if s == "inf" || s == "Inf" {
+		z.inf = true
+		return z, true
+	} else {
+		z.inf = false
+	}
+
 	// scale
 	p := strings.LastIndex(s, ".")
 	if p >= 0 {
@@ -114,15 +121,20 @@ func (x *Decimal) String() string {
 		return "<nil>"
 	}
 
-	// scale
-	// TODO: scientific notation when necessary
-	s := x.abs.String()
-	if x.scale != 0 {
-		if x.abs.Sign() == 0 {
-			s = strings.Repeat("0", int(x.scale+1))
+	var s string
+	if x.inf {
+		s = "Inf"
+	} else {
+		// scale
+		// TODO: scientific notation when necessary
+		s = x.abs.String()
+		if x.scale != 0 {
+			if x.abs.Sign() == 0 {
+				s = strings.Repeat("0", int(x.scale+1))
+			}
+			p := uint32(len(s)) - x.scale
+			s = s[:p] + "." + s[p:]
 		}
-		p := uint32(len(s)) - x.scale
-		s = s[:p] + "." + s[p:]
 	}
 
 	// sign

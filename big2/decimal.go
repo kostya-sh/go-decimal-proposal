@@ -57,6 +57,7 @@ type Decimal struct {
 	abs   big.Int
 	scale uint32
 	neg   bool
+	inf   bool
 }
 
 // TODO: should float64 be default to create decimal? Or string? Or int64
@@ -361,9 +362,12 @@ func (z *Decimal) Abs(x *Decimal) *Decimal {
 func (z *Decimal) Neg(x *Decimal) *Decimal {
 	// TODO: implement rounding
 	// TODO: how to handle nil?
-	(&z.abs).Set(&x.abs)
 	z.scale = x.scale
 	z.neg = !x.neg
+	z.inf = x.inf
+	if !x.inf {
+		(&z.abs).Set(&x.abs)
+	}
 	return z
 }
 
