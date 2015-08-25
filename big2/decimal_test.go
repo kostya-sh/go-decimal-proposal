@@ -32,3 +32,27 @@ func TestCopyNegate(t *testing.T) {
 		}
 	}
 }
+
+//go:generate bash -c "dectest < ~/tmp/dectest/compare.decTest > compare_test.go"
+func TestCompare(t *testing.T) {
+	for _, test := range compareTests {
+		in1 := new(Decimal)
+		_, ok := in1.SetString(test.in1)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in1)
+			continue
+		}
+
+		in2 := new(Decimal)
+		_, ok = in2.SetString(test.in2)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in2)
+			continue
+		}
+
+		r := in1.Cmp(in2)
+		if r != test.out {
+			t.Errorf("%s: Cmp(%s, %s) got: %d want: %d", test.id, test.in1, test.in2, r, test.out)
+		}
+	}
+}
