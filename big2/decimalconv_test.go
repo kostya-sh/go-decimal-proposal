@@ -19,6 +19,10 @@ var stringTests = []struct {
 	{in: "-08", ok: false},
 	{in: ".", ok: false},
 	{in: "1.23.56", ok: false},
+	{in: "e-10", ok: false},
+	{in: ".e10", ok: false},
+	{in: "1ex123", ok: false},
+	{in: "1e+1e", ok: false},
 	{in: "0", ok: true},
 	{in: "-0", ok: true},
 	{in: "+0", out: "0", ok: true},
@@ -29,12 +33,17 @@ var stringTests = []struct {
 	{in: "+0x10", out: "16", ok: true},
 	{in: "1122334455667788990099999", ok: true},
 	{in: "1.23", ok: true},
+	{in: "0.00001", ok: true},
 	{in: "+1.23", out: "1.23", ok: true},
 	{in: "-1.23", ok: true},
 	{in: "1.000", ok: true},
+	{in: "300", ok: true},
 	{in: "inf", out: "Inf", ok: true},
 	{in: "-Inf", ok: true},
-	// TODO: scientic notation
+	{in: "1E+4", out: "10000", ok: true}, // TODO: or use scientific notation?
+	{in: "1E-3", out: "0.001", ok: true}, // TODO: or use scientific notation?
+	{in: "1E0", out: "1", ok: true},
+	{in: "2E-1", out: "0.2", ok: true}, // TODO: or use scientific notation?
 }
 
 func TestSetGetString(t *testing.T) {

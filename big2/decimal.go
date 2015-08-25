@@ -55,7 +55,7 @@ type Decimal struct {
 
 	// value
 	abs   big.Int
-	scale uint32
+	scale int32
 	neg   bool
 	inf   bool
 }

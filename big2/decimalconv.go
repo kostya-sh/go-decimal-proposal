@@ -10,6 +10,7 @@ package big2
 import (
 	"fmt"
 	"math/big"
+	"strconv"
 	"strings"
 )
 
@@ -18,17 +19,18 @@ import (
 // success. s must be a floating-point number of the same format as accepted
 // by Parse, with base argument 0.
 func (z *Decimal) SetString(s string) (*Decimal, bool) {
-	// TODO: support scientific notiation (with e)
-	// TODO: support +Inf, -Inf, +0, -0
+	// TODO: support different bases (2, 10, 16) based on prefix
 	// TODO: what if z is null?
 	// TODO: when returning nil, false is it ok to change z?
 	// TODO: default to 0 (like Float) or accept base as argument (like Int)?
+	// TODO: handle overflow and underflow (based on Emax, Emin, Elimit)
+	// TODO: rounding if prec != 0
+	// TODO: set prec
 	if s == "" {
 		return nil, false
 	}
 
 	// set sign
-	// TODO: unicode + and - ???
 	if s[0] == '-' {
 		z.neg = true
 		s = s[1:]
@@ -39,6 +41,7 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		z.neg = false
 	}
 
+	// special values
 	if s == "inf" || s == "Inf" {
 		z.inf = true
 		return z, true
@@ -46,14 +49,30 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		z.inf = false
 	}
 
+	// exponent
+	var exp int32
+	e := strings.Index(s, "e")
+	if e < 0 {
+		e = strings.Index(s, "E")
+	}
+	if e > 0 {
+		exp64, err := strconv.ParseInt(s[e+1:], 0, 32)
+		if err != nil {
+			return nil, false
+		}
+		s = s[:e]
+		exp = int32(exp64)
+	}
+
 	// scale
 	p := strings.LastIndex(s, ".")
 	if p >= 0 {
-		z.scale = uint32(len(s) - p - 1)
+		z.scale = int32(len(s) - p - 1)
 		s = s[:p] + s[p+1:]
 	} else {
 		z.scale = 0
 	}
+	z.scale -= exp
 
 	_, ok := (&z.abs).SetString(s, 0)
 	if !ok {
@@ -116,6 +135,7 @@ func ParseDecimal(s string, base int, prec uint, mode big.RoundingMode) (d *Deci
 
 // TODO: update docs
 // String formats x like x.Text('g', 10).
+// TODO: maybe use scientific notation by default?
 func (x *Decimal) String() string {
 	if x == nil {
 		return "<nil>"
@@ -126,13 +146,19 @@ func (x *Decimal) String() string {
 		s = "Inf"
 	} else {
 		// scale
-		// TODO: scientific notation when necessary
 		s = x.abs.String()
-		if x.scale != 0 {
+		if x.scale < 0 {
+			s += strings.Repeat("0", int(-x.scale))
+		}
+		if x.scale > 0 {
 			if x.abs.Sign() == 0 {
 				s = strings.Repeat("0", int(x.scale+1))
 			}
-			p := uint32(len(s)) - x.scale
+			p := int32(len(s)) - x.scale
+			if p <= 0 {
+				s = strings.Repeat("0", int(-p+1)) + s
+				p = 1
+			}
 			s = s[:p] + "." + s[p:]
 		}
 	}
