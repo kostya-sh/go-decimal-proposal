@@ -434,14 +434,42 @@ func (z *Decimal) Quo(x, y *Decimal) *Decimal {
 	return z
 }
 
-// TODO: update dosc
 // Cmp compares x and y and returns:
 //
 //   -1 if x <  y
 //    0 if x == y (incl. -0 == 0, -Inf == -Inf, and +Inf == +Inf)
 //   +1 if x >  y
 //
+// TODO: implement properly and add tests
 func (x *Decimal) Cmp(y *Decimal) int {
-	// TODO: implement
-	return 0
+	if x == nil && y == nil {
+		// TODO: should Cmp support nils?
+		return 0
+	}
+	// TODO: double check this logic
+	if x.inf == true && y.inf == true && x.neg == y.neg {
+		return 0
+	}
+	if x.inf {
+		if x.neg {
+			return -1
+		} else {
+			return 1
+		}
+	}
+	if y.inf {
+		if y.neg {
+			return 1
+		} else {
+			return -1
+		}
+	}
+	if x.neg != y.neg {
+		return 1 // TODO: fix
+	}
+	// TODO: compare scale and abs together
+	if x.scale != y.scale {
+		return 1 // TODO: fix
+	}
+	return (&x.abs).Cmp(&y.abs)
 }

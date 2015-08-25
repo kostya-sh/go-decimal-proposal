@@ -5,23 +5,30 @@ import "testing"
 //go:generate bash -c "dectest < ~/tmp/dectest/copynegate.decTest > copynegate_test.go"
 func TestCopyNegate(t *testing.T) {
 	for _, test := range copynegateTests {
-		d1 := new(Decimal)
-		_, ok := d1.SetString(test.in)
+		in := new(Decimal)
+		_, ok := in.SetString(test.in)
 		if !ok {
 			t.Errorf("%s: failed to parse '%s'", test.id, test.in)
 			continue
 		}
 
-		d2 := new(Decimal)
-		d2.SetPrec(test.prec)
-		d2.SetMode(test.mode)
-		r := d2.Neg(d1)
-		if r != d2 {
-			t.Errorf("%s: return value got: %p want: %p", test.id, r, d2)
+		out := new(Decimal)
+		_, ok = out.SetString(test.out)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.out)
+			continue
 		}
-		s := r.String()
-		if s != test.out {
-			t.Errorf("%s: Neg(%s) got: %s want: %s", test.id, test.in, s, test.out)
+
+		r := new(Decimal)
+		r.SetPrec(test.prec)
+		r.SetMode(test.mode)
+		r2 := r.Neg(in)
+		if r != r2 {
+			t.Errorf("%s: return value got: %p want: %p", test.id, r, r2)
+		}
+
+		if out.Cmp(r) != 0 {
+			t.Errorf("%s: Neg(%s) got: %s want: %s", test.id, test.in, r.String(), out.String())
 		}
 	}
 }
