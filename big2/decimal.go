@@ -188,6 +188,19 @@ func (z *Decimal) SetMantExp(mant *Decimal, exp int) *Decimal {
 	return z
 }
 
+// TODO: docs
+// TODO: confirm name
+func (x *Decimal) Unscaled() *big.Int {
+	// TODO: maybe return copy? or pass as *big.Int as param (see MantExp)?
+	return &x.abs
+}
+
+// TODO: docs
+// TODO: confirm return type (maybe just int?)
+func (x *Decimal) Scale() int32 {
+	return x.scale
+}
+
 // Signbit returns true if x is negative or negative zero.
 func (x *Decimal) Signbit() bool {
 	// TODO: implement

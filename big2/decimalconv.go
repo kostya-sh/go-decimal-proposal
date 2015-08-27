@@ -16,16 +16,14 @@ import (
 
 // TODO: update docs
 // SetString sets z to the value of s and returns z and a boolean indicating
-// success. s must be a floating-point number of the same format as accepted
-// by Parse, with base argument 0.
+// success. s must be a floating-point decimal number of the same format as
+// accepted by Parse, with base argument 10.
 func (z *Decimal) SetString(s string) (*Decimal, bool) {
-	// TODO: support different bases (2, 10, 16) based on prefix
 	// TODO: what if z is null?
 	// TODO: when returning nil, false is it ok to change z?
 	// TODO: default to 0 (like Float) or accept base as argument (like Int)?
 	// TODO: handle overflow and underflow (based on Emax, Emin, Elimit)
 	// TODO: rounding if prec != 0
-	// TODO: set prec
 	if s == "" {
 		return nil, false
 	}
@@ -74,10 +72,14 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 	}
 	z.scale -= exp
 
-	_, ok := (&z.abs).SetString(s, 0)
+	_, ok := (&z.abs).SetString(s, 10)
 	if !ok {
 		return nil, false
 	}
+
+	// precision
+	z.prec = uint32(len((&z.abs).String()))
+
 	return z, true
 }
 
