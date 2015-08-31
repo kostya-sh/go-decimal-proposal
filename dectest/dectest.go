@@ -197,6 +197,19 @@ func rounding2Mode(s string) string {
 	switch s {
 	case "half_up":
 		return "ToPositiveInf"
+	case "ceiling":
+		return "ToPositiveInf"
+	case "up":
+		return "ToPositiveInf"
+	case "floor":
+		return "ToNegativeInf"
+	case "half_down":
+		return "ToNegativeInf"
+	case "half_even":
+		return "ToNegativeInf"
+	case "down":
+		return "ToNegativeInf"
+
 	}
 	return "???"
 }
@@ -221,6 +234,9 @@ func findOperation(name string) *operation {
 				"mode big.RoundingMode",
 			},
 			testDataFunc: func(t *test, env *testEnv) string {
+				if strings.Index(t.src, "NaN") >= 0 {
+					return "" // skip tests with NaN values
+				}
 				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
 					t.id, t.operands[0], t.result, env.precision, rounding2Mode(env.rounding))
 			},
@@ -237,9 +253,55 @@ func findOperation(name string) *operation {
 				"out int",
 			},
 			testDataFunc: func(t *test, env *testEnv) string {
+				if strings.Index(t.src, "NaN") >= 0 {
+					return "" // skip tests with NaN values
+				}
 				return fmt.Sprintf(`"%s", "%s", "%s", %s`,
 					t.id, t.operands[0], t.operands[1], t.result)
 			},
+		}
+
+	case "toeng":
+		fallthrough
+	case "apply":
+		fallthrough
+	case "tosci":
+		return &operation{
+			name: "toSci",
+			structFields: []string{
+				"id   string",
+				"in   string",
+				"out  string",
+				"prec uint",
+				"mode big.RoundingMode",
+			},
+			testDataFunc: func(t *test, env *testEnv) string {
+				// TODO: support tests for parse errors
+				if t.operation != "tosci" {
+					return "" // do not test toEng and apply
+				}
+				if strings.HasPrefix(t.id, "emax") {
+					return "" // do not test exponent maximums
+				}
+				if strings.Index(strings.ToLower(t.operands[0]), "inf") >= 0 {
+					return "" // skip infinity tests (Only inf, Inf are supported)
+				}
+				if strings.Index(t.operands[0], "\"") >= 0 {
+					return "" // TODO: handle " in arguments properly, skip for now
+				}
+				if t.id == "basx512" {
+					// basx512 toSci '12 '             -> NaN Conversion_syntax
+					return "" // TODO: handle escaped space correctly
+				}
+				out := t.result
+				if strings.Index(t.result, "NaN") >= 0 {
+					out = "" // unparseable value
+				}
+
+				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
+					t.id, t.operands[0], out, env.precision, rounding2Mode(env.rounding))
+			},
+			importMathBig: true,
 		}
 	}
 	return nil
@@ -280,11 +342,12 @@ func generate(in io.Reader, out io.Writer) error {
 				fmt.Fprintln(w, "}{")
 			}
 
-			if strings.Index(t.src, "NaN") >= 0 && !env.supportNaN {
-				fmt.Fprintf(w, "\t// SKIP: %s\n", t.src)
-			} else {
+			testLine := op.testDataFunc(t, &env)
+			if testLine != "" {
 				fmt.Fprintf(w, "\t// %s\n", t.src)
-				fmt.Fprintf(w, "\t{%s},\n", op.testDataFunc(t, &env))
+				fmt.Fprintf(w, "\t{%s},\n", testLine)
+			} else {
+				fmt.Fprintf(w, "\t// SKIP: %s\n", t.src)
 			}
 
 		case *directive:
