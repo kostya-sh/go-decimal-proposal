@@ -18,6 +18,7 @@ var stringTests = []struct {
 	{in: "z", ok: false},
 	{in: "+", ok: false},
 	{in: "-", ok: false},
+	{in: "++1", ok: false},
 	{in: "0b", ok: false},
 	{in: "0x", ok: false},
 	{in: "-0x", ok: false},
@@ -45,10 +46,11 @@ var stringTests = []struct {
 	{in: "300", ok: true},
 	{in: "inf", ok: true, out: "Inf"},
 	{in: "-Inf", ok: true},
-	{in: "1E+4", ok: true, out: "10000", unscaled: "1", scale: -4, prec: 1}, // TODO: or use scientific notation?
-	{in: "1E-3", ok: true, out: "0.001", unscaled: "1", scale: 3, prec: 1},  // TODO: or use scientific notation?
+	{in: "1E+4", ok: true, out: "1E+4", unscaled: "1", scale: -4, prec: 1},
+	{in: "1E-3", ok: true, out: "0.001", unscaled: "1", scale: 3, prec: 1},
+	{in: "1E+009", ok: true, out: "1E+9", unscaled: "1", scale: -9, prec: 1},
 	{in: "1E0", ok: true, out: "1", unscaled: "1", scale: 0, prec: 1},
-	{in: "2E-1", ok: true, out: "0.2", unscaled: "2", scale: 1, prec: 1}, // TODO: or use scientific notation?
+	{in: "2E-1", ok: true, out: "0.2", unscaled: "2", scale: 1, prec: 1},
 }
 
 func TestSetGetString(t *testing.T) {
@@ -118,5 +120,34 @@ func TestNotInitializedGetString(t *testing.T) {
 	s = new(Decimal).String()
 	if s != "0" {
 		t.Errorf("new(Decimal).String() got: %s want: <nil>", s)
+	}
+}
+
+//go:generate bash -c "dectest < ~/tmp/dectest/base.decTest > tosci_test.go"
+func TestToSci(t *testing.T) {
+	for _, test := range toSciTests {
+		in := new(Decimal)
+		in.SetPrec(test.prec)
+		in.SetMode(test.mode)
+		_, ok := in.SetString(test.in)
+
+		if test.out == "" {
+			if ok {
+				t.Errorf("%s: parsed illegal input '%s'", test.id, test.in)
+				continue
+			}
+		} else {
+			if !ok {
+				t.Errorf("%s: failed to parse '%s'", test.id, test.in)
+				continue
+			}
+
+			// TODO: possibly fmt %e
+			s := in.String()
+			if s != test.out {
+				t.Errorf("%s: toSci('%s', %d, %s) got %s want %s",
+					test.id, test.in, test.prec, test.mode, s, test.out)
+			}
+		}
 	}
 }

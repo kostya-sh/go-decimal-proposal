@@ -47,6 +47,11 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		z.inf = false
 	}
 
+	// handle ++, --, etc
+	if s == "" || s[0] == '-' || s[0] == '+' {
+		return nil, false
+	}
+
 	// exponent
 	var exp int32
 	e := strings.Index(s, "e")
@@ -54,7 +59,7 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		e = strings.Index(s, "E")
 	}
 	if e > 0 {
-		exp64, err := strconv.ParseInt(s[e+1:], 0, 32)
+		exp64, err := strconv.ParseInt(s[e+1:], 10, 32)
 		if err != nil {
 			return nil, false
 		}
@@ -147,15 +152,25 @@ func (x *Decimal) String() string {
 	if x.inf {
 		s = "Inf"
 	} else {
-		// scale
-		s = x.abs.String()
-		if x.scale < 0 {
-			s += strings.Repeat("0", int(-x.scale))
-		}
-		if x.scale > 0 {
-			if x.abs.Sign() == 0 {
-				s = strings.Repeat("0", int(x.scale+1))
-			}
+		s = x.sciString()
+	}
+
+	// sign
+	if x.neg {
+		s = "-" + s
+	}
+
+	return s
+}
+
+// no sign, no special values, no null
+func (x *Decimal) sciString() string {
+	// scale
+	s := x.abs.String()
+	exp := int64(-x.scale)
+	adjExp := exp + int64(len(s)) - 1
+	if exp <= 0 && adjExp >= -6 {
+		if exp != 0 {
 			p := int32(len(s)) - x.scale
 			if p <= 0 {
 				s = strings.Repeat("0", int(-p+1)) + s
@@ -163,11 +178,37 @@ func (x *Decimal) String() string {
 			}
 			s = s[:p] + "." + s[p:]
 		}
+	} else {
+		if len(s) > 1 {
+			s = s[0:1] + "." + s[1:]
+		}
+		s += "E"
+		if adjExp > 0 {
+			s += "+"
+		}
+		s += strconv.FormatInt(adjExp, 10)
 	}
 
-	// sign
-	if x.neg {
-		s = "-" + s
+	return s
+}
+
+// no sign, no special values, no null
+func (x *Decimal) plainString() string {
+	// scale
+	s := x.abs.String()
+	if x.scale < 0 {
+		s += strings.Repeat("0", int(-x.scale))
+	}
+	if x.scale > 0 {
+		if x.abs.Sign() == 0 {
+			s = strings.Repeat("0", int(x.scale+1))
+		}
+		p := int32(len(s)) - x.scale
+		if p <= 0 {
+			s = strings.Repeat("0", int(-p+1)) + s
+			p = 1
+		}
+		s = s[:p] + "." + s[p:]
 	}
 
 	return s
