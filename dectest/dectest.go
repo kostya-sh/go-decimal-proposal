@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
+	"math/big"
 	"os"
 	"strconv"
 	"strings"
@@ -192,26 +194,24 @@ func nextStatement(s *bufio.Scanner) (statement, error) {
 	return parseLine(s.Text()), nil
 }
 
-func rounding2Mode(s string) string {
-	// TODO: implement this properly
+func rounding2Mode(s string) (big.RoundingMode, bool) {
 	switch s {
-	case "half_up":
-		return "ToPositiveInf"
-	case "ceiling":
-		return "ToPositiveInf"
-	case "up":
-		return "ToPositiveInf"
-	case "floor":
-		return "ToNegativeInf"
-	case "half_down":
-		return "ToNegativeInf"
 	case "half_even":
-		return "ToNegativeInf"
+		return big.ToNearestEven, true
+	case "half_up":
+		return big.ToNearestAway, true
 	case "down":
-		return "ToNegativeInf"
-
+		return big.ToZero, true
+	case "up":
+		return big.AwayFromZero, true
+	case "floor":
+		return big.ToNegativeInf, true
+	case "ceiling":
+		return big.ToPositiveInf, true
+	case "half_down":
+		return 0, false // not supported
 	}
-	return "???"
+	panic("unexpected rounding " + s)
 }
 
 type operation struct {
@@ -237,8 +237,12 @@ func findOperation(name string) *operation {
 				if strings.Index(t.src, "NaN") >= 0 {
 					return "" // skip tests with NaN values
 				}
+				mode, ok := rounding2Mode(env.rounding)
+				if !ok {
+					return "" // mode not supported
+				}
 				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
-					t.id, t.operands[0], t.result, env.precision, rounding2Mode(env.rounding))
+					t.id, t.operands[0], t.result, env.precision, mode)
 			},
 			importMathBig: true,
 		}
@@ -293,13 +297,17 @@ func findOperation(name string) *operation {
 					// basx512 toSci '12 '             -> NaN Conversion_syntax
 					return "" // TODO: handle escaped space correctly
 				}
+				mode, ok := rounding2Mode(env.rounding)
+				if !ok {
+					return "" // mode not supported
+				}
 				out := t.result
 				if strings.Index(t.result, "NaN") >= 0 {
 					out = "" // unparseable value
 				}
 
 				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
-					t.id, t.operands[0], out, env.precision, rounding2Mode(env.rounding))
+					t.id, t.operands[0], out, env.precision, mode)
 			},
 			importMathBig: true,
 		}
@@ -320,6 +328,8 @@ func generate(in io.Reader, out io.Writer) error {
 	var stmt statement
 	env := testEnv{}
 	var op *operation
+	initialComments := new(bytes.Buffer)
+	seenDirective := false
 	for stmt, err = nextStatement(s); stmt != nil && err == nil; stmt, err = nextStatement(s) {
 		switch t := stmt.(type) {
 		case *test:
@@ -340,6 +350,7 @@ func generate(in io.Reader, out io.Writer) error {
 					fmt.Fprintf(w, "\t%s\n", f)
 				}
 				fmt.Fprintln(w, "}{")
+				initialComments.WriteTo(w)
 			}
 
 			testLine := op.testDataFunc(t, &env)
@@ -351,7 +362,7 @@ func generate(in io.Reader, out io.Writer) error {
 			}
 
 		case *directive:
-			// ? fmt.Fprintf(w, "\t// %s\n", t)
+			seenDirective = true
 			switch t.keyword {
 			case "precision":
 				p, err := strconv.Atoi(t.value)
@@ -362,10 +373,18 @@ func generate(in io.Reader, out io.Writer) error {
 			case "rounding":
 				env.rounding = t.value
 			}
-
+			if op == nil {
+				fmt.Fprintf(initialComments, "\t// %s\n", t)
+			} else {
+				fmt.Fprintf(w, "\t// %s\n", t)
+			}
 		case comment:
-			if op != nil {
-				fmt.Fprintf(w, "\t//%s\n", t)
+			if seenDirective {
+				if op == nil {
+					fmt.Fprintf(initialComments, "\t//%s\n", t)
+				} else {
+					fmt.Fprintf(w, "\t//%s\n", t)
+				}
 			}
 
 		default:

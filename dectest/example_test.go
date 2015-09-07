@@ -51,6 +51,7 @@ simp006  multiply  Infinity "-Infinity" -> Infinity
 
 func ExampleCopyNegate() {
 	file := `
+-- this coment should be ignored
 version: 2.62
 
 extended:    1
@@ -84,8 +85,15 @@ cpnx021 copynegate         NaN  -> -NaN
 	// 	prec uint
 	// 	mode big.RoundingMode
 	// }{
+	// 	// version: 2.62
+	// 	// extended: 1
+	// 	// precision: 9
+	// 	// rounding: half_up
+	// 	// maxexponent: 999
+	// 	// minexponent: -999
+	// 	// Sanity check
 	// 	// cpnx001 copynegate       +7.50  -> -7.50
-	// 	{"cpnx001", "+7.50", "-7.50", 9, big.ToPositiveInf},
+	// 	{"cpnx001", "+7.50", "-7.50", 9, big.ToNearestAway},
 	// 	// SKIP: cpnx021 copynegate         NaN  -> -NaN
 	// }
 }
@@ -94,8 +102,6 @@ func ExampleCompare() {
 	file := `
 precision:   9
 rounding:    half_up
-maxExponent: 999
-minexponent: -999
 
 -- sanity checks
 comx001 compare  -2  -2  -> 0
@@ -118,6 +124,9 @@ comx001 compare  -2  -2  -> 0
 	// 	in2 string
 	// 	out int
 	// }{
+	// 	// precision: 9
+	// 	// rounding: half_up
+	// 	// sanity checks
 	// 	// comx001 compare  -2  -2  -> 0
 	// 	{"comx001", "-2", "-2", 0},
 	// }
@@ -134,6 +143,7 @@ basx001 toSci       0 -> 0
 basx500 toSci '1..2' -> NaN Conversion_syntax
 basx302 toEng 10e12  -> 10E+12
 emax006 toSci   -1   -> -1
+precision:   9
 basx748 toSci "+InFinity" -> Infinity
 `
 
@@ -156,12 +166,17 @@ basx748 toSci "+InFinity" -> Infinity
 	// 	prec uint
 	// 	mode big.RoundingMode
 	// }{
+	// 	// precision: 16
+	// 	// rounding: half_up
+	// 	// maxexponent: 384
+	// 	// minexponent: -383
 	// 	// basx001 toSci       0 -> 0
-	// 	{"basx001", "0", "0", 16, big.ToPositiveInf},
+	// 	{"basx001", "0", "0", 16, big.ToNearestAway},
 	// 	// basx500 toSci '1..2' -> NaN Conversion_syntax
-	// 	{"basx500", "1..2", "", 16, big.ToPositiveInf},
+	// 	{"basx500", "1..2", "", 16, big.ToNearestAway},
 	// 	// SKIP: basx302 toEng 10e12  -> 10E+12
 	// 	// SKIP: emax006 toSci   -1   -> -1
+	// 	// precision: 9
 	// 	// SKIP: basx748 toSci "+InFinity" -> Infinity
 	// }
 }
