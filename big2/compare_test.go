@@ -8,6 +8,16 @@ var compareTests = []struct {
 	in2 string
 	out int
 }{
+	// version: 2.62
+	// Note that we cannot assume add/subtract tests cover paths adequately,
+	// here, because the code might be quite different (comparison cannot
+	// overflow or underflow, so actual subtractions are not necessary).
+	// extended: 1
+	// precision: 9
+	// rounding: half_up
+	// maxexponent: 999
+	// minexponent: -999
+	// sanity checks
 	// comx001 compare  -2  -2  -> 0
 	{"comx001", "-2", "-2", 0},
 	// comx002 compare  -2  -1  -> -1
@@ -159,6 +169,8 @@ var compareTests = []struct {
 	// comx086 compare   2.0   2.0  -> 0
 	{"comx086", "2.0", "2.0", 0},
 	// now some cases which might overflow if subtract were used
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// comx095 compare  9.99999999E+999999999 9.99999999E+999999999  -> 0
 	{"comx095", "9.99999999E+999999999", "9.99999999E+999999999", 0},
 	// comx096 compare -9.99999999E+999999999 9.99999999E+999999999  -> -1
@@ -465,6 +477,7 @@ var compareTests = []struct {
 	// comx464 compare  10000.0   1000000  -> -1
 	{"comx464", "10000.0", "1000000", -1},
 	// testcases that subtract to lots of zeros at boundaries [pgr]
+	// precision: 40
 	// comx470 compare 123.4560000000000000E789 123.456E789 -> 0
 	{"comx470", "123.4560000000000000E789", "123.456E789", 0},
 	// comx471 compare 123.456000000000000E-89 123.456E-89 -> 0
@@ -522,6 +535,7 @@ var compareTests = []struct {
 	// comx497 compare 123.456E789 123.456E789 -> 0
 	{"comx497", "123.456E789", "123.456E789", 0},
 	// wide-ranging, around precision; signs equal
+	// precision: 9
 	// comx500 compare    1     1E-15    -> 1
 	{"comx500", "1", "1E-15", 1},
 	// comx501 compare    1     1E-14    -> 1
@@ -689,6 +703,7 @@ var compareTests = []struct {
 	// comx599 compare  0.000000987654321     1E+4     -> -1
 	{"comx599", "0.000000987654321", "1E+4", -1},
 	// check some unit-y traps
+	// precision: 20
 	// comx600 compare   12            12.2345 -> -1
 	{"comx600", "12", "12.2345", -1},
 	// comx601 compare   12.0          12.2345 -> -1
@@ -769,6 +784,7 @@ var compareTests = []struct {
 	{"comx638", "-12.1234", "-12.00000000", -1},
 	// comx639 compare  -12.1234 -12.000000000 -> -1
 	{"comx639", "-12.1234", "-12.000000000", -1},
+	// precision: 9
 	// extended zeros
 	// comx640 compare   0     0   -> 0
 	{"comx640", "0", "0", 0},
@@ -851,6 +867,7 @@ var compareTests = []struct {
 	// comx679 compare   0E2   0E2 -> 0
 	{"comx679", "0E2", "0E2", 0},
 	// trailing zeros; unit-y
+	// precision: 20
 	// comx680 compare   12    12           -> 0
 	{"comx680", "12", "12", 0},
 	// comx681 compare   12    12.0         -> 0
@@ -892,6 +909,9 @@ var compareTests = []struct {
 	// comx699 compare   12.000000000    12 -> 0
 	{"comx699", "12.000000000", "12", 0},
 	// long operand checks
+	// maxexponent: 999
+	// minexponent: -999
+	// precision: 9
 	// comx701 compare 12345678000  1 ->  1
 	{"comx701", "12345678000", "1", 1},
 	// comx702 compare 1 12345678000  -> -1
@@ -928,6 +948,7 @@ var compareTests = []struct {
 	{"comx717", "-1234567896", "1", -1},
 	// comx718 compare 1 -1234567896  ->  1
 	{"comx718", "1", "-1234567896", 1},
+	// precision: 15
 	// same with plenty of precision
 	// comx721 compare 12345678000 1 -> 1
 	{"comx721", "12345678000", "1", 1},
@@ -954,6 +975,7 @@ var compareTests = []struct {
 	// comx732 compare 1 1234567896  -> -1
 	{"comx732", "1", "1234567896", -1},
 	// residue cases
+	// precision: 5
 	// comx740 compare  1  0.9999999  -> 1
 	{"comx740", "1", "0.9999999", 1},
 	// comx741 compare  1  0.999999   -> 1
@@ -992,29 +1014,41 @@ var compareTests = []struct {
 	// comx763 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx763", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
 	// precisions above or below the difference should have no effect
+	// precision: 11
 	// comx764 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx764", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 10
 	// comx765 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx765", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 9
 	// comx766 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx766", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 8
 	// comx767 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx767", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 7
 	// comx768 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx768", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 6
 	// comx769 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx769", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 5
 	// comx770 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx770", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 4
 	// comx771 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx771", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 3
 	// comx772 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx772", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 2
 	// comx773 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx773", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
+	// precision: 1
 	// comx774 compare -36852134.84194296250843579428931 -36852134.94194296250843579428931  -> 1
 	{"comx774", "-36852134.84194296250843579428931", "-36852134.94194296250843579428931", 1},
 	// Specials
+	// precision: 9
 	// comx780 compare  Inf  -Inf   ->  1
 	{"comx780", "Inf", "-Inf", 1},
 	// comx781 compare  Inf  -1000  ->  1
@@ -1140,6 +1174,8 @@ var compareTests = []struct {
 	// SKIP: comx878 compare  Inf    sNaN90  ->  NaN90 Invalid_operation
 	// SKIP: comx879 compare  NaN   -sNaN89  -> -NaN89 Invalid_operation
 	// overflow and underflow tests .. subnormal results now allowed
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// comx880 compare +1.23456789012345E-0 9E+999999999 -> -1
 	{"comx880", "+1.23456789012345E-0", "9E+999999999", -1},
 	// comx881 compare 9E+999999999 +1.23456789012345E-0 ->  1

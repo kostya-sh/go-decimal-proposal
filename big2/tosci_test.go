@@ -11,691 +11,707 @@ var toSciTests = []struct {
 	prec uint
 	mode big.RoundingMode
 }{
+	// version: 2.62
+	// extended: 1
+	// This file tests base conversions from string to a decimal number
+	// and back to a string (in either Scientific or Engineering form)
+	// Note that unlike other operations the operand is subject to rounding
+	// to conform to emax and precision settings (that is, numbers will
+	// conform to rules and exponent will be in permitted range).
+	// precision: 16
+	// rounding: half_up
+	// maxexponent: 384
+	// minexponent: -383
 	// basx001 toSci       0 -> 0
-	{"basx001", "0", "0", 16, big.ToPositiveInf},
+	{"basx001", "0", "0", 16, big.ToNearestAway},
 	// basx002 toSci       1 -> 1
-	{"basx002", "1", "1", 16, big.ToPositiveInf},
+	{"basx002", "1", "1", 16, big.ToNearestAway},
 	// basx003 toSci     1.0 -> 1.0
-	{"basx003", "1.0", "1.0", 16, big.ToPositiveInf},
+	{"basx003", "1.0", "1.0", 16, big.ToNearestAway},
 	// basx004 toSci    1.00 -> 1.00
-	{"basx004", "1.00", "1.00", 16, big.ToPositiveInf},
+	{"basx004", "1.00", "1.00", 16, big.ToNearestAway},
 	// basx005 toSci      10 -> 10
-	{"basx005", "10", "10", 16, big.ToPositiveInf},
+	{"basx005", "10", "10", 16, big.ToNearestAway},
 	// basx006 toSci    1000 -> 1000
-	{"basx006", "1000", "1000", 16, big.ToPositiveInf},
+	{"basx006", "1000", "1000", 16, big.ToNearestAway},
 	// basx007 toSci    10.0 -> 10.0
-	{"basx007", "10.0", "10.0", 16, big.ToPositiveInf},
+	{"basx007", "10.0", "10.0", 16, big.ToNearestAway},
 	// basx008 toSci    10.1 -> 10.1
-	{"basx008", "10.1", "10.1", 16, big.ToPositiveInf},
+	{"basx008", "10.1", "10.1", 16, big.ToNearestAway},
 	// basx009 toSci    10.4 -> 10.4
-	{"basx009", "10.4", "10.4", 16, big.ToPositiveInf},
+	{"basx009", "10.4", "10.4", 16, big.ToNearestAway},
 	// basx010 toSci    10.5 -> 10.5
-	{"basx010", "10.5", "10.5", 16, big.ToPositiveInf},
+	{"basx010", "10.5", "10.5", 16, big.ToNearestAway},
 	// basx011 toSci    10.6 -> 10.6
-	{"basx011", "10.6", "10.6", 16, big.ToPositiveInf},
+	{"basx011", "10.6", "10.6", 16, big.ToNearestAway},
 	// basx012 toSci    10.9 -> 10.9
-	{"basx012", "10.9", "10.9", 16, big.ToPositiveInf},
+	{"basx012", "10.9", "10.9", 16, big.ToNearestAway},
 	// basx013 toSci    11.0 -> 11.0
-	{"basx013", "11.0", "11.0", 16, big.ToPositiveInf},
+	{"basx013", "11.0", "11.0", 16, big.ToNearestAway},
 	// basx014 toSci  1.234 -> 1.234
-	{"basx014", "1.234", "1.234", 16, big.ToPositiveInf},
+	{"basx014", "1.234", "1.234", 16, big.ToNearestAway},
 	// basx015 toSci  0.123 -> 0.123
-	{"basx015", "0.123", "0.123", 16, big.ToPositiveInf},
+	{"basx015", "0.123", "0.123", 16, big.ToNearestAway},
 	// basx016 toSci  0.012 -> 0.012
-	{"basx016", "0.012", "0.012", 16, big.ToPositiveInf},
+	{"basx016", "0.012", "0.012", 16, big.ToNearestAway},
 	// basx017 toSci  -0    -> -0
-	{"basx017", "-0", "-0", 16, big.ToPositiveInf},
+	{"basx017", "-0", "-0", 16, big.ToNearestAway},
 	// basx018 toSci  -0.0  -> -0.0
-	{"basx018", "-0.0", "-0.0", 16, big.ToPositiveInf},
+	{"basx018", "-0.0", "-0.0", 16, big.ToNearestAway},
 	// basx019 toSci -00.00 -> -0.00
-	{"basx019", "-00.00", "-0.00", 16, big.ToPositiveInf},
+	{"basx019", "-00.00", "-0.00", 16, big.ToNearestAway},
 	// basx021 toSci     -1 -> -1
-	{"basx021", "-1", "-1", 16, big.ToPositiveInf},
+	{"basx021", "-1", "-1", 16, big.ToNearestAway},
 	// basx022 toSci   -1.0 -> -1.0
-	{"basx022", "-1.0", "-1.0", 16, big.ToPositiveInf},
+	{"basx022", "-1.0", "-1.0", 16, big.ToNearestAway},
 	// basx023 toSci   -0.1 -> -0.1
-	{"basx023", "-0.1", "-0.1", 16, big.ToPositiveInf},
+	{"basx023", "-0.1", "-0.1", 16, big.ToNearestAway},
 	// basx024 toSci   -9.1 -> -9.1
-	{"basx024", "-9.1", "-9.1", 16, big.ToPositiveInf},
+	{"basx024", "-9.1", "-9.1", 16, big.ToNearestAway},
 	// basx025 toSci   -9.11 -> -9.11
-	{"basx025", "-9.11", "-9.11", 16, big.ToPositiveInf},
+	{"basx025", "-9.11", "-9.11", 16, big.ToNearestAway},
 	// basx026 toSci   -9.119 -> -9.119
-	{"basx026", "-9.119", "-9.119", 16, big.ToPositiveInf},
+	{"basx026", "-9.119", "-9.119", 16, big.ToNearestAway},
 	// basx027 toSci   -9.999 -> -9.999
-	{"basx027", "-9.999", "-9.999", 16, big.ToPositiveInf},
+	{"basx027", "-9.999", "-9.999", 16, big.ToNearestAway},
 	// basx030 toSci  '123456789.123456'   -> '123456789.123456'
-	{"basx030", "123456789.123456", "123456789.123456", 16, big.ToPositiveInf},
+	{"basx030", "123456789.123456", "123456789.123456", 16, big.ToNearestAway},
 	// basx031 toSci  '123456789.000000'   -> '123456789.000000'
-	{"basx031", "123456789.000000", "123456789.000000", 16, big.ToPositiveInf},
+	{"basx031", "123456789.000000", "123456789.000000", 16, big.ToNearestAway},
 	// basx032 toSci   '123456789123456'   -> '123456789123456'
-	{"basx032", "123456789123456", "123456789123456", 16, big.ToPositiveInf},
+	{"basx032", "123456789123456", "123456789123456", 16, big.ToNearestAway},
 	// basx033 toSci   '0.0000123456789'   -> '0.0000123456789'
-	{"basx033", "0.0000123456789", "0.0000123456789", 16, big.ToPositiveInf},
+	{"basx033", "0.0000123456789", "0.0000123456789", 16, big.ToNearestAway},
 	// basx034 toSci  '0.00000123456789'   -> '0.00000123456789'
-	{"basx034", "0.00000123456789", "0.00000123456789", 16, big.ToPositiveInf},
+	{"basx034", "0.00000123456789", "0.00000123456789", 16, big.ToNearestAway},
 	// basx035 toSci '0.000000123456789'   -> '1.23456789E-7'
-	{"basx035", "0.000000123456789", "1.23456789E-7", 16, big.ToPositiveInf},
+	{"basx035", "0.000000123456789", "1.23456789E-7", 16, big.ToNearestAway},
 	// basx036 toSci '0.0000000123456789'  -> '1.23456789E-8'
-	{"basx036", "0.0000000123456789", "1.23456789E-8", 16, big.ToPositiveInf},
+	{"basx036", "0.0000000123456789", "1.23456789E-8", 16, big.ToNearestAway},
 	// basx037 toSci '0.123456789012344'   -> '0.123456789012344'
-	{"basx037", "0.123456789012344", "0.123456789012344", 16, big.ToPositiveInf},
+	{"basx037", "0.123456789012344", "0.123456789012344", 16, big.ToNearestAway},
 	// basx038 toSci '0.123456789012345'   -> '0.123456789012345'
-	{"basx038", "0.123456789012345", "0.123456789012345", 16, big.ToPositiveInf},
+	{"basx038", "0.123456789012345", "0.123456789012345", 16, big.ToNearestAway},
 	// String [many more examples are implicitly tested elsewhere]
 	// strings without E cannot generate E in result
 	// basx040 toSci "12"        -> '12'
-	{"basx040", "12", "12", 16, big.ToPositiveInf},
+	{"basx040", "12", "12", 16, big.ToNearestAway},
 	// basx041 toSci "-76"       -> '-76'
-	{"basx041", "-76", "-76", 16, big.ToPositiveInf},
+	{"basx041", "-76", "-76", 16, big.ToNearestAway},
 	// basx042 toSci "12.76"     -> '12.76'
-	{"basx042", "12.76", "12.76", 16, big.ToPositiveInf},
+	{"basx042", "12.76", "12.76", 16, big.ToNearestAway},
 	// basx043 toSci "+12.76"    -> '12.76'
-	{"basx043", "+12.76", "12.76", 16, big.ToPositiveInf},
+	{"basx043", "+12.76", "12.76", 16, big.ToNearestAway},
 	// basx044 toSci "012.76"    -> '12.76'
-	{"basx044", "012.76", "12.76", 16, big.ToPositiveInf},
+	{"basx044", "012.76", "12.76", 16, big.ToNearestAway},
 	// basx045 toSci "+0.003"    -> '0.003'
-	{"basx045", "+0.003", "0.003", 16, big.ToPositiveInf},
+	{"basx045", "+0.003", "0.003", 16, big.ToNearestAway},
 	// basx046 toSci "17."       -> '17'
-	{"basx046", "17.", "17", 16, big.ToPositiveInf},
+	{"basx046", "17.", "17", 16, big.ToNearestAway},
 	// basx047 toSci ".5"        -> '0.5'
-	{"basx047", ".5", "0.5", 16, big.ToPositiveInf},
+	{"basx047", ".5", "0.5", 16, big.ToNearestAway},
 	// basx048 toSci "044"       -> '44'
-	{"basx048", "044", "44", 16, big.ToPositiveInf},
+	{"basx048", "044", "44", 16, big.ToNearestAway},
 	// basx049 toSci "0044"      -> '44'
-	{"basx049", "0044", "44", 16, big.ToPositiveInf},
+	{"basx049", "0044", "44", 16, big.ToNearestAway},
 	// basx050 toSci "0.0005"      -> '0.0005'
-	{"basx050", "0.0005", "0.0005", 16, big.ToPositiveInf},
+	{"basx050", "0.0005", "0.0005", 16, big.ToNearestAway},
 	// basx051 toSci "00.00005"    -> '0.00005'
-	{"basx051", "00.00005", "0.00005", 16, big.ToPositiveInf},
+	{"basx051", "00.00005", "0.00005", 16, big.ToNearestAway},
 	// basx052 toSci "0.000005"    -> '0.000005'
-	{"basx052", "0.000005", "0.000005", 16, big.ToPositiveInf},
+	{"basx052", "0.000005", "0.000005", 16, big.ToNearestAway},
 	// basx053 toSci "0.0000050"   -> '0.0000050'
-	{"basx053", "0.0000050", "0.0000050", 16, big.ToPositiveInf},
+	{"basx053", "0.0000050", "0.0000050", 16, big.ToNearestAway},
 	// basx054 toSci "0.0000005"   -> '5E-7'
-	{"basx054", "0.0000005", "5E-7", 16, big.ToPositiveInf},
+	{"basx054", "0.0000005", "5E-7", 16, big.ToNearestAway},
 	// basx055 toSci "0.00000005"  -> '5E-8'
-	{"basx055", "0.00000005", "5E-8", 16, big.ToPositiveInf},
+	{"basx055", "0.00000005", "5E-8", 16, big.ToNearestAway},
 	// basx056 toSci "12345678.543210" -> '12345678.543210'
-	{"basx056", "12345678.543210", "12345678.543210", 16, big.ToPositiveInf},
+	{"basx056", "12345678.543210", "12345678.543210", 16, big.ToNearestAway},
 	// basx057 toSci "2345678.543210" -> '2345678.543210'
-	{"basx057", "2345678.543210", "2345678.543210", 16, big.ToPositiveInf},
+	{"basx057", "2345678.543210", "2345678.543210", 16, big.ToNearestAway},
 	// basx058 toSci "345678.543210" -> '345678.543210'
-	{"basx058", "345678.543210", "345678.543210", 16, big.ToPositiveInf},
+	{"basx058", "345678.543210", "345678.543210", 16, big.ToNearestAway},
 	// basx059 toSci "0345678.54321" -> '345678.54321'
-	{"basx059", "0345678.54321", "345678.54321", 16, big.ToPositiveInf},
+	{"basx059", "0345678.54321", "345678.54321", 16, big.ToNearestAway},
 	// basx060 toSci "345678.5432" -> '345678.5432'
-	{"basx060", "345678.5432", "345678.5432", 16, big.ToPositiveInf},
+	{"basx060", "345678.5432", "345678.5432", 16, big.ToNearestAway},
 	// basx061 toSci "+345678.5432" -> '345678.5432'
-	{"basx061", "+345678.5432", "345678.5432", 16, big.ToPositiveInf},
+	{"basx061", "+345678.5432", "345678.5432", 16, big.ToNearestAway},
 	// basx062 toSci "+0345678.5432" -> '345678.5432'
-	{"basx062", "+0345678.5432", "345678.5432", 16, big.ToPositiveInf},
+	{"basx062", "+0345678.5432", "345678.5432", 16, big.ToNearestAway},
 	// basx063 toSci "+00345678.5432" -> '345678.5432'
-	{"basx063", "+00345678.5432", "345678.5432", 16, big.ToPositiveInf},
+	{"basx063", "+00345678.5432", "345678.5432", 16, big.ToNearestAway},
 	// basx064 toSci "-345678.5432"  -> '-345678.5432'
-	{"basx064", "-345678.5432", "-345678.5432", 16, big.ToPositiveInf},
+	{"basx064", "-345678.5432", "-345678.5432", 16, big.ToNearestAway},
 	// basx065 toSci "-0345678.5432"  -> '-345678.5432'
-	{"basx065", "-0345678.5432", "-345678.5432", 16, big.ToPositiveInf},
+	{"basx065", "-0345678.5432", "-345678.5432", 16, big.ToNearestAway},
 	// basx066 toSci "-00345678.5432"  -> '-345678.5432'
-	{"basx066", "-00345678.5432", "-345678.5432", 16, big.ToPositiveInf},
+	{"basx066", "-00345678.5432", "-345678.5432", 16, big.ToNearestAway},
 	// examples
 	// basx067 toSci "5E-6"        -> '0.000005'
-	{"basx067", "5E-6", "0.000005", 16, big.ToPositiveInf},
+	{"basx067", "5E-6", "0.000005", 16, big.ToNearestAway},
 	// basx068 toSci "50E-7"       -> '0.0000050'
-	{"basx068", "50E-7", "0.0000050", 16, big.ToPositiveInf},
+	{"basx068", "50E-7", "0.0000050", 16, big.ToNearestAway},
 	// basx069 toSci "5E-7"        -> '5E-7'
-	{"basx069", "5E-7", "5E-7", 16, big.ToPositiveInf},
+	{"basx069", "5E-7", "5E-7", 16, big.ToNearestAway},
 	// [No exotics as no Unicode]
 	// rounded with dots in all (including edge) places
 	// basx071 toSci  .1234567890123456123  -> 0.1234567890123456 Inexact Rounded
-	{"basx071", ".1234567890123456123", "0.1234567890123456", 16, big.ToPositiveInf},
+	{"basx071", ".1234567890123456123", "0.1234567890123456", 16, big.ToNearestAway},
 	// basx072 toSci  1.234567890123456123  -> 1.234567890123456 Inexact Rounded
-	{"basx072", "1.234567890123456123", "1.234567890123456", 16, big.ToPositiveInf},
+	{"basx072", "1.234567890123456123", "1.234567890123456", 16, big.ToNearestAway},
 	// basx073 toSci  12.34567890123456123  -> 12.34567890123456 Inexact Rounded
-	{"basx073", "12.34567890123456123", "12.34567890123456", 16, big.ToPositiveInf},
+	{"basx073", "12.34567890123456123", "12.34567890123456", 16, big.ToNearestAway},
 	// basx074 toSci  123.4567890123456123  -> 123.4567890123456 Inexact Rounded
-	{"basx074", "123.4567890123456123", "123.4567890123456", 16, big.ToPositiveInf},
+	{"basx074", "123.4567890123456123", "123.4567890123456", 16, big.ToNearestAway},
 	// basx075 toSci  1234.567890123456123  -> 1234.567890123456 Inexact Rounded
-	{"basx075", "1234.567890123456123", "1234.567890123456", 16, big.ToPositiveInf},
+	{"basx075", "1234.567890123456123", "1234.567890123456", 16, big.ToNearestAway},
 	// basx076 toSci  12345.67890123456123  -> 12345.67890123456 Inexact Rounded
-	{"basx076", "12345.67890123456123", "12345.67890123456", 16, big.ToPositiveInf},
+	{"basx076", "12345.67890123456123", "12345.67890123456", 16, big.ToNearestAway},
 	// basx077 toSci  123456.7890123456123  -> 123456.7890123456 Inexact Rounded
-	{"basx077", "123456.7890123456123", "123456.7890123456", 16, big.ToPositiveInf},
+	{"basx077", "123456.7890123456123", "123456.7890123456", 16, big.ToNearestAway},
 	// basx078 toSci  1234567.890123456123  -> 1234567.890123456 Inexact Rounded
-	{"basx078", "1234567.890123456123", "1234567.890123456", 16, big.ToPositiveInf},
+	{"basx078", "1234567.890123456123", "1234567.890123456", 16, big.ToNearestAway},
 	// basx079 toSci  12345678.90123456123  -> 12345678.90123456 Inexact Rounded
-	{"basx079", "12345678.90123456123", "12345678.90123456", 16, big.ToPositiveInf},
+	{"basx079", "12345678.90123456123", "12345678.90123456", 16, big.ToNearestAway},
 	// basx080 toSci  123456789.0123456123  -> 123456789.0123456 Inexact Rounded
-	{"basx080", "123456789.0123456123", "123456789.0123456", 16, big.ToPositiveInf},
+	{"basx080", "123456789.0123456123", "123456789.0123456", 16, big.ToNearestAway},
 	// basx081 toSci  1234567890.123456123  -> 1234567890.123456 Inexact Rounded
-	{"basx081", "1234567890.123456123", "1234567890.123456", 16, big.ToPositiveInf},
+	{"basx081", "1234567890.123456123", "1234567890.123456", 16, big.ToNearestAway},
 	// basx082 toSci  12345678901.23456123  -> 12345678901.23456 Inexact Rounded
-	{"basx082", "12345678901.23456123", "12345678901.23456", 16, big.ToPositiveInf},
+	{"basx082", "12345678901.23456123", "12345678901.23456", 16, big.ToNearestAway},
 	// basx083 toSci  123456789012.3456123  -> 123456789012.3456 Inexact Rounded
-	{"basx083", "123456789012.3456123", "123456789012.3456", 16, big.ToPositiveInf},
+	{"basx083", "123456789012.3456123", "123456789012.3456", 16, big.ToNearestAway},
 	// basx084 toSci  1234567890123.456123  -> 1234567890123.456 Inexact Rounded
-	{"basx084", "1234567890123.456123", "1234567890123.456", 16, big.ToPositiveInf},
+	{"basx084", "1234567890123.456123", "1234567890123.456", 16, big.ToNearestAway},
 	// basx085 toSci  12345678901234.56123  -> 12345678901234.56 Inexact Rounded
-	{"basx085", "12345678901234.56123", "12345678901234.56", 16, big.ToPositiveInf},
+	{"basx085", "12345678901234.56123", "12345678901234.56", 16, big.ToNearestAway},
 	// basx086 toSci  123456789012345.6123  -> 123456789012345.6 Inexact Rounded
-	{"basx086", "123456789012345.6123", "123456789012345.6", 16, big.ToPositiveInf},
+	{"basx086", "123456789012345.6123", "123456789012345.6", 16, big.ToNearestAway},
 	// basx087 toSci  1234567890123456.123  -> 1234567890123456  Inexact Rounded
-	{"basx087", "1234567890123456.123", "1234567890123456", 16, big.ToPositiveInf},
+	{"basx087", "1234567890123456.123", "1234567890123456", 16, big.ToNearestAway},
 	// basx088 toSci  12345678901234561.23  -> 1.234567890123456E+16 Inexact Rounded
-	{"basx088", "12345678901234561.23", "1.234567890123456E+16", 16, big.ToPositiveInf},
+	{"basx088", "12345678901234561.23", "1.234567890123456E+16", 16, big.ToNearestAway},
 	// basx089 toSci  123456789012345612.3  -> 1.234567890123456E+17 Inexact Rounded
-	{"basx089", "123456789012345612.3", "1.234567890123456E+17", 16, big.ToPositiveInf},
+	{"basx089", "123456789012345612.3", "1.234567890123456E+17", 16, big.ToNearestAway},
 	// basx090 toSci  1234567890123456123.  -> 1.234567890123456E+18 Inexact Rounded
-	{"basx090", "1234567890123456123.", "1.234567890123456E+18", 16, big.ToPositiveInf},
+	{"basx090", "1234567890123456123.", "1.234567890123456E+18", 16, big.ToNearestAway},
 	// Numbers with E
 	// basx130 toSci "0.000E-1"  -> '0.0000'
-	{"basx130", "0.000E-1", "0.0000", 16, big.ToPositiveInf},
+	{"basx130", "0.000E-1", "0.0000", 16, big.ToNearestAway},
 	// basx131 toSci "0.000E-2"  -> '0.00000'
-	{"basx131", "0.000E-2", "0.00000", 16, big.ToPositiveInf},
+	{"basx131", "0.000E-2", "0.00000", 16, big.ToNearestAway},
 	// basx132 toSci "0.000E-3"  -> '0.000000'
-	{"basx132", "0.000E-3", "0.000000", 16, big.ToPositiveInf},
+	{"basx132", "0.000E-3", "0.000000", 16, big.ToNearestAway},
 	// basx133 toSci "0.000E-4"  -> '0E-7'
-	{"basx133", "0.000E-4", "0E-7", 16, big.ToPositiveInf},
+	{"basx133", "0.000E-4", "0E-7", 16, big.ToNearestAway},
 	// basx134 toSci "0.00E-2"   -> '0.0000'
-	{"basx134", "0.00E-2", "0.0000", 16, big.ToPositiveInf},
+	{"basx134", "0.00E-2", "0.0000", 16, big.ToNearestAway},
 	// basx135 toSci "0.00E-3"   -> '0.00000'
-	{"basx135", "0.00E-3", "0.00000", 16, big.ToPositiveInf},
+	{"basx135", "0.00E-3", "0.00000", 16, big.ToNearestAway},
 	// basx136 toSci "0.00E-4"   -> '0.000000'
-	{"basx136", "0.00E-4", "0.000000", 16, big.ToPositiveInf},
+	{"basx136", "0.00E-4", "0.000000", 16, big.ToNearestAway},
 	// basx137 toSci "0.00E-5"   -> '0E-7'
-	{"basx137", "0.00E-5", "0E-7", 16, big.ToPositiveInf},
+	{"basx137", "0.00E-5", "0E-7", 16, big.ToNearestAway},
 	// basx138 toSci "+0E+9"     -> '0E+9'
-	{"basx138", "+0E+9", "0E+9", 16, big.ToPositiveInf},
+	{"basx138", "+0E+9", "0E+9", 16, big.ToNearestAway},
 	// basx139 toSci "-0E+9"     -> '-0E+9'
-	{"basx139", "-0E+9", "-0E+9", 16, big.ToPositiveInf},
+	{"basx139", "-0E+9", "-0E+9", 16, big.ToNearestAway},
 	// basx140 toSci "1E+9"      -> '1E+9'
-	{"basx140", "1E+9", "1E+9", 16, big.ToPositiveInf},
+	{"basx140", "1E+9", "1E+9", 16, big.ToNearestAway},
 	// basx141 toSci "1e+09"     -> '1E+9'
-	{"basx141", "1e+09", "1E+9", 16, big.ToPositiveInf},
+	{"basx141", "1e+09", "1E+9", 16, big.ToNearestAway},
 	// basx142 toSci "1E+90"     -> '1E+90'
-	{"basx142", "1E+90", "1E+90", 16, big.ToPositiveInf},
+	{"basx142", "1E+90", "1E+90", 16, big.ToNearestAway},
 	// basx143 toSci "+1E+009"   -> '1E+9'
-	{"basx143", "+1E+009", "1E+9", 16, big.ToPositiveInf},
+	{"basx143", "+1E+009", "1E+9", 16, big.ToNearestAway},
 	// basx144 toSci "0E+9"      -> '0E+9'
-	{"basx144", "0E+9", "0E+9", 16, big.ToPositiveInf},
+	{"basx144", "0E+9", "0E+9", 16, big.ToNearestAway},
 	// basx145 toSci "1E+9"      -> '1E+9'
-	{"basx145", "1E+9", "1E+9", 16, big.ToPositiveInf},
+	{"basx145", "1E+9", "1E+9", 16, big.ToNearestAway},
 	// basx146 toSci "1E+09"     -> '1E+9'
-	{"basx146", "1E+09", "1E+9", 16, big.ToPositiveInf},
+	{"basx146", "1E+09", "1E+9", 16, big.ToNearestAway},
 	// basx147 toSci "1e+90"     -> '1E+90'
-	{"basx147", "1e+90", "1E+90", 16, big.ToPositiveInf},
+	{"basx147", "1e+90", "1E+90", 16, big.ToNearestAway},
 	// basx148 toSci "1E+009"    -> '1E+9'
-	{"basx148", "1E+009", "1E+9", 16, big.ToPositiveInf},
+	{"basx148", "1E+009", "1E+9", 16, big.ToNearestAway},
 	// basx149 toSci "000E+9"    -> '0E+9'
-	{"basx149", "000E+9", "0E+9", 16, big.ToPositiveInf},
+	{"basx149", "000E+9", "0E+9", 16, big.ToNearestAway},
 	// basx150 toSci "1E9"       -> '1E+9'
-	{"basx150", "1E9", "1E+9", 16, big.ToPositiveInf},
+	{"basx150", "1E9", "1E+9", 16, big.ToNearestAway},
 	// basx151 toSci "1e09"      -> '1E+9'
-	{"basx151", "1e09", "1E+9", 16, big.ToPositiveInf},
+	{"basx151", "1e09", "1E+9", 16, big.ToNearestAway},
 	// basx152 toSci "1E90"      -> '1E+90'
-	{"basx152", "1E90", "1E+90", 16, big.ToPositiveInf},
+	{"basx152", "1E90", "1E+90", 16, big.ToNearestAway},
 	// basx153 toSci "1E009"     -> '1E+9'
-	{"basx153", "1E009", "1E+9", 16, big.ToPositiveInf},
+	{"basx153", "1E009", "1E+9", 16, big.ToNearestAway},
 	// basx154 toSci "0E9"       -> '0E+9'
-	{"basx154", "0E9", "0E+9", 16, big.ToPositiveInf},
+	{"basx154", "0E9", "0E+9", 16, big.ToNearestAway},
 	// basx155 toSci "0.000e+0"  -> '0.000'
-	{"basx155", "0.000e+0", "0.000", 16, big.ToPositiveInf},
+	{"basx155", "0.000e+0", "0.000", 16, big.ToNearestAway},
 	// basx156 toSci "0.000E-1"  -> '0.0000'
-	{"basx156", "0.000E-1", "0.0000", 16, big.ToPositiveInf},
+	{"basx156", "0.000E-1", "0.0000", 16, big.ToNearestAway},
 	// basx157 toSci "4E+9"      -> '4E+9'
-	{"basx157", "4E+9", "4E+9", 16, big.ToPositiveInf},
+	{"basx157", "4E+9", "4E+9", 16, big.ToNearestAway},
 	// basx158 toSci "44E+9"     -> '4.4E+10'
-	{"basx158", "44E+9", "4.4E+10", 16, big.ToPositiveInf},
+	{"basx158", "44E+9", "4.4E+10", 16, big.ToNearestAway},
 	// basx159 toSci "0.73e-7"   -> '7.3E-8'
-	{"basx159", "0.73e-7", "7.3E-8", 16, big.ToPositiveInf},
+	{"basx159", "0.73e-7", "7.3E-8", 16, big.ToNearestAway},
 	// basx160 toSci "00E+9"     -> '0E+9'
-	{"basx160", "00E+9", "0E+9", 16, big.ToPositiveInf},
+	{"basx160", "00E+9", "0E+9", 16, big.ToNearestAway},
 	// basx161 toSci "00E-9"     -> '0E-9'
-	{"basx161", "00E-9", "0E-9", 16, big.ToPositiveInf},
+	{"basx161", "00E-9", "0E-9", 16, big.ToNearestAway},
 	// basx162 toSci "10E+9"     -> '1.0E+10'
-	{"basx162", "10E+9", "1.0E+10", 16, big.ToPositiveInf},
+	{"basx162", "10E+9", "1.0E+10", 16, big.ToNearestAway},
 	// basx163 toSci "10E+09"    -> '1.0E+10'
-	{"basx163", "10E+09", "1.0E+10", 16, big.ToPositiveInf},
+	{"basx163", "10E+09", "1.0E+10", 16, big.ToNearestAway},
 	// basx164 toSci "10e+90"    -> '1.0E+91'
-	{"basx164", "10e+90", "1.0E+91", 16, big.ToPositiveInf},
+	{"basx164", "10e+90", "1.0E+91", 16, big.ToNearestAway},
 	// basx165 toSci "10E+009"   -> '1.0E+10'
-	{"basx165", "10E+009", "1.0E+10", 16, big.ToPositiveInf},
+	{"basx165", "10E+009", "1.0E+10", 16, big.ToNearestAway},
 	// basx166 toSci "100e+9"    -> '1.00E+11'
-	{"basx166", "100e+9", "1.00E+11", 16, big.ToPositiveInf},
+	{"basx166", "100e+9", "1.00E+11", 16, big.ToNearestAway},
 	// basx167 toSci "100e+09"   -> '1.00E+11'
-	{"basx167", "100e+09", "1.00E+11", 16, big.ToPositiveInf},
+	{"basx167", "100e+09", "1.00E+11", 16, big.ToNearestAway},
 	// basx168 toSci "100E+90"   -> '1.00E+92'
-	{"basx168", "100E+90", "1.00E+92", 16, big.ToPositiveInf},
+	{"basx168", "100E+90", "1.00E+92", 16, big.ToNearestAway},
 	// basx169 toSci "100e+009"  -> '1.00E+11'
-	{"basx169", "100e+009", "1.00E+11", 16, big.ToPositiveInf},
+	{"basx169", "100e+009", "1.00E+11", 16, big.ToNearestAway},
 	// basx170 toSci "1.265"     -> '1.265'
-	{"basx170", "1.265", "1.265", 16, big.ToPositiveInf},
+	{"basx170", "1.265", "1.265", 16, big.ToNearestAway},
 	// basx171 toSci "1.265E-20" -> '1.265E-20'
-	{"basx171", "1.265E-20", "1.265E-20", 16, big.ToPositiveInf},
+	{"basx171", "1.265E-20", "1.265E-20", 16, big.ToNearestAway},
 	// basx172 toSci "1.265E-8"  -> '1.265E-8'
-	{"basx172", "1.265E-8", "1.265E-8", 16, big.ToPositiveInf},
+	{"basx172", "1.265E-8", "1.265E-8", 16, big.ToNearestAway},
 	// basx173 toSci "1.265E-4"  -> '0.0001265'
-	{"basx173", "1.265E-4", "0.0001265", 16, big.ToPositiveInf},
+	{"basx173", "1.265E-4", "0.0001265", 16, big.ToNearestAway},
 	// basx174 toSci "1.265E-3"  -> '0.001265'
-	{"basx174", "1.265E-3", "0.001265", 16, big.ToPositiveInf},
+	{"basx174", "1.265E-3", "0.001265", 16, big.ToNearestAway},
 	// basx175 toSci "1.265E-2"  -> '0.01265'
-	{"basx175", "1.265E-2", "0.01265", 16, big.ToPositiveInf},
+	{"basx175", "1.265E-2", "0.01265", 16, big.ToNearestAway},
 	// basx176 toSci "1.265E-1"  -> '0.1265'
-	{"basx176", "1.265E-1", "0.1265", 16, big.ToPositiveInf},
+	{"basx176", "1.265E-1", "0.1265", 16, big.ToNearestAway},
 	// basx177 toSci "1.265E-0"  -> '1.265'
-	{"basx177", "1.265E-0", "1.265", 16, big.ToPositiveInf},
+	{"basx177", "1.265E-0", "1.265", 16, big.ToNearestAway},
 	// basx178 toSci "1.265E+1"  -> '12.65'
-	{"basx178", "1.265E+1", "12.65", 16, big.ToPositiveInf},
+	{"basx178", "1.265E+1", "12.65", 16, big.ToNearestAway},
 	// basx179 toSci "1.265E+2"  -> '126.5'
-	{"basx179", "1.265E+2", "126.5", 16, big.ToPositiveInf},
+	{"basx179", "1.265E+2", "126.5", 16, big.ToNearestAway},
 	// basx180 toSci "1.265E+3"  -> '1265'
-	{"basx180", "1.265E+3", "1265", 16, big.ToPositiveInf},
+	{"basx180", "1.265E+3", "1265", 16, big.ToNearestAway},
 	// basx181 toSci "1.265E+4"  -> '1.265E+4'
-	{"basx181", "1.265E+4", "1.265E+4", 16, big.ToPositiveInf},
+	{"basx181", "1.265E+4", "1.265E+4", 16, big.ToNearestAway},
 	// basx182 toSci "1.265E+8"  -> '1.265E+8'
-	{"basx182", "1.265E+8", "1.265E+8", 16, big.ToPositiveInf},
+	{"basx182", "1.265E+8", "1.265E+8", 16, big.ToNearestAway},
 	// basx183 toSci "1.265E+20" -> '1.265E+20'
-	{"basx183", "1.265E+20", "1.265E+20", 16, big.ToPositiveInf},
+	{"basx183", "1.265E+20", "1.265E+20", 16, big.ToNearestAway},
 	// basx190 toSci "12.65"     -> '12.65'
-	{"basx190", "12.65", "12.65", 16, big.ToPositiveInf},
+	{"basx190", "12.65", "12.65", 16, big.ToNearestAway},
 	// basx191 toSci "12.65E-20" -> '1.265E-19'
-	{"basx191", "12.65E-20", "1.265E-19", 16, big.ToPositiveInf},
+	{"basx191", "12.65E-20", "1.265E-19", 16, big.ToNearestAway},
 	// basx192 toSci "12.65E-8"  -> '1.265E-7'
-	{"basx192", "12.65E-8", "1.265E-7", 16, big.ToPositiveInf},
+	{"basx192", "12.65E-8", "1.265E-7", 16, big.ToNearestAway},
 	// basx193 toSci "12.65E-4"  -> '0.001265'
-	{"basx193", "12.65E-4", "0.001265", 16, big.ToPositiveInf},
+	{"basx193", "12.65E-4", "0.001265", 16, big.ToNearestAway},
 	// basx194 toSci "12.65E-3"  -> '0.01265'
-	{"basx194", "12.65E-3", "0.01265", 16, big.ToPositiveInf},
+	{"basx194", "12.65E-3", "0.01265", 16, big.ToNearestAway},
 	// basx195 toSci "12.65E-2"  -> '0.1265'
-	{"basx195", "12.65E-2", "0.1265", 16, big.ToPositiveInf},
+	{"basx195", "12.65E-2", "0.1265", 16, big.ToNearestAway},
 	// basx196 toSci "12.65E-1"  -> '1.265'
-	{"basx196", "12.65E-1", "1.265", 16, big.ToPositiveInf},
+	{"basx196", "12.65E-1", "1.265", 16, big.ToNearestAway},
 	// basx197 toSci "12.65E-0"  -> '12.65'
-	{"basx197", "12.65E-0", "12.65", 16, big.ToPositiveInf},
+	{"basx197", "12.65E-0", "12.65", 16, big.ToNearestAway},
 	// basx198 toSci "12.65E+1"  -> '126.5'
-	{"basx198", "12.65E+1", "126.5", 16, big.ToPositiveInf},
+	{"basx198", "12.65E+1", "126.5", 16, big.ToNearestAway},
 	// basx199 toSci "12.65E+2"  -> '1265'
-	{"basx199", "12.65E+2", "1265", 16, big.ToPositiveInf},
+	{"basx199", "12.65E+2", "1265", 16, big.ToNearestAway},
 	// basx200 toSci "12.65E+3"  -> '1.265E+4'
-	{"basx200", "12.65E+3", "1.265E+4", 16, big.ToPositiveInf},
+	{"basx200", "12.65E+3", "1.265E+4", 16, big.ToNearestAway},
 	// basx201 toSci "12.65E+4"  -> '1.265E+5'
-	{"basx201", "12.65E+4", "1.265E+5", 16, big.ToPositiveInf},
+	{"basx201", "12.65E+4", "1.265E+5", 16, big.ToNearestAway},
 	// basx202 toSci "12.65E+8"  -> '1.265E+9'
-	{"basx202", "12.65E+8", "1.265E+9", 16, big.ToPositiveInf},
+	{"basx202", "12.65E+8", "1.265E+9", 16, big.ToNearestAway},
 	// basx203 toSci "12.65E+20" -> '1.265E+21'
-	{"basx203", "12.65E+20", "1.265E+21", 16, big.ToPositiveInf},
+	{"basx203", "12.65E+20", "1.265E+21", 16, big.ToNearestAway},
 	// basx210 toSci "126.5"     -> '126.5'
-	{"basx210", "126.5", "126.5", 16, big.ToPositiveInf},
+	{"basx210", "126.5", "126.5", 16, big.ToNearestAway},
 	// basx211 toSci "126.5E-20" -> '1.265E-18'
-	{"basx211", "126.5E-20", "1.265E-18", 16, big.ToPositiveInf},
+	{"basx211", "126.5E-20", "1.265E-18", 16, big.ToNearestAway},
 	// basx212 toSci "126.5E-8"  -> '0.000001265'
-	{"basx212", "126.5E-8", "0.000001265", 16, big.ToPositiveInf},
+	{"basx212", "126.5E-8", "0.000001265", 16, big.ToNearestAway},
 	// basx213 toSci "126.5E-4"  -> '0.01265'
-	{"basx213", "126.5E-4", "0.01265", 16, big.ToPositiveInf},
+	{"basx213", "126.5E-4", "0.01265", 16, big.ToNearestAway},
 	// basx214 toSci "126.5E-3"  -> '0.1265'
-	{"basx214", "126.5E-3", "0.1265", 16, big.ToPositiveInf},
+	{"basx214", "126.5E-3", "0.1265", 16, big.ToNearestAway},
 	// basx215 toSci "126.5E-2"  -> '1.265'
-	{"basx215", "126.5E-2", "1.265", 16, big.ToPositiveInf},
+	{"basx215", "126.5E-2", "1.265", 16, big.ToNearestAway},
 	// basx216 toSci "126.5E-1"  -> '12.65'
-	{"basx216", "126.5E-1", "12.65", 16, big.ToPositiveInf},
+	{"basx216", "126.5E-1", "12.65", 16, big.ToNearestAway},
 	// basx217 toSci "126.5E-0"  -> '126.5'
-	{"basx217", "126.5E-0", "126.5", 16, big.ToPositiveInf},
+	{"basx217", "126.5E-0", "126.5", 16, big.ToNearestAway},
 	// basx218 toSci "126.5E+1"  -> '1265'
-	{"basx218", "126.5E+1", "1265", 16, big.ToPositiveInf},
+	{"basx218", "126.5E+1", "1265", 16, big.ToNearestAway},
 	// basx219 toSci "126.5E+2"  -> '1.265E+4'
-	{"basx219", "126.5E+2", "1.265E+4", 16, big.ToPositiveInf},
+	{"basx219", "126.5E+2", "1.265E+4", 16, big.ToNearestAway},
 	// basx220 toSci "126.5E+3"  -> '1.265E+5'
-	{"basx220", "126.5E+3", "1.265E+5", 16, big.ToPositiveInf},
+	{"basx220", "126.5E+3", "1.265E+5", 16, big.ToNearestAway},
 	// basx221 toSci "126.5E+4"  -> '1.265E+6'
-	{"basx221", "126.5E+4", "1.265E+6", 16, big.ToPositiveInf},
+	{"basx221", "126.5E+4", "1.265E+6", 16, big.ToNearestAway},
 	// basx222 toSci "126.5E+8"  -> '1.265E+10'
-	{"basx222", "126.5E+8", "1.265E+10", 16, big.ToPositiveInf},
+	{"basx222", "126.5E+8", "1.265E+10", 16, big.ToNearestAway},
 	// basx223 toSci "126.5E+20" -> '1.265E+22'
-	{"basx223", "126.5E+20", "1.265E+22", 16, big.ToPositiveInf},
+	{"basx223", "126.5E+20", "1.265E+22", 16, big.ToNearestAway},
 	// basx230 toSci "1265"     -> '1265'
-	{"basx230", "1265", "1265", 16, big.ToPositiveInf},
+	{"basx230", "1265", "1265", 16, big.ToNearestAway},
 	// basx231 toSci "1265E-20" -> '1.265E-17'
-	{"basx231", "1265E-20", "1.265E-17", 16, big.ToPositiveInf},
+	{"basx231", "1265E-20", "1.265E-17", 16, big.ToNearestAway},
 	// basx232 toSci "1265E-8"  -> '0.00001265'
-	{"basx232", "1265E-8", "0.00001265", 16, big.ToPositiveInf},
+	{"basx232", "1265E-8", "0.00001265", 16, big.ToNearestAway},
 	// basx233 toSci "1265E-4"  -> '0.1265'
-	{"basx233", "1265E-4", "0.1265", 16, big.ToPositiveInf},
+	{"basx233", "1265E-4", "0.1265", 16, big.ToNearestAway},
 	// basx234 toSci "1265E-3"  -> '1.265'
-	{"basx234", "1265E-3", "1.265", 16, big.ToPositiveInf},
+	{"basx234", "1265E-3", "1.265", 16, big.ToNearestAway},
 	// basx235 toSci "1265E-2"  -> '12.65'
-	{"basx235", "1265E-2", "12.65", 16, big.ToPositiveInf},
+	{"basx235", "1265E-2", "12.65", 16, big.ToNearestAway},
 	// basx236 toSci "1265E-1"  -> '126.5'
-	{"basx236", "1265E-1", "126.5", 16, big.ToPositiveInf},
+	{"basx236", "1265E-1", "126.5", 16, big.ToNearestAway},
 	// basx237 toSci "1265E-0"  -> '1265'
-	{"basx237", "1265E-0", "1265", 16, big.ToPositiveInf},
+	{"basx237", "1265E-0", "1265", 16, big.ToNearestAway},
 	// basx238 toSci "1265E+1"  -> '1.265E+4'
-	{"basx238", "1265E+1", "1.265E+4", 16, big.ToPositiveInf},
+	{"basx238", "1265E+1", "1.265E+4", 16, big.ToNearestAway},
 	// basx239 toSci "1265E+2"  -> '1.265E+5'
-	{"basx239", "1265E+2", "1.265E+5", 16, big.ToPositiveInf},
+	{"basx239", "1265E+2", "1.265E+5", 16, big.ToNearestAway},
 	// basx240 toSci "1265E+3"  -> '1.265E+6'
-	{"basx240", "1265E+3", "1.265E+6", 16, big.ToPositiveInf},
+	{"basx240", "1265E+3", "1.265E+6", 16, big.ToNearestAway},
 	// basx241 toSci "1265E+4"  -> '1.265E+7'
-	{"basx241", "1265E+4", "1.265E+7", 16, big.ToPositiveInf},
+	{"basx241", "1265E+4", "1.265E+7", 16, big.ToNearestAway},
 	// basx242 toSci "1265E+8"  -> '1.265E+11'
-	{"basx242", "1265E+8", "1.265E+11", 16, big.ToPositiveInf},
+	{"basx242", "1265E+8", "1.265E+11", 16, big.ToNearestAway},
 	// basx243 toSci "1265E+20" -> '1.265E+23'
-	{"basx243", "1265E+20", "1.265E+23", 16, big.ToPositiveInf},
+	{"basx243", "1265E+20", "1.265E+23", 16, big.ToNearestAway},
 	// basx250 toSci "0.1265"     -> '0.1265'
-	{"basx250", "0.1265", "0.1265", 16, big.ToPositiveInf},
+	{"basx250", "0.1265", "0.1265", 16, big.ToNearestAway},
 	// basx251 toSci "0.1265E-20" -> '1.265E-21'
-	{"basx251", "0.1265E-20", "1.265E-21", 16, big.ToPositiveInf},
+	{"basx251", "0.1265E-20", "1.265E-21", 16, big.ToNearestAway},
 	// basx252 toSci "0.1265E-8"  -> '1.265E-9'
-	{"basx252", "0.1265E-8", "1.265E-9", 16, big.ToPositiveInf},
+	{"basx252", "0.1265E-8", "1.265E-9", 16, big.ToNearestAway},
 	// basx253 toSci "0.1265E-4"  -> '0.00001265'
-	{"basx253", "0.1265E-4", "0.00001265", 16, big.ToPositiveInf},
+	{"basx253", "0.1265E-4", "0.00001265", 16, big.ToNearestAway},
 	// basx254 toSci "0.1265E-3"  -> '0.0001265'
-	{"basx254", "0.1265E-3", "0.0001265", 16, big.ToPositiveInf},
+	{"basx254", "0.1265E-3", "0.0001265", 16, big.ToNearestAway},
 	// basx255 toSci "0.1265E-2"  -> '0.001265'
-	{"basx255", "0.1265E-2", "0.001265", 16, big.ToPositiveInf},
+	{"basx255", "0.1265E-2", "0.001265", 16, big.ToNearestAway},
 	// basx256 toSci "0.1265E-1"  -> '0.01265'
-	{"basx256", "0.1265E-1", "0.01265", 16, big.ToPositiveInf},
+	{"basx256", "0.1265E-1", "0.01265", 16, big.ToNearestAway},
 	// basx257 toSci "0.1265E-0"  -> '0.1265'
-	{"basx257", "0.1265E-0", "0.1265", 16, big.ToPositiveInf},
+	{"basx257", "0.1265E-0", "0.1265", 16, big.ToNearestAway},
 	// basx258 toSci "0.1265E+1"  -> '1.265'
-	{"basx258", "0.1265E+1", "1.265", 16, big.ToPositiveInf},
+	{"basx258", "0.1265E+1", "1.265", 16, big.ToNearestAway},
 	// basx259 toSci "0.1265E+2"  -> '12.65'
-	{"basx259", "0.1265E+2", "12.65", 16, big.ToPositiveInf},
+	{"basx259", "0.1265E+2", "12.65", 16, big.ToNearestAway},
 	// basx260 toSci "0.1265E+3"  -> '126.5'
-	{"basx260", "0.1265E+3", "126.5", 16, big.ToPositiveInf},
+	{"basx260", "0.1265E+3", "126.5", 16, big.ToNearestAway},
 	// basx261 toSci "0.1265E+4"  -> '1265'
-	{"basx261", "0.1265E+4", "1265", 16, big.ToPositiveInf},
+	{"basx261", "0.1265E+4", "1265", 16, big.ToNearestAway},
 	// basx262 toSci "0.1265E+8"  -> '1.265E+7'
-	{"basx262", "0.1265E+8", "1.265E+7", 16, big.ToPositiveInf},
+	{"basx262", "0.1265E+8", "1.265E+7", 16, big.ToNearestAway},
 	// basx263 toSci "0.1265E+20" -> '1.265E+19'
-	{"basx263", "0.1265E+20", "1.265E+19", 16, big.ToPositiveInf},
+	{"basx263", "0.1265E+20", "1.265E+19", 16, big.ToNearestAway},
 	// some more negative zeros [systematic tests below]
 	// basx290 toSci "-0.000E-1"  -> '-0.0000'
-	{"basx290", "-0.000E-1", "-0.0000", 16, big.ToPositiveInf},
+	{"basx290", "-0.000E-1", "-0.0000", 16, big.ToNearestAway},
 	// basx291 toSci "-0.000E-2"  -> '-0.00000'
-	{"basx291", "-0.000E-2", "-0.00000", 16, big.ToPositiveInf},
+	{"basx291", "-0.000E-2", "-0.00000", 16, big.ToNearestAway},
 	// basx292 toSci "-0.000E-3"  -> '-0.000000'
-	{"basx292", "-0.000E-3", "-0.000000", 16, big.ToPositiveInf},
+	{"basx292", "-0.000E-3", "-0.000000", 16, big.ToNearestAway},
 	// basx293 toSci "-0.000E-4"  -> '-0E-7'
-	{"basx293", "-0.000E-4", "-0E-7", 16, big.ToPositiveInf},
+	{"basx293", "-0.000E-4", "-0E-7", 16, big.ToNearestAway},
 	// basx294 toSci "-0.00E-2"   -> '-0.0000'
-	{"basx294", "-0.00E-2", "-0.0000", 16, big.ToPositiveInf},
+	{"basx294", "-0.00E-2", "-0.0000", 16, big.ToNearestAway},
 	// basx295 toSci "-0.00E-3"   -> '-0.00000'
-	{"basx295", "-0.00E-3", "-0.00000", 16, big.ToPositiveInf},
+	{"basx295", "-0.00E-3", "-0.00000", 16, big.ToNearestAway},
 	// basx296 toSci "-0.0E-2"    -> '-0.000'
-	{"basx296", "-0.0E-2", "-0.000", 16, big.ToPositiveInf},
+	{"basx296", "-0.0E-2", "-0.000", 16, big.ToNearestAway},
 	// basx297 toSci "-0.0E-3"    -> '-0.0000'
-	{"basx297", "-0.0E-3", "-0.0000", 16, big.ToPositiveInf},
+	{"basx297", "-0.0E-3", "-0.0000", 16, big.ToNearestAway},
 	// basx298 toSci "-0E-2"      -> '-0.00'
-	{"basx298", "-0E-2", "-0.00", 16, big.ToPositiveInf},
+	{"basx298", "-0E-2", "-0.00", 16, big.ToNearestAway},
 	// basx299 toSci "-0E-3"      -> '-0.000'
-	{"basx299", "-0E-3", "-0.000", 16, big.ToPositiveInf},
+	{"basx299", "-0E-3", "-0.000", 16, big.ToNearestAway},
 	// Engineering notation tests
 	// basx301  toSci 10e12  -> 1.0E+13
-	{"basx301", "10e12", "1.0E+13", 16, big.ToPositiveInf},
+	{"basx301", "10e12", "1.0E+13", 16, big.ToNearestAway},
 	// SKIP: basx302  toEng 10e12  -> 10E+12
 	// basx303  toSci 10e11  -> 1.0E+12
-	{"basx303", "10e11", "1.0E+12", 16, big.ToPositiveInf},
+	{"basx303", "10e11", "1.0E+12", 16, big.ToNearestAway},
 	// SKIP: basx304  toEng 10e11  -> 1.0E+12
 	// basx305  toSci 10e10  -> 1.0E+11
-	{"basx305", "10e10", "1.0E+11", 16, big.ToPositiveInf},
+	{"basx305", "10e10", "1.0E+11", 16, big.ToNearestAway},
 	// SKIP: basx306  toEng 10e10  -> 100E+9
 	// basx307  toSci 10e9   -> 1.0E+10
-	{"basx307", "10e9", "1.0E+10", 16, big.ToPositiveInf},
+	{"basx307", "10e9", "1.0E+10", 16, big.ToNearestAway},
 	// SKIP: basx308  toEng 10e9   -> 10E+9
 	// basx309  toSci 10e8   -> 1.0E+9
-	{"basx309", "10e8", "1.0E+9", 16, big.ToPositiveInf},
+	{"basx309", "10e8", "1.0E+9", 16, big.ToNearestAway},
 	// SKIP: basx310  toEng 10e8   -> 1.0E+9
 	// basx311  toSci 10e7   -> 1.0E+8
-	{"basx311", "10e7", "1.0E+8", 16, big.ToPositiveInf},
+	{"basx311", "10e7", "1.0E+8", 16, big.ToNearestAway},
 	// SKIP: basx312  toEng 10e7   -> 100E+6
 	// basx313  toSci 10e6   -> 1.0E+7
-	{"basx313", "10e6", "1.0E+7", 16, big.ToPositiveInf},
+	{"basx313", "10e6", "1.0E+7", 16, big.ToNearestAway},
 	// SKIP: basx314  toEng 10e6   -> 10E+6
 	// basx315  toSci 10e5   -> 1.0E+6
-	{"basx315", "10e5", "1.0E+6", 16, big.ToPositiveInf},
+	{"basx315", "10e5", "1.0E+6", 16, big.ToNearestAway},
 	// SKIP: basx316  toEng 10e5   -> 1.0E+6
 	// basx317  toSci 10e4   -> 1.0E+5
-	{"basx317", "10e4", "1.0E+5", 16, big.ToPositiveInf},
+	{"basx317", "10e4", "1.0E+5", 16, big.ToNearestAway},
 	// SKIP: basx318  toEng 10e4   -> 100E+3
 	// basx319  toSci 10e3   -> 1.0E+4
-	{"basx319", "10e3", "1.0E+4", 16, big.ToPositiveInf},
+	{"basx319", "10e3", "1.0E+4", 16, big.ToNearestAway},
 	// SKIP: basx320  toEng 10e3   -> 10E+3
 	// basx321  toSci 10e2   -> 1.0E+3
-	{"basx321", "10e2", "1.0E+3", 16, big.ToPositiveInf},
+	{"basx321", "10e2", "1.0E+3", 16, big.ToNearestAway},
 	// SKIP: basx322  toEng 10e2   -> 1.0E+3
 	// basx323  toSci 10e1   -> 1.0E+2
-	{"basx323", "10e1", "1.0E+2", 16, big.ToPositiveInf},
+	{"basx323", "10e1", "1.0E+2", 16, big.ToNearestAway},
 	// SKIP: basx324  toEng 10e1   -> 100
 	// basx325  toSci 10e0   -> 10
-	{"basx325", "10e0", "10", 16, big.ToPositiveInf},
+	{"basx325", "10e0", "10", 16, big.ToNearestAway},
 	// SKIP: basx326  toEng 10e0   -> 10
 	// basx327  toSci 10e-1  -> 1.0
-	{"basx327", "10e-1", "1.0", 16, big.ToPositiveInf},
+	{"basx327", "10e-1", "1.0", 16, big.ToNearestAway},
 	// SKIP: basx328  toEng 10e-1  -> 1.0
 	// basx329  toSci 10e-2  -> 0.10
-	{"basx329", "10e-2", "0.10", 16, big.ToPositiveInf},
+	{"basx329", "10e-2", "0.10", 16, big.ToNearestAway},
 	// SKIP: basx330  toEng 10e-2  -> 0.10
 	// basx331  toSci 10e-3  -> 0.010
-	{"basx331", "10e-3", "0.010", 16, big.ToPositiveInf},
+	{"basx331", "10e-3", "0.010", 16, big.ToNearestAway},
 	// SKIP: basx332  toEng 10e-3  -> 0.010
 	// basx333  toSci 10e-4  -> 0.0010
-	{"basx333", "10e-4", "0.0010", 16, big.ToPositiveInf},
+	{"basx333", "10e-4", "0.0010", 16, big.ToNearestAway},
 	// SKIP: basx334  toEng 10e-4  -> 0.0010
 	// basx335  toSci 10e-5  -> 0.00010
-	{"basx335", "10e-5", "0.00010", 16, big.ToPositiveInf},
+	{"basx335", "10e-5", "0.00010", 16, big.ToNearestAway},
 	// SKIP: basx336  toEng 10e-5  -> 0.00010
 	// basx337  toSci 10e-6  -> 0.000010
-	{"basx337", "10e-6", "0.000010", 16, big.ToPositiveInf},
+	{"basx337", "10e-6", "0.000010", 16, big.ToNearestAway},
 	// SKIP: basx338  toEng 10e-6  -> 0.000010
 	// basx339  toSci 10e-7  -> 0.0000010
-	{"basx339", "10e-7", "0.0000010", 16, big.ToPositiveInf},
+	{"basx339", "10e-7", "0.0000010", 16, big.ToNearestAway},
 	// SKIP: basx340  toEng 10e-7  -> 0.0000010
 	// basx341  toSci 10e-8  -> 1.0E-7
-	{"basx341", "10e-8", "1.0E-7", 16, big.ToPositiveInf},
+	{"basx341", "10e-8", "1.0E-7", 16, big.ToNearestAway},
 	// SKIP: basx342  toEng 10e-8  -> 100E-9
 	// basx343  toSci 10e-9  -> 1.0E-8
-	{"basx343", "10e-9", "1.0E-8", 16, big.ToPositiveInf},
+	{"basx343", "10e-9", "1.0E-8", 16, big.ToNearestAway},
 	// SKIP: basx344  toEng 10e-9  -> 10E-9
 	// basx345  toSci 10e-10 -> 1.0E-9
-	{"basx345", "10e-10", "1.0E-9", 16, big.ToPositiveInf},
+	{"basx345", "10e-10", "1.0E-9", 16, big.ToNearestAway},
 	// SKIP: basx346  toEng 10e-10 -> 1.0E-9
 	// basx347  toSci 10e-11 -> 1.0E-10
-	{"basx347", "10e-11", "1.0E-10", 16, big.ToPositiveInf},
+	{"basx347", "10e-11", "1.0E-10", 16, big.ToNearestAway},
 	// SKIP: basx348  toEng 10e-11 -> 100E-12
 	// basx349  toSci 10e-12 -> 1.0E-11
-	{"basx349", "10e-12", "1.0E-11", 16, big.ToPositiveInf},
+	{"basx349", "10e-12", "1.0E-11", 16, big.ToNearestAway},
 	// SKIP: basx350  toEng 10e-12 -> 10E-12
 	// basx351  toSci 10e-13 -> 1.0E-12
-	{"basx351", "10e-13", "1.0E-12", 16, big.ToPositiveInf},
+	{"basx351", "10e-13", "1.0E-12", 16, big.ToNearestAway},
 	// SKIP: basx352  toEng 10e-13 -> 1.0E-12
 	// basx361  toSci 7E12  -> 7E+12
-	{"basx361", "7E12", "7E+12", 16, big.ToPositiveInf},
+	{"basx361", "7E12", "7E+12", 16, big.ToNearestAway},
 	// SKIP: basx362  toEng 7E12  -> 7E+12
 	// basx363  toSci 7E11  -> 7E+11
-	{"basx363", "7E11", "7E+11", 16, big.ToPositiveInf},
+	{"basx363", "7E11", "7E+11", 16, big.ToNearestAway},
 	// SKIP: basx364  toEng 7E11  -> 700E+9
 	// basx365  toSci 7E10  -> 7E+10
-	{"basx365", "7E10", "7E+10", 16, big.ToPositiveInf},
+	{"basx365", "7E10", "7E+10", 16, big.ToNearestAway},
 	// SKIP: basx366  toEng 7E10  -> 70E+9
 	// basx367  toSci 7E9   -> 7E+9
-	{"basx367", "7E9", "7E+9", 16, big.ToPositiveInf},
+	{"basx367", "7E9", "7E+9", 16, big.ToNearestAway},
 	// SKIP: basx368  toEng 7E9   -> 7E+9
 	// basx369  toSci 7E8   -> 7E+8
-	{"basx369", "7E8", "7E+8", 16, big.ToPositiveInf},
+	{"basx369", "7E8", "7E+8", 16, big.ToNearestAway},
 	// SKIP: basx370  toEng 7E8   -> 700E+6
 	// basx371  toSci 7E7   -> 7E+7
-	{"basx371", "7E7", "7E+7", 16, big.ToPositiveInf},
+	{"basx371", "7E7", "7E+7", 16, big.ToNearestAway},
 	// SKIP: basx372  toEng 7E7   -> 70E+6
 	// basx373  toSci 7E6   -> 7E+6
-	{"basx373", "7E6", "7E+6", 16, big.ToPositiveInf},
+	{"basx373", "7E6", "7E+6", 16, big.ToNearestAway},
 	// SKIP: basx374  toEng 7E6   -> 7E+6
 	// basx375  toSci 7E5   -> 7E+5
-	{"basx375", "7E5", "7E+5", 16, big.ToPositiveInf},
+	{"basx375", "7E5", "7E+5", 16, big.ToNearestAway},
 	// SKIP: basx376  toEng 7E5   -> 700E+3
 	// basx377  toSci 7E4   -> 7E+4
-	{"basx377", "7E4", "7E+4", 16, big.ToPositiveInf},
+	{"basx377", "7E4", "7E+4", 16, big.ToNearestAway},
 	// SKIP: basx378  toEng 7E4   -> 70E+3
 	// basx379  toSci 7E3   -> 7E+3
-	{"basx379", "7E3", "7E+3", 16, big.ToPositiveInf},
+	{"basx379", "7E3", "7E+3", 16, big.ToNearestAway},
 	// SKIP: basx380  toEng 7E3   -> 7E+3
 	// basx381  toSci 7E2   -> 7E+2
-	{"basx381", "7E2", "7E+2", 16, big.ToPositiveInf},
+	{"basx381", "7E2", "7E+2", 16, big.ToNearestAway},
 	// SKIP: basx382  toEng 7E2   -> 700
 	// basx383  toSci 7E1   -> 7E+1
-	{"basx383", "7E1", "7E+1", 16, big.ToPositiveInf},
+	{"basx383", "7E1", "7E+1", 16, big.ToNearestAway},
 	// SKIP: basx384  toEng 7E1   -> 70
 	// basx385  toSci 7E0   -> 7
-	{"basx385", "7E0", "7", 16, big.ToPositiveInf},
+	{"basx385", "7E0", "7", 16, big.ToNearestAway},
 	// SKIP: basx386  toEng 7E0   -> 7
 	// basx387  toSci 7E-1  -> 0.7
-	{"basx387", "7E-1", "0.7", 16, big.ToPositiveInf},
+	{"basx387", "7E-1", "0.7", 16, big.ToNearestAway},
 	// SKIP: basx388  toEng 7E-1  -> 0.7
 	// basx389  toSci 7E-2  -> 0.07
-	{"basx389", "7E-2", "0.07", 16, big.ToPositiveInf},
+	{"basx389", "7E-2", "0.07", 16, big.ToNearestAway},
 	// SKIP: basx390  toEng 7E-2  -> 0.07
 	// basx391  toSci 7E-3  -> 0.007
-	{"basx391", "7E-3", "0.007", 16, big.ToPositiveInf},
+	{"basx391", "7E-3", "0.007", 16, big.ToNearestAway},
 	// SKIP: basx392  toEng 7E-3  -> 0.007
 	// basx393  toSci 7E-4  -> 0.0007
-	{"basx393", "7E-4", "0.0007", 16, big.ToPositiveInf},
+	{"basx393", "7E-4", "0.0007", 16, big.ToNearestAway},
 	// SKIP: basx394  toEng 7E-4  -> 0.0007
 	// basx395  toSci 7E-5  -> 0.00007
-	{"basx395", "7E-5", "0.00007", 16, big.ToPositiveInf},
+	{"basx395", "7E-5", "0.00007", 16, big.ToNearestAway},
 	// SKIP: basx396  toEng 7E-5  -> 0.00007
 	// basx397  toSci 7E-6  -> 0.000007
-	{"basx397", "7E-6", "0.000007", 16, big.ToPositiveInf},
+	{"basx397", "7E-6", "0.000007", 16, big.ToNearestAway},
 	// SKIP: basx398  toEng 7E-6  -> 0.000007
 	// basx399  toSci 7E-7  -> 7E-7
-	{"basx399", "7E-7", "7E-7", 16, big.ToPositiveInf},
+	{"basx399", "7E-7", "7E-7", 16, big.ToNearestAway},
 	// SKIP: basx400  toEng 7E-7  -> 700E-9
 	// basx401  toSci 7E-8  -> 7E-8
-	{"basx401", "7E-8", "7E-8", 16, big.ToPositiveInf},
+	{"basx401", "7E-8", "7E-8", 16, big.ToNearestAway},
 	// SKIP: basx402  toEng 7E-8  -> 70E-9
 	// basx403  toSci 7E-9  -> 7E-9
-	{"basx403", "7E-9", "7E-9", 16, big.ToPositiveInf},
+	{"basx403", "7E-9", "7E-9", 16, big.ToNearestAway},
 	// SKIP: basx404  toEng 7E-9  -> 7E-9
 	// basx405  toSci 7E-10 -> 7E-10
-	{"basx405", "7E-10", "7E-10", 16, big.ToPositiveInf},
+	{"basx405", "7E-10", "7E-10", 16, big.ToNearestAway},
 	// SKIP: basx406  toEng 7E-10 -> 700E-12
 	// basx407  toSci 7E-11 -> 7E-11
-	{"basx407", "7E-11", "7E-11", 16, big.ToPositiveInf},
+	{"basx407", "7E-11", "7E-11", 16, big.ToNearestAway},
 	// SKIP: basx408  toEng 7E-11 -> 70E-12
 	// basx409  toSci 7E-12 -> 7E-12
-	{"basx409", "7E-12", "7E-12", 16, big.ToPositiveInf},
+	{"basx409", "7E-12", "7E-12", 16, big.ToNearestAway},
 	// SKIP: basx410  toEng 7E-12 -> 7E-12
 	// basx411  toSci 7E-13 -> 7E-13
-	{"basx411", "7E-13", "7E-13", 16, big.ToPositiveInf},
+	{"basx411", "7E-13", "7E-13", 16, big.ToNearestAway},
 	// SKIP: basx412  toEng 7E-13 -> 700E-15
 	// Exacts remain exact up to precision ..
+	// precision: 9
 	// basx420  toSci    100 -> 100
-	{"basx420", "100", "100", 9, big.ToPositiveInf},
+	{"basx420", "100", "100", 9, big.ToNearestAway},
 	// SKIP: basx421  toEng    100 -> 100
 	// basx422  toSci   1000 -> 1000
-	{"basx422", "1000", "1000", 9, big.ToPositiveInf},
+	{"basx422", "1000", "1000", 9, big.ToNearestAway},
 	// SKIP: basx423  toEng   1000 -> 1000
 	// basx424  toSci  999.9 ->  999.9
-	{"basx424", "999.9", "999.9", 9, big.ToPositiveInf},
+	{"basx424", "999.9", "999.9", 9, big.ToNearestAway},
 	// SKIP: basx425  toEng  999.9 ->  999.9
 	// basx426  toSci 1000.0 -> 1000.0
-	{"basx426", "1000.0", "1000.0", 9, big.ToPositiveInf},
+	{"basx426", "1000.0", "1000.0", 9, big.ToNearestAway},
 	// SKIP: basx427  toEng 1000.0 -> 1000.0
 	// basx428  toSci 1000.1 -> 1000.1
-	{"basx428", "1000.1", "1000.1", 9, big.ToPositiveInf},
+	{"basx428", "1000.1", "1000.1", 9, big.ToNearestAway},
 	// SKIP: basx429  toEng 1000.1 -> 1000.1
 	// basx430  toSci 10000 -> 10000
-	{"basx430", "10000", "10000", 9, big.ToPositiveInf},
+	{"basx430", "10000", "10000", 9, big.ToNearestAway},
 	// SKIP: basx431  toEng 10000 -> 10000
 	// basx432  toSci 100000 -> 100000
-	{"basx432", "100000", "100000", 9, big.ToPositiveInf},
+	{"basx432", "100000", "100000", 9, big.ToNearestAway},
 	// SKIP: basx433  toEng 100000 -> 100000
 	// basx434  toSci 1000000 -> 1000000
-	{"basx434", "1000000", "1000000", 9, big.ToPositiveInf},
+	{"basx434", "1000000", "1000000", 9, big.ToNearestAway},
 	// SKIP: basx435  toEng 1000000 -> 1000000
 	// basx436  toSci 10000000 -> 10000000
-	{"basx436", "10000000", "10000000", 9, big.ToPositiveInf},
+	{"basx436", "10000000", "10000000", 9, big.ToNearestAway},
 	// SKIP: basx437  toEng 10000000 -> 10000000
 	// basx438  toSci 100000000 -> 100000000
-	{"basx438", "100000000", "100000000", 9, big.ToPositiveInf},
+	{"basx438", "100000000", "100000000", 9, big.ToNearestAway},
 	// SKIP: basx439  toEng 100000000 -> 100000000
 	// basx440  toSci 1000000000    -> 1.00000000E+9    Rounded
-	{"basx440", "1000000000", "1.00000000E+9", 9, big.ToPositiveInf},
+	{"basx440", "1000000000", "1.00000000E+9", 9, big.ToNearestAway},
 	// SKIP: basx441  toEng 1000000000    -> 1.00000000E+9    Rounded
 	// basx442  toSci 1000000000    -> 1.00000000E+9    Rounded
-	{"basx442", "1000000000", "1.00000000E+9", 9, big.ToPositiveInf},
+	{"basx442", "1000000000", "1.00000000E+9", 9, big.ToNearestAway},
 	// SKIP: basx443  toEng 1000000000    -> 1.00000000E+9    Rounded
 	// basx444  toSci 1000000003    -> 1.00000000E+9    Rounded Inexact
-	{"basx444", "1000000003", "1.00000000E+9", 9, big.ToPositiveInf},
+	{"basx444", "1000000003", "1.00000000E+9", 9, big.ToNearestAway},
 	// SKIP: basx445  toEng 1000000003    -> 1.00000000E+9    Rounded Inexact
 	// basx446  toSci 1000000005    -> 1.00000001E+9    Rounded Inexact
-	{"basx446", "1000000005", "1.00000001E+9", 9, big.ToPositiveInf},
+	{"basx446", "1000000005", "1.00000001E+9", 9, big.ToNearestAway},
 	// SKIP: basx447  toEng 1000000005    -> 1.00000001E+9    Rounded Inexact
 	// basx448  toSci 10000000050   -> 1.00000001E+10   Rounded Inexact
-	{"basx448", "10000000050", "1.00000001E+10", 9, big.ToPositiveInf},
+	{"basx448", "10000000050", "1.00000001E+10", 9, big.ToNearestAway},
 	// SKIP: basx449  toEng 10000000050   -> 10.0000001E+9    Rounded Inexact
 	// basx450  toSci 1000000009    -> 1.00000001E+9    Rounded Inexact
-	{"basx450", "1000000009", "1.00000001E+9", 9, big.ToPositiveInf},
+	{"basx450", "1000000009", "1.00000001E+9", 9, big.ToNearestAway},
 	// SKIP: basx451  toEng 1000000009    -> 1.00000001E+9    Rounded Inexact
 	// basx452  toSci 10000000000   -> 1.00000000E+10   Rounded
-	{"basx452", "10000000000", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx452", "10000000000", "1.00000000E+10", 9, big.ToNearestAway},
 	// SKIP: basx453  toEng 10000000000   -> 10.0000000E+9    Rounded
 	// basx454  toSci 10000000003   -> 1.00000000E+10   Rounded Inexact
-	{"basx454", "10000000003", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx454", "10000000003", "1.00000000E+10", 9, big.ToNearestAway},
 	// SKIP: basx455  toEng 10000000003   -> 10.0000000E+9    Rounded Inexact
 	// basx456  toSci 10000000005   -> 1.00000000E+10   Rounded Inexact
-	{"basx456", "10000000005", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx456", "10000000005", "1.00000000E+10", 9, big.ToNearestAway},
 	// SKIP: basx457  toEng 10000000005   -> 10.0000000E+9    Rounded Inexact
 	// basx458  toSci 10000000009   -> 1.00000000E+10   Rounded Inexact
-	{"basx458", "10000000009", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx458", "10000000009", "1.00000000E+10", 9, big.ToNearestAway},
 	// SKIP: basx459  toEng 10000000009   -> 10.0000000E+9    Rounded Inexact
 	// basx460  toSci 100000000000  -> 1.00000000E+11   Rounded
-	{"basx460", "100000000000", "1.00000000E+11", 9, big.ToPositiveInf},
+	{"basx460", "100000000000", "1.00000000E+11", 9, big.ToNearestAway},
 	// SKIP: basx461  toEng 100000000000  -> 100.000000E+9    Rounded
 	// basx462  toSci 100000000300  -> 1.00000000E+11   Rounded Inexact
-	{"basx462", "100000000300", "1.00000000E+11", 9, big.ToPositiveInf},
+	{"basx462", "100000000300", "1.00000000E+11", 9, big.ToNearestAway},
 	// SKIP: basx463  toEng 100000000300  -> 100.000000E+9    Rounded Inexact
 	// basx464  toSci 100000000500  -> 1.00000001E+11   Rounded Inexact
-	{"basx464", "100000000500", "1.00000001E+11", 9, big.ToPositiveInf},
+	{"basx464", "100000000500", "1.00000001E+11", 9, big.ToNearestAway},
 	// SKIP: basx465  toEng 100000000500  -> 100.000001E+9    Rounded Inexact
 	// basx466  toSci 100000000900  -> 1.00000001E+11   Rounded Inexact
-	{"basx466", "100000000900", "1.00000001E+11", 9, big.ToPositiveInf},
+	{"basx466", "100000000900", "1.00000001E+11", 9, big.ToNearestAway},
 	// SKIP: basx467  toEng 100000000900  -> 100.000001E+9    Rounded Inexact
 	// basx468  toSci 1000000000000 -> 1.00000000E+12   Rounded
-	{"basx468", "1000000000000", "1.00000000E+12", 9, big.ToPositiveInf},
+	{"basx468", "1000000000000", "1.00000000E+12", 9, big.ToNearestAway},
 	// SKIP: basx469  toEng 1000000000000 -> 1.00000000E+12   Rounded
 	// basx470  toSci 1000000003000 -> 1.00000000E+12   Rounded Inexact
-	{"basx470", "1000000003000", "1.00000000E+12", 9, big.ToPositiveInf},
+	{"basx470", "1000000003000", "1.00000000E+12", 9, big.ToNearestAway},
 	// SKIP: basx471  toEng 1000000003000 -> 1.00000000E+12   Rounded Inexact
 	// basx472  toSci 1000000005000 -> 1.00000001E+12   Rounded Inexact
-	{"basx472", "1000000005000", "1.00000001E+12", 9, big.ToPositiveInf},
+	{"basx472", "1000000005000", "1.00000001E+12", 9, big.ToNearestAway},
 	// SKIP: basx473  toEng 1000000005000 -> 1.00000001E+12   Rounded Inexact
 	// basx474  toSci 1000000009000 -> 1.00000001E+12   Rounded Inexact
-	{"basx474", "1000000009000", "1.00000001E+12", 9, big.ToPositiveInf},
+	{"basx474", "1000000009000", "1.00000001E+12", 9, big.ToNearestAway},
 	// SKIP: basx475  toEng 1000000009000 -> 1.00000001E+12   Rounded Inexact
 	// all-nines rounding
+	// precision: 9
+	// rounding: half_up
 	// basx270  toSci 999999999          ->   999999999
-	{"basx270", "999999999", "999999999", 9, big.ToPositiveInf},
+	{"basx270", "999999999", "999999999", 9, big.ToNearestAway},
 	// basx271  toSci 9999999990         ->   9.99999999E+9      Rounded
-	{"basx271", "9999999990", "9.99999999E+9", 9, big.ToPositiveInf},
+	{"basx271", "9999999990", "9.99999999E+9", 9, big.ToNearestAway},
 	// basx272  toSci 9999999991         ->   9.99999999E+9      Rounded Inexact
-	{"basx272", "9999999991", "9.99999999E+9", 9, big.ToPositiveInf},
+	{"basx272", "9999999991", "9.99999999E+9", 9, big.ToNearestAway},
 	// basx273  toSci 9999999992         ->   9.99999999E+9      Rounded Inexact
-	{"basx273", "9999999992", "9.99999999E+9", 9, big.ToPositiveInf},
+	{"basx273", "9999999992", "9.99999999E+9", 9, big.ToNearestAway},
 	// basx274  toSci 9999999993         ->   9.99999999E+9      Rounded Inexact
-	{"basx274", "9999999993", "9.99999999E+9", 9, big.ToPositiveInf},
+	{"basx274", "9999999993", "9.99999999E+9", 9, big.ToNearestAway},
 	// basx275  toSci 9999999994         ->   9.99999999E+9      Rounded Inexact
-	{"basx275", "9999999994", "9.99999999E+9", 9, big.ToPositiveInf},
+	{"basx275", "9999999994", "9.99999999E+9", 9, big.ToNearestAway},
 	// basx276  toSci 9999999995         ->   1.00000000E+10     Rounded Inexact
-	{"basx276", "9999999995", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx276", "9999999995", "1.00000000E+10", 9, big.ToNearestAway},
 	// basx277  toSci 9999999996         ->   1.00000000E+10     Rounded Inexact
-	{"basx277", "9999999996", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx277", "9999999996", "1.00000000E+10", 9, big.ToNearestAway},
 	// basx278  toSci 9999999997         ->   1.00000000E+10     Rounded Inexact
-	{"basx278", "9999999997", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx278", "9999999997", "1.00000000E+10", 9, big.ToNearestAway},
 	// basx279  toSci 9999999998         ->   1.00000000E+10     Rounded Inexact
-	{"basx279", "9999999998", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx279", "9999999998", "1.00000000E+10", 9, big.ToNearestAway},
 	// basx280  toSci 9999999999         ->   1.00000000E+10     Rounded Inexact
-	{"basx280", "9999999999", "1.00000000E+10", 9, big.ToPositiveInf},
+	{"basx280", "9999999999", "1.00000000E+10", 9, big.ToNearestAway},
 	// basx281  toSci 9999999999999999   ->   1.00000000E+16     Rounded Inexact
-	{"basx281", "9999999999999999", "1.00000000E+16", 9, big.ToPositiveInf},
+	{"basx281", "9999999999999999", "1.00000000E+16", 9, big.ToNearestAway},
 	// check rounding modes heeded
+	// precision: 5
+	// rounding: ceiling
 	// bsrx401  toSci  1.23450    ->  1.2345  Rounded
 	{"bsrx401", "1.23450", "1.2345", 5, big.ToPositiveInf},
 	// bsrx402  toSci  1.234549   ->  1.2346  Rounded Inexact
@@ -704,14 +720,16 @@ var toSciTests = []struct {
 	{"bsrx403", "1.234550", "1.2346", 5, big.ToPositiveInf},
 	// bsrx404  toSci  1.234551   ->  1.2346  Rounded Inexact
 	{"bsrx404", "1.234551", "1.2346", 5, big.ToPositiveInf},
+	// rounding: up
 	// bsrx405  toSci  1.23450    ->  1.2345  Rounded
-	{"bsrx405", "1.23450", "1.2345", 5, big.ToPositiveInf},
+	{"bsrx405", "1.23450", "1.2345", 5, big.AwayFromZero},
 	// bsrx406  toSci  1.234549   ->  1.2346  Rounded Inexact
-	{"bsrx406", "1.234549", "1.2346", 5, big.ToPositiveInf},
+	{"bsrx406", "1.234549", "1.2346", 5, big.AwayFromZero},
 	// bsrx407  toSci  1.234550   ->  1.2346  Rounded Inexact
-	{"bsrx407", "1.234550", "1.2346", 5, big.ToPositiveInf},
+	{"bsrx407", "1.234550", "1.2346", 5, big.AwayFromZero},
 	// bsrx408  toSci  1.234551   ->  1.2346  Rounded Inexact
-	{"bsrx408", "1.234551", "1.2346", 5, big.ToPositiveInf},
+	{"bsrx408", "1.234551", "1.2346", 5, big.AwayFromZero},
+	// rounding: floor
 	// bsrx410  toSci  1.23450    ->  1.2345  Rounded
 	{"bsrx410", "1.23450", "1.2345", 5, big.ToNegativeInf},
 	// bsrx411  toSci  1.234549   ->  1.2345  Rounded Inexact
@@ -720,45 +738,45 @@ var toSciTests = []struct {
 	{"bsrx412", "1.234550", "1.2345", 5, big.ToNegativeInf},
 	// bsrx413  toSci  1.234551   ->  1.2345  Rounded Inexact
 	{"bsrx413", "1.234551", "1.2345", 5, big.ToNegativeInf},
-	// bsrx415  toSci  1.23450    ->  1.2345  Rounded
-	{"bsrx415", "1.23450", "1.2345", 5, big.ToNegativeInf},
-	// bsrx416  toSci  1.234549   ->  1.2345  Rounded Inexact
-	{"bsrx416", "1.234549", "1.2345", 5, big.ToNegativeInf},
-	// bsrx417  toSci  1.234550   ->  1.2345  Rounded Inexact
-	{"bsrx417", "1.234550", "1.2345", 5, big.ToNegativeInf},
-	// bsrx418  toSci  1.234650   ->  1.2346  Rounded Inexact
-	{"bsrx418", "1.234650", "1.2346", 5, big.ToNegativeInf},
-	// bsrx419  toSci  1.234551   ->  1.2346  Rounded Inexact
-	{"bsrx419", "1.234551", "1.2346", 5, big.ToNegativeInf},
+	// rounding: half_down
+	// SKIP: bsrx415  toSci  1.23450    ->  1.2345  Rounded
+	// SKIP: bsrx416  toSci  1.234549   ->  1.2345  Rounded Inexact
+	// SKIP: bsrx417  toSci  1.234550   ->  1.2345  Rounded Inexact
+	// SKIP: bsrx418  toSci  1.234650   ->  1.2346  Rounded Inexact
+	// SKIP: bsrx419  toSci  1.234551   ->  1.2346  Rounded Inexact
+	// rounding: half_even
 	// bsrx421  toSci  1.23450    ->  1.2345  Rounded
-	{"bsrx421", "1.23450", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx421", "1.23450", "1.2345", 5, big.ToNearestEven},
 	// bsrx422  toSci  1.234549   ->  1.2345  Rounded Inexact
-	{"bsrx422", "1.234549", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx422", "1.234549", "1.2345", 5, big.ToNearestEven},
 	// bsrx423  toSci  1.234550   ->  1.2346  Rounded Inexact
-	{"bsrx423", "1.234550", "1.2346", 5, big.ToNegativeInf},
+	{"bsrx423", "1.234550", "1.2346", 5, big.ToNearestEven},
 	// bsrx424  toSci  1.234650   ->  1.2346  Rounded Inexact
-	{"bsrx424", "1.234650", "1.2346", 5, big.ToNegativeInf},
+	{"bsrx424", "1.234650", "1.2346", 5, big.ToNearestEven},
 	// bsrx425  toSci  1.234551   ->  1.2346  Rounded Inexact
-	{"bsrx425", "1.234551", "1.2346", 5, big.ToNegativeInf},
+	{"bsrx425", "1.234551", "1.2346", 5, big.ToNearestEven},
+	// rounding: down
 	// bsrx426  toSci  1.23450    ->  1.2345  Rounded
-	{"bsrx426", "1.23450", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx426", "1.23450", "1.2345", 5, big.ToZero},
 	// bsrx427  toSci  1.234549   ->  1.2345  Rounded Inexact
-	{"bsrx427", "1.234549", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx427", "1.234549", "1.2345", 5, big.ToZero},
 	// bsrx428  toSci  1.234550   ->  1.2345  Rounded Inexact
-	{"bsrx428", "1.234550", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx428", "1.234550", "1.2345", 5, big.ToZero},
 	// bsrx429  toSci  1.234551   ->  1.2345  Rounded Inexact
-	{"bsrx429", "1.234551", "1.2345", 5, big.ToNegativeInf},
+	{"bsrx429", "1.234551", "1.2345", 5, big.ToZero},
+	// rounding: half_up
 	// bsrx431  toSci  1.23450    ->  1.2345  Rounded
-	{"bsrx431", "1.23450", "1.2345", 5, big.ToPositiveInf},
+	{"bsrx431", "1.23450", "1.2345", 5, big.ToNearestAway},
 	// bsrx432  toSci  1.234549   ->  1.2345  Rounded Inexact
-	{"bsrx432", "1.234549", "1.2345", 5, big.ToPositiveInf},
+	{"bsrx432", "1.234549", "1.2345", 5, big.ToNearestAway},
 	// bsrx433  toSci  1.234550   ->  1.2346  Rounded Inexact
-	{"bsrx433", "1.234550", "1.2346", 5, big.ToPositiveInf},
+	{"bsrx433", "1.234550", "1.2346", 5, big.ToNearestAway},
 	// bsrx434  toSci  1.234650   ->  1.2347  Rounded Inexact
-	{"bsrx434", "1.234650", "1.2347", 5, big.ToPositiveInf},
+	{"bsrx434", "1.234650", "1.2347", 5, big.ToNearestAway},
 	// bsrx435  toSci  1.234551   ->  1.2346  Rounded Inexact
-	{"bsrx435", "1.234551", "1.2346", 5, big.ToPositiveInf},
+	{"bsrx435", "1.234551", "1.2346", 5, big.ToNearestAway},
 	// negatives
+	// rounding: ceiling
 	// bsrx501  toSci -1.23450    -> -1.2345  Rounded
 	{"bsrx501", "-1.23450", "-1.2345", 5, big.ToPositiveInf},
 	// bsrx502  toSci -1.234549   -> -1.2345  Rounded Inexact
@@ -767,14 +785,16 @@ var toSciTests = []struct {
 	{"bsrx503", "-1.234550", "-1.2345", 5, big.ToPositiveInf},
 	// bsrx504  toSci -1.234551   -> -1.2345  Rounded Inexact
 	{"bsrx504", "-1.234551", "-1.2345", 5, big.ToPositiveInf},
+	// rounding: up
 	// bsrx505  toSci -1.23450    -> -1.2345  Rounded
-	{"bsrx505", "-1.23450", "-1.2345", 5, big.ToPositiveInf},
+	{"bsrx505", "-1.23450", "-1.2345", 5, big.AwayFromZero},
 	// bsrx506  toSci -1.234549   -> -1.2346  Rounded Inexact
-	{"bsrx506", "-1.234549", "-1.2346", 5, big.ToPositiveInf},
+	{"bsrx506", "-1.234549", "-1.2346", 5, big.AwayFromZero},
 	// bsrx507  toSci -1.234550   -> -1.2346  Rounded Inexact
-	{"bsrx507", "-1.234550", "-1.2346", 5, big.ToPositiveInf},
+	{"bsrx507", "-1.234550", "-1.2346", 5, big.AwayFromZero},
 	// bsrx508  toSci -1.234551   -> -1.2346  Rounded Inexact
-	{"bsrx508", "-1.234551", "-1.2346", 5, big.ToPositiveInf},
+	{"bsrx508", "-1.234551", "-1.2346", 5, big.AwayFromZero},
+	// rounding: floor
 	// bsrx510  toSci -1.23450    -> -1.2345  Rounded
 	{"bsrx510", "-1.23450", "-1.2345", 5, big.ToNegativeInf},
 	// bsrx511  toSci -1.234549   -> -1.2346  Rounded Inexact
@@ -783,201 +803,204 @@ var toSciTests = []struct {
 	{"bsrx512", "-1.234550", "-1.2346", 5, big.ToNegativeInf},
 	// bsrx513  toSci -1.234551   -> -1.2346  Rounded Inexact
 	{"bsrx513", "-1.234551", "-1.2346", 5, big.ToNegativeInf},
-	// bsrx515  toSci -1.23450    -> -1.2345  Rounded
-	{"bsrx515", "-1.23450", "-1.2345", 5, big.ToNegativeInf},
-	// bsrx516  toSci -1.234549   -> -1.2345  Rounded Inexact
-	{"bsrx516", "-1.234549", "-1.2345", 5, big.ToNegativeInf},
-	// bsrx517  toSci -1.234550   -> -1.2345  Rounded Inexact
-	{"bsrx517", "-1.234550", "-1.2345", 5, big.ToNegativeInf},
-	// bsrx518  toSci -1.234650   -> -1.2346  Rounded Inexact
-	{"bsrx518", "-1.234650", "-1.2346", 5, big.ToNegativeInf},
-	// bsrx519  toSci -1.234551   -> -1.2346  Rounded Inexact
-	{"bsrx519", "-1.234551", "-1.2346", 5, big.ToNegativeInf},
+	// rounding: half_down
+	// SKIP: bsrx515  toSci -1.23450    -> -1.2345  Rounded
+	// SKIP: bsrx516  toSci -1.234549   -> -1.2345  Rounded Inexact
+	// SKIP: bsrx517  toSci -1.234550   -> -1.2345  Rounded Inexact
+	// SKIP: bsrx518  toSci -1.234650   -> -1.2346  Rounded Inexact
+	// SKIP: bsrx519  toSci -1.234551   -> -1.2346  Rounded Inexact
+	// rounding: half_even
 	// bsrx521  toSci -1.23450    -> -1.2345  Rounded
-	{"bsrx521", "-1.23450", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx521", "-1.23450", "-1.2345", 5, big.ToNearestEven},
 	// bsrx522  toSci -1.234549   -> -1.2345  Rounded Inexact
-	{"bsrx522", "-1.234549", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx522", "-1.234549", "-1.2345", 5, big.ToNearestEven},
 	// bsrx523  toSci -1.234550   -> -1.2346  Rounded Inexact
-	{"bsrx523", "-1.234550", "-1.2346", 5, big.ToNegativeInf},
+	{"bsrx523", "-1.234550", "-1.2346", 5, big.ToNearestEven},
 	// bsrx524  toSci -1.234650   -> -1.2346  Rounded Inexact
-	{"bsrx524", "-1.234650", "-1.2346", 5, big.ToNegativeInf},
+	{"bsrx524", "-1.234650", "-1.2346", 5, big.ToNearestEven},
 	// bsrx525  toSci -1.234551   -> -1.2346  Rounded Inexact
-	{"bsrx525", "-1.234551", "-1.2346", 5, big.ToNegativeInf},
+	{"bsrx525", "-1.234551", "-1.2346", 5, big.ToNearestEven},
+	// rounding: down
 	// bsrx526  toSci -1.23450    -> -1.2345  Rounded
-	{"bsrx526", "-1.23450", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx526", "-1.23450", "-1.2345", 5, big.ToZero},
 	// bsrx527  toSci -1.234549   -> -1.2345  Rounded Inexact
-	{"bsrx527", "-1.234549", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx527", "-1.234549", "-1.2345", 5, big.ToZero},
 	// bsrx528  toSci -1.234550   -> -1.2345  Rounded Inexact
-	{"bsrx528", "-1.234550", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx528", "-1.234550", "-1.2345", 5, big.ToZero},
 	// bsrx529  toSci -1.234551   -> -1.2345  Rounded Inexact
-	{"bsrx529", "-1.234551", "-1.2345", 5, big.ToNegativeInf},
+	{"bsrx529", "-1.234551", "-1.2345", 5, big.ToZero},
+	// rounding: half_up
 	// bsrx531  toSci -1.23450    -> -1.2345  Rounded
-	{"bsrx531", "-1.23450", "-1.2345", 5, big.ToPositiveInf},
+	{"bsrx531", "-1.23450", "-1.2345", 5, big.ToNearestAway},
 	// bsrx532  toSci -1.234549   -> -1.2345  Rounded Inexact
-	{"bsrx532", "-1.234549", "-1.2345", 5, big.ToPositiveInf},
+	{"bsrx532", "-1.234549", "-1.2345", 5, big.ToNearestAway},
 	// bsrx533  toSci -1.234550   -> -1.2346  Rounded Inexact
-	{"bsrx533", "-1.234550", "-1.2346", 5, big.ToPositiveInf},
+	{"bsrx533", "-1.234550", "-1.2346", 5, big.ToNearestAway},
 	// bsrx534  toSci -1.234650   -> -1.2347  Rounded Inexact
-	{"bsrx534", "-1.234650", "-1.2347", 5, big.ToPositiveInf},
+	{"bsrx534", "-1.234650", "-1.2347", 5, big.ToNearestAway},
 	// bsrx535  toSci -1.234551   -> -1.2346  Rounded Inexact
-	{"bsrx535", "-1.234551", "-1.2346", 5, big.ToPositiveInf},
+	{"bsrx535", "-1.234551", "-1.2346", 5, big.ToNearestAway},
 	// a few larger exponents
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// basx480 toSci "0.09e999"  -> '9E+997'
-	{"basx480", "0.09e999", "9E+997", 5, big.ToPositiveInf},
+	{"basx480", "0.09e999", "9E+997", 5, big.ToNearestAway},
 	// basx481 toSci "0.9e999"   -> '9E+998'
-	{"basx481", "0.9e999", "9E+998", 5, big.ToPositiveInf},
+	{"basx481", "0.9e999", "9E+998", 5, big.ToNearestAway},
 	// basx482 toSci "9e999"     -> '9E+999'
-	{"basx482", "9e999", "9E+999", 5, big.ToPositiveInf},
+	{"basx482", "9e999", "9E+999", 5, big.ToNearestAway},
 	// basx483 toSci "9.9e999"   -> '9.9E+999'
-	{"basx483", "9.9e999", "9.9E+999", 5, big.ToPositiveInf},
+	{"basx483", "9.9e999", "9.9E+999", 5, big.ToNearestAway},
 	// basx484 toSci "9.99e999"  -> '9.99E+999'
-	{"basx484", "9.99e999", "9.99E+999", 5, big.ToPositiveInf},
+	{"basx484", "9.99e999", "9.99E+999", 5, big.ToNearestAway},
 	// basx485 toSci "9.99e-999" -> '9.99E-999'
-	{"basx485", "9.99e-999", "9.99E-999", 5, big.ToPositiveInf},
+	{"basx485", "9.99e-999", "9.99E-999", 5, big.ToNearestAway},
 	// basx486 toSci "9.9e-999"  -> '9.9E-999'
-	{"basx486", "9.9e-999", "9.9E-999", 5, big.ToPositiveInf},
+	{"basx486", "9.9e-999", "9.9E-999", 5, big.ToNearestAway},
 	// basx487 toSci "9e-999"    -> '9E-999'
-	{"basx487", "9e-999", "9E-999", 5, big.ToPositiveInf},
+	{"basx487", "9e-999", "9E-999", 5, big.ToNearestAway},
 	// basx489 toSci "99e-999"   -> '9.9E-998'
-	{"basx489", "99e-999", "9.9E-998", 5, big.ToPositiveInf},
+	{"basx489", "99e-999", "9.9E-998", 5, big.ToNearestAway},
 	// basx490 toSci "999e-999"  -> '9.99E-997'
-	{"basx490", "999e-999", "9.99E-997", 5, big.ToPositiveInf},
+	{"basx490", "999e-999", "9.99E-997", 5, big.ToNearestAway},
 	// basx491 toSci '0.9e-998'  -> '9E-999'
-	{"basx491", "0.9e-998", "9E-999", 5, big.ToPositiveInf},
+	{"basx491", "0.9e-998", "9E-999", 5, big.ToNearestAway},
 	// basx492 toSci '0.09e-997' -> '9E-999'
-	{"basx492", "0.09e-997", "9E-999", 5, big.ToPositiveInf},
+	{"basx492", "0.09e-997", "9E-999", 5, big.ToNearestAway},
 	// basx493 toSci '0.1e1000'  -> '1E+999'
-	{"basx493", "0.1e1000", "1E+999", 5, big.ToPositiveInf},
+	{"basx493", "0.1e1000", "1E+999", 5, big.ToNearestAway},
 	// basx494 toSci '10e-1000'  -> '1.0E-999'
-	{"basx494", "10e-1000", "1.0E-999", 5, big.ToPositiveInf},
+	{"basx494", "10e-1000", "1.0E-999", 5, big.ToNearestAway},
+	// rounding: half_up
+	// precision: 9
 	// The 'baddies' tests from DiagBigDecimal, plus some new ones
 	// basx500 toSci '1..2'            -> NaN Conversion_syntax
-	{"basx500", "1..2", "", 9, big.ToPositiveInf},
+	{"basx500", "1..2", "", 9, big.ToNearestAway},
 	// basx501 toSci '.'               -> NaN Conversion_syntax
-	{"basx501", ".", "", 9, big.ToPositiveInf},
+	{"basx501", ".", "", 9, big.ToNearestAway},
 	// basx502 toSci '..'              -> NaN Conversion_syntax
-	{"basx502", "..", "", 9, big.ToPositiveInf},
+	{"basx502", "..", "", 9, big.ToNearestAway},
 	// basx503 toSci '++1'             -> NaN Conversion_syntax
-	{"basx503", "++1", "", 9, big.ToPositiveInf},
+	{"basx503", "++1", "", 9, big.ToNearestAway},
 	// basx504 toSci '--1'             -> NaN Conversion_syntax
-	{"basx504", "--1", "", 9, big.ToPositiveInf},
+	{"basx504", "--1", "", 9, big.ToNearestAway},
 	// basx505 toSci '-+1'             -> NaN Conversion_syntax
-	{"basx505", "-+1", "", 9, big.ToPositiveInf},
+	{"basx505", "-+1", "", 9, big.ToNearestAway},
 	// basx506 toSci '+-1'             -> NaN Conversion_syntax
-	{"basx506", "+-1", "", 9, big.ToPositiveInf},
+	{"basx506", "+-1", "", 9, big.ToNearestAway},
 	// basx507 toSci '12e'             -> NaN Conversion_syntax
-	{"basx507", "12e", "", 9, big.ToPositiveInf},
+	{"basx507", "12e", "", 9, big.ToNearestAway},
 	// basx508 toSci '12e++'           -> NaN Conversion_syntax
-	{"basx508", "12e++", "", 9, big.ToPositiveInf},
+	{"basx508", "12e++", "", 9, big.ToNearestAway},
 	// basx509 toSci '12f4'            -> NaN Conversion_syntax
-	{"basx509", "12f4", "", 9, big.ToPositiveInf},
+	{"basx509", "12f4", "", 9, big.ToNearestAway},
 	// basx510 toSci ' +1'             -> NaN Conversion_syntax
-	{"basx510", "", "", 9, big.ToPositiveInf},
+	{"basx510", "", "", 9, big.ToNearestAway},
 	// basx511 toSci '+ 1'             -> NaN Conversion_syntax
-	{"basx511", "+", "", 9, big.ToPositiveInf},
+	{"basx511", "+", "", 9, big.ToNearestAway},
 	// SKIP: basx512 toSci '12 '             -> NaN Conversion_syntax
 	// basx513 toSci ' + 1'            -> NaN Conversion_syntax
-	{"basx513", "", "", 9, big.ToPositiveInf},
+	{"basx513", "", "", 9, big.ToNearestAway},
 	// basx514 toSci ' - 1 '           -> NaN Conversion_syntax
-	{"basx514", "", "", 9, big.ToPositiveInf},
+	{"basx514", "", "", 9, big.ToNearestAway},
 	// basx515 toSci 'x'               -> NaN Conversion_syntax
-	{"basx515", "x", "", 9, big.ToPositiveInf},
+	{"basx515", "x", "", 9, big.ToNearestAway},
 	// basx516 toSci '-1-'             -> NaN Conversion_syntax
-	{"basx516", "-1-", "", 9, big.ToPositiveInf},
+	{"basx516", "-1-", "", 9, big.ToNearestAway},
 	// basx517 toSci '12-'             -> NaN Conversion_syntax
-	{"basx517", "12-", "", 9, big.ToPositiveInf},
+	{"basx517", "12-", "", 9, big.ToNearestAway},
 	// basx518 toSci '3+'              -> NaN Conversion_syntax
-	{"basx518", "3+", "", 9, big.ToPositiveInf},
+	{"basx518", "3+", "", 9, big.ToNearestAway},
 	// basx519 toSci ''                -> NaN Conversion_syntax
-	{"basx519", "", "", 9, big.ToPositiveInf},
+	{"basx519", "", "", 9, big.ToNearestAway},
 	// basx520 toSci '1e-'             -> NaN Conversion_syntax
-	{"basx520", "1e-", "", 9, big.ToPositiveInf},
+	{"basx520", "1e-", "", 9, big.ToNearestAway},
 	// basx521 toSci '7e99999a'        -> NaN Conversion_syntax
-	{"basx521", "7e99999a", "", 9, big.ToPositiveInf},
+	{"basx521", "7e99999a", "", 9, big.ToNearestAway},
 	// basx522 toSci '7e123567890x'    -> NaN Conversion_syntax
-	{"basx522", "7e123567890x", "", 9, big.ToPositiveInf},
+	{"basx522", "7e123567890x", "", 9, big.ToNearestAway},
 	// basx523 toSci '7e12356789012x'  -> NaN Conversion_syntax
-	{"basx523", "7e12356789012x", "", 9, big.ToPositiveInf},
+	{"basx523", "7e12356789012x", "", 9, big.ToNearestAway},
 	// basx524 toSci ''                -> NaN Conversion_syntax
-	{"basx524", "", "", 9, big.ToPositiveInf},
+	{"basx524", "", "", 9, big.ToNearestAway},
 	// basx525 toSci 'e100'            -> NaN Conversion_syntax
-	{"basx525", "e100", "", 9, big.ToPositiveInf},
+	{"basx525", "e100", "", 9, big.ToNearestAway},
 	// basx526 toSci '\u0e5a'          -> NaN Conversion_syntax
-	{"basx526", "\u0e5a", "", 9, big.ToPositiveInf},
+	{"basx526", "\u0e5a", "", 9, big.ToNearestAway},
 	// basx527 toSci '\u0b65'          -> NaN Conversion_syntax
-	{"basx527", "\u0b65", "", 9, big.ToPositiveInf},
+	{"basx527", "\u0b65", "", 9, big.ToNearestAway},
 	// basx528 toSci '123,65'          -> NaN Conversion_syntax
-	{"basx528", "123,65", "", 9, big.ToPositiveInf},
+	{"basx528", "123,65", "", 9, big.ToNearestAway},
 	// basx529 toSci '1.34.5'          -> NaN Conversion_syntax
-	{"basx529", "1.34.5", "", 9, big.ToPositiveInf},
+	{"basx529", "1.34.5", "", 9, big.ToNearestAway},
 	// basx530 toSci '.123.5'          -> NaN Conversion_syntax
-	{"basx530", ".123.5", "", 9, big.ToPositiveInf},
+	{"basx530", ".123.5", "", 9, big.ToNearestAway},
 	// basx531 toSci '01.35.'          -> NaN Conversion_syntax
-	{"basx531", "01.35.", "", 9, big.ToPositiveInf},
+	{"basx531", "01.35.", "", 9, big.ToNearestAway},
 	// basx532 toSci '01.35-'          -> NaN Conversion_syntax
-	{"basx532", "01.35-", "", 9, big.ToPositiveInf},
+	{"basx532", "01.35-", "", 9, big.ToNearestAway},
 	// basx533 toSci '0000..'          -> NaN Conversion_syntax
-	{"basx533", "0000..", "", 9, big.ToPositiveInf},
+	{"basx533", "0000..", "", 9, big.ToNearestAway},
 	// basx534 toSci '.0000.'          -> NaN Conversion_syntax
-	{"basx534", ".0000.", "", 9, big.ToPositiveInf},
+	{"basx534", ".0000.", "", 9, big.ToNearestAway},
 	// basx535 toSci '00..00'          -> NaN Conversion_syntax
-	{"basx535", "00..00", "", 9, big.ToPositiveInf},
+	{"basx535", "00..00", "", 9, big.ToNearestAway},
 	// basx536 toSci '111e*123'        -> NaN Conversion_syntax
-	{"basx536", "111e*123", "", 9, big.ToPositiveInf},
+	{"basx536", "111e*123", "", 9, big.ToNearestAway},
 	// basx537 toSci '111e123-'        -> NaN Conversion_syntax
-	{"basx537", "111e123-", "", 9, big.ToPositiveInf},
+	{"basx537", "111e123-", "", 9, big.ToNearestAway},
 	// basx538 toSci '111e+12+'        -> NaN Conversion_syntax
-	{"basx538", "111e+12+", "", 9, big.ToPositiveInf},
+	{"basx538", "111e+12+", "", 9, big.ToNearestAway},
 	// basx539 toSci '111e1-3-'        -> NaN Conversion_syntax
-	{"basx539", "111e1-3-", "", 9, big.ToPositiveInf},
+	{"basx539", "111e1-3-", "", 9, big.ToNearestAway},
 	// basx540 toSci '111e1*23'        -> NaN Conversion_syntax
-	{"basx540", "111e1*23", "", 9, big.ToPositiveInf},
+	{"basx540", "111e1*23", "", 9, big.ToNearestAway},
 	// basx541 toSci '111e1e+3'        -> NaN Conversion_syntax
-	{"basx541", "111e1e+3", "", 9, big.ToPositiveInf},
+	{"basx541", "111e1e+3", "", 9, big.ToNearestAway},
 	// basx542 toSci '1e1.0'           -> NaN Conversion_syntax
-	{"basx542", "1e1.0", "", 9, big.ToPositiveInf},
+	{"basx542", "1e1.0", "", 9, big.ToNearestAway},
 	// basx543 toSci '1e123e'          -> NaN Conversion_syntax
-	{"basx543", "1e123e", "", 9, big.ToPositiveInf},
+	{"basx543", "1e123e", "", 9, big.ToNearestAway},
 	// basx544 toSci 'ten'             -> NaN Conversion_syntax
-	{"basx544", "ten", "", 9, big.ToPositiveInf},
+	{"basx544", "ten", "", 9, big.ToNearestAway},
 	// basx545 toSci 'ONE'             -> NaN Conversion_syntax
-	{"basx545", "ONE", "", 9, big.ToPositiveInf},
+	{"basx545", "ONE", "", 9, big.ToNearestAway},
 	// basx546 toSci '1e.1'            -> NaN Conversion_syntax
-	{"basx546", "1e.1", "", 9, big.ToPositiveInf},
+	{"basx546", "1e.1", "", 9, big.ToNearestAway},
 	// basx547 toSci '1e1.'            -> NaN Conversion_syntax
-	{"basx547", "1e1.", "", 9, big.ToPositiveInf},
+	{"basx547", "1e1.", "", 9, big.ToNearestAway},
 	// basx548 toSci '1ee'             -> NaN Conversion_syntax
-	{"basx548", "1ee", "", 9, big.ToPositiveInf},
+	{"basx548", "1ee", "", 9, big.ToNearestAway},
 	// basx549 toSci 'e+1'             -> NaN Conversion_syntax
-	{"basx549", "e+1", "", 9, big.ToPositiveInf},
+	{"basx549", "e+1", "", 9, big.ToNearestAway},
 	// basx550 toSci '1.23.4'          -> NaN Conversion_syntax
-	{"basx550", "1.23.4", "", 9, big.ToPositiveInf},
+	{"basx550", "1.23.4", "", 9, big.ToNearestAway},
 	// basx551 toSci '1.2.1'           -> NaN Conversion_syntax
-	{"basx551", "1.2.1", "", 9, big.ToPositiveInf},
+	{"basx551", "1.2.1", "", 9, big.ToNearestAway},
 	// basx552 toSci '1E+1.2'          -> NaN Conversion_syntax
-	{"basx552", "1E+1.2", "", 9, big.ToPositiveInf},
+	{"basx552", "1E+1.2", "", 9, big.ToNearestAway},
 	// basx553 toSci '1E+1.2.3'        -> NaN Conversion_syntax
-	{"basx553", "1E+1.2.3", "", 9, big.ToPositiveInf},
+	{"basx553", "1E+1.2.3", "", 9, big.ToNearestAway},
 	// basx554 toSci '1E++1'           -> NaN Conversion_syntax
-	{"basx554", "1E++1", "", 9, big.ToPositiveInf},
+	{"basx554", "1E++1", "", 9, big.ToNearestAway},
 	// basx555 toSci '1E--1'           -> NaN Conversion_syntax
-	{"basx555", "1E--1", "", 9, big.ToPositiveInf},
+	{"basx555", "1E--1", "", 9, big.ToNearestAway},
 	// basx556 toSci '1E+-1'           -> NaN Conversion_syntax
-	{"basx556", "1E+-1", "", 9, big.ToPositiveInf},
+	{"basx556", "1E+-1", "", 9, big.ToNearestAway},
 	// basx557 toSci '1E-+1'           -> NaN Conversion_syntax
-	{"basx557", "1E-+1", "", 9, big.ToPositiveInf},
+	{"basx557", "1E-+1", "", 9, big.ToNearestAway},
 	// basx558 toSci '1E''1'           -> NaN Conversion_syntax
-	{"basx558", "1E''1", "", 9, big.ToPositiveInf},
+	{"basx558", "1E''1", "", 9, big.ToNearestAway},
 	// SKIP: basx559 toSci "1E""1"           -> NaN Conversion_syntax
 	// basx560 toSci "1E"""""          -> NaN Conversion_syntax
-	{"basx560", "1E", "", 9, big.ToPositiveInf},
+	{"basx560", "1E", "", 9, big.ToNearestAway},
 	// Near-specials
 	// basx561 toSci "qNaN"            -> NaN Conversion_syntax
-	{"basx561", "qNaN", "", 9, big.ToPositiveInf},
+	{"basx561", "qNaN", "", 9, big.ToNearestAway},
 	// basx562 toSci "NaNq"            -> NaN Conversion_syntax
-	{"basx562", "NaNq", "", 9, big.ToPositiveInf},
+	{"basx562", "NaNq", "", 9, big.ToNearestAway},
 	// basx563 toSci "NaNs"            -> NaN Conversion_syntax
-	{"basx563", "NaNs", "", 9, big.ToPositiveInf},
+	{"basx563", "NaNs", "", 9, big.ToNearestAway},
 	// SKIP: basx564 toSci "Infi"            -> NaN Conversion_syntax
 	// SKIP: basx565 toSci "Infin"           -> NaN Conversion_syntax
 	// SKIP: basx566 toSci "Infini"          -> NaN Conversion_syntax
@@ -988,302 +1011,303 @@ var toSciTests = []struct {
 	// SKIP: basx571 toSci "-0Inf"           -> NaN Conversion_syntax
 	// SKIP: basx572 toSci "-9Inf"           -> NaN Conversion_syntax
 	// basx573 toSci "-sNa"            -> NaN Conversion_syntax
-	{"basx573", "-sNa", "", 9, big.ToPositiveInf},
+	{"basx573", "-sNa", "", 9, big.ToNearestAway},
 	// basx574 toSci "xNaN"            -> NaN Conversion_syntax
-	{"basx574", "xNaN", "", 9, big.ToPositiveInf},
+	{"basx574", "xNaN", "", 9, big.ToNearestAway},
 	// basx575 toSci "0sNaN"           -> NaN Conversion_syntax
-	{"basx575", "0sNaN", "", 9, big.ToPositiveInf},
+	{"basx575", "0sNaN", "", 9, big.ToNearestAway},
 	// some baddies with dots and Es and dots and specials
 	// basx576 toSci  'e+1'            ->  NaN Conversion_syntax
-	{"basx576", "e+1", "", 9, big.ToPositiveInf},
+	{"basx576", "e+1", "", 9, big.ToNearestAway},
 	// basx577 toSci  '.e+1'           ->  NaN Conversion_syntax
-	{"basx577", ".e+1", "", 9, big.ToPositiveInf},
+	{"basx577", ".e+1", "", 9, big.ToNearestAway},
 	// basx578 toSci  '+.e+1'          ->  NaN Conversion_syntax
-	{"basx578", "+.e+1", "", 9, big.ToPositiveInf},
+	{"basx578", "+.e+1", "", 9, big.ToNearestAway},
 	// basx579 toSci  '-.e+'           ->  NaN Conversion_syntax
-	{"basx579", "-.e+", "", 9, big.ToPositiveInf},
+	{"basx579", "-.e+", "", 9, big.ToNearestAway},
 	// basx580 toSci  '-.e'            ->  NaN Conversion_syntax
-	{"basx580", "-.e", "", 9, big.ToPositiveInf},
+	{"basx580", "-.e", "", 9, big.ToNearestAway},
 	// basx581 toSci  'E+1'            ->  NaN Conversion_syntax
-	{"basx581", "E+1", "", 9, big.ToPositiveInf},
+	{"basx581", "E+1", "", 9, big.ToNearestAway},
 	// basx582 toSci  '.E+1'           ->  NaN Conversion_syntax
-	{"basx582", ".E+1", "", 9, big.ToPositiveInf},
+	{"basx582", ".E+1", "", 9, big.ToNearestAway},
 	// basx583 toSci  '+.E+1'          ->  NaN Conversion_syntax
-	{"basx583", "+.E+1", "", 9, big.ToPositiveInf},
+	{"basx583", "+.E+1", "", 9, big.ToNearestAway},
 	// basx584 toSci  '-.E+'           ->  NaN Conversion_syntax
-	{"basx584", "-.E+", "", 9, big.ToPositiveInf},
+	{"basx584", "-.E+", "", 9, big.ToNearestAway},
 	// basx585 toSci  '-.E'            ->  NaN Conversion_syntax
-	{"basx585", "-.E", "", 9, big.ToPositiveInf},
+	{"basx585", "-.E", "", 9, big.ToNearestAway},
 	// basx586 toSci  '.NaN'           ->  NaN Conversion_syntax
-	{"basx586", ".NaN", "", 9, big.ToPositiveInf},
+	{"basx586", ".NaN", "", 9, big.ToNearestAway},
 	// basx587 toSci  '-.NaN'          ->  NaN Conversion_syntax
-	{"basx587", "-.NaN", "", 9, big.ToPositiveInf},
+	{"basx587", "-.NaN", "", 9, big.ToNearestAway},
 	// basx588 toSci  '+.sNaN'         ->  NaN Conversion_syntax
-	{"basx588", "+.sNaN", "", 9, big.ToPositiveInf},
+	{"basx588", "+.sNaN", "", 9, big.ToNearestAway},
 	// SKIP: basx589 toSci  '+.Inf'          ->  NaN Conversion_syntax
 	// SKIP: basx590 toSci  '.Infinity'      ->  NaN Conversion_syntax
 	// Zeros
 	// basx601 toSci 0.000000000       -> 0E-9
-	{"basx601", "0.000000000", "0E-9", 9, big.ToPositiveInf},
+	{"basx601", "0.000000000", "0E-9", 9, big.ToNearestAway},
 	// basx602 toSci 0.00000000        -> 0E-8
-	{"basx602", "0.00000000", "0E-8", 9, big.ToPositiveInf},
+	{"basx602", "0.00000000", "0E-8", 9, big.ToNearestAway},
 	// basx603 toSci 0.0000000         -> 0E-7
-	{"basx603", "0.0000000", "0E-7", 9, big.ToPositiveInf},
+	{"basx603", "0.0000000", "0E-7", 9, big.ToNearestAway},
 	// basx604 toSci 0.000000          -> 0.000000
-	{"basx604", "0.000000", "0.000000", 9, big.ToPositiveInf},
+	{"basx604", "0.000000", "0.000000", 9, big.ToNearestAway},
 	// basx605 toSci 0.00000           -> 0.00000
-	{"basx605", "0.00000", "0.00000", 9, big.ToPositiveInf},
+	{"basx605", "0.00000", "0.00000", 9, big.ToNearestAway},
 	// basx606 toSci 0.0000            -> 0.0000
-	{"basx606", "0.0000", "0.0000", 9, big.ToPositiveInf},
+	{"basx606", "0.0000", "0.0000", 9, big.ToNearestAway},
 	// basx607 toSci 0.000             -> 0.000
-	{"basx607", "0.000", "0.000", 9, big.ToPositiveInf},
+	{"basx607", "0.000", "0.000", 9, big.ToNearestAway},
 	// basx608 toSci 0.00              -> 0.00
-	{"basx608", "0.00", "0.00", 9, big.ToPositiveInf},
+	{"basx608", "0.00", "0.00", 9, big.ToNearestAway},
 	// basx609 toSci 0.0               -> 0.0
-	{"basx609", "0.0", "0.0", 9, big.ToPositiveInf},
+	{"basx609", "0.0", "0.0", 9, big.ToNearestAway},
 	// basx610 toSci  .0               -> 0.0
-	{"basx610", ".0", "0.0", 9, big.ToPositiveInf},
+	{"basx610", ".0", "0.0", 9, big.ToNearestAway},
 	// basx611 toSci 0.                -> 0
-	{"basx611", "0.", "0", 9, big.ToPositiveInf},
+	{"basx611", "0.", "0", 9, big.ToNearestAway},
 	// basx612 toSci -.0               -> -0.0
-	{"basx612", "-.0", "-0.0", 9, big.ToPositiveInf},
+	{"basx612", "-.0", "-0.0", 9, big.ToNearestAway},
 	// basx613 toSci -0.               -> -0
-	{"basx613", "-0.", "-0", 9, big.ToPositiveInf},
+	{"basx613", "-0.", "-0", 9, big.ToNearestAway},
 	// basx614 toSci -0.0              -> -0.0
-	{"basx614", "-0.0", "-0.0", 9, big.ToPositiveInf},
+	{"basx614", "-0.0", "-0.0", 9, big.ToNearestAway},
 	// basx615 toSci -0.00             -> -0.00
-	{"basx615", "-0.00", "-0.00", 9, big.ToPositiveInf},
+	{"basx615", "-0.00", "-0.00", 9, big.ToNearestAway},
 	// basx616 toSci -0.000            -> -0.000
-	{"basx616", "-0.000", "-0.000", 9, big.ToPositiveInf},
+	{"basx616", "-0.000", "-0.000", 9, big.ToNearestAway},
 	// basx617 toSci -0.0000           -> -0.0000
-	{"basx617", "-0.0000", "-0.0000", 9, big.ToPositiveInf},
+	{"basx617", "-0.0000", "-0.0000", 9, big.ToNearestAway},
 	// basx618 toSci -0.00000          -> -0.00000
-	{"basx618", "-0.00000", "-0.00000", 9, big.ToPositiveInf},
+	{"basx618", "-0.00000", "-0.00000", 9, big.ToNearestAway},
 	// basx619 toSci -0.000000         -> -0.000000
-	{"basx619", "-0.000000", "-0.000000", 9, big.ToPositiveInf},
+	{"basx619", "-0.000000", "-0.000000", 9, big.ToNearestAway},
 	// basx620 toSci -0.0000000        -> -0E-7
-	{"basx620", "-0.0000000", "-0E-7", 9, big.ToPositiveInf},
+	{"basx620", "-0.0000000", "-0E-7", 9, big.ToNearestAway},
 	// basx621 toSci -0.00000000       -> -0E-8
-	{"basx621", "-0.00000000", "-0E-8", 9, big.ToPositiveInf},
+	{"basx621", "-0.00000000", "-0E-8", 9, big.ToNearestAway},
 	// basx622 toSci -0.000000000      -> -0E-9
-	{"basx622", "-0.000000000", "-0E-9", 9, big.ToPositiveInf},
+	{"basx622", "-0.000000000", "-0E-9", 9, big.ToNearestAway},
 	// basx630 toSci  0.00E+0          -> 0.00
-	{"basx630", "0.00E+0", "0.00", 9, big.ToPositiveInf},
+	{"basx630", "0.00E+0", "0.00", 9, big.ToNearestAway},
 	// basx631 toSci  0.00E+1          -> 0.0
-	{"basx631", "0.00E+1", "0.0", 9, big.ToPositiveInf},
+	{"basx631", "0.00E+1", "0.0", 9, big.ToNearestAway},
 	// basx632 toSci  0.00E+2          -> 0
-	{"basx632", "0.00E+2", "0", 9, big.ToPositiveInf},
+	{"basx632", "0.00E+2", "0", 9, big.ToNearestAway},
 	// basx633 toSci  0.00E+3          -> 0E+1
-	{"basx633", "0.00E+3", "0E+1", 9, big.ToPositiveInf},
+	{"basx633", "0.00E+3", "0E+1", 9, big.ToNearestAway},
 	// basx634 toSci  0.00E+4          -> 0E+2
-	{"basx634", "0.00E+4", "0E+2", 9, big.ToPositiveInf},
+	{"basx634", "0.00E+4", "0E+2", 9, big.ToNearestAway},
 	// basx635 toSci  0.00E+5          -> 0E+3
-	{"basx635", "0.00E+5", "0E+3", 9, big.ToPositiveInf},
+	{"basx635", "0.00E+5", "0E+3", 9, big.ToNearestAway},
 	// basx636 toSci  0.00E+6          -> 0E+4
-	{"basx636", "0.00E+6", "0E+4", 9, big.ToPositiveInf},
+	{"basx636", "0.00E+6", "0E+4", 9, big.ToNearestAway},
 	// basx637 toSci  0.00E+7          -> 0E+5
-	{"basx637", "0.00E+7", "0E+5", 9, big.ToPositiveInf},
+	{"basx637", "0.00E+7", "0E+5", 9, big.ToNearestAway},
 	// basx638 toSci  0.00E+8          -> 0E+6
-	{"basx638", "0.00E+8", "0E+6", 9, big.ToPositiveInf},
+	{"basx638", "0.00E+8", "0E+6", 9, big.ToNearestAway},
 	// basx639 toSci  0.00E+9          -> 0E+7
-	{"basx639", "0.00E+9", "0E+7", 9, big.ToPositiveInf},
+	{"basx639", "0.00E+9", "0E+7", 9, big.ToNearestAway},
 	// basx640 toSci  0.0E+0           -> 0.0
-	{"basx640", "0.0E+0", "0.0", 9, big.ToPositiveInf},
+	{"basx640", "0.0E+0", "0.0", 9, big.ToNearestAway},
 	// basx641 toSci  0.0E+1           -> 0
-	{"basx641", "0.0E+1", "0", 9, big.ToPositiveInf},
+	{"basx641", "0.0E+1", "0", 9, big.ToNearestAway},
 	// basx642 toSci  0.0E+2           -> 0E+1
-	{"basx642", "0.0E+2", "0E+1", 9, big.ToPositiveInf},
+	{"basx642", "0.0E+2", "0E+1", 9, big.ToNearestAway},
 	// basx643 toSci  0.0E+3           -> 0E+2
-	{"basx643", "0.0E+3", "0E+2", 9, big.ToPositiveInf},
+	{"basx643", "0.0E+3", "0E+2", 9, big.ToNearestAway},
 	// basx644 toSci  0.0E+4           -> 0E+3
-	{"basx644", "0.0E+4", "0E+3", 9, big.ToPositiveInf},
+	{"basx644", "0.0E+4", "0E+3", 9, big.ToNearestAway},
 	// basx645 toSci  0.0E+5           -> 0E+4
-	{"basx645", "0.0E+5", "0E+4", 9, big.ToPositiveInf},
+	{"basx645", "0.0E+5", "0E+4", 9, big.ToNearestAway},
 	// basx646 toSci  0.0E+6           -> 0E+5
-	{"basx646", "0.0E+6", "0E+5", 9, big.ToPositiveInf},
+	{"basx646", "0.0E+6", "0E+5", 9, big.ToNearestAway},
 	// basx647 toSci  0.0E+7           -> 0E+6
-	{"basx647", "0.0E+7", "0E+6", 9, big.ToPositiveInf},
+	{"basx647", "0.0E+7", "0E+6", 9, big.ToNearestAway},
 	// basx648 toSci  0.0E+8           -> 0E+7
-	{"basx648", "0.0E+8", "0E+7", 9, big.ToPositiveInf},
+	{"basx648", "0.0E+8", "0E+7", 9, big.ToNearestAway},
 	// basx649 toSci  0.0E+9           -> 0E+8
-	{"basx649", "0.0E+9", "0E+8", 9, big.ToPositiveInf},
+	{"basx649", "0.0E+9", "0E+8", 9, big.ToNearestAway},
 	// basx650 toSci  0E+0             -> 0
-	{"basx650", "0E+0", "0", 9, big.ToPositiveInf},
+	{"basx650", "0E+0", "0", 9, big.ToNearestAway},
 	// basx651 toSci  0E+1             -> 0E+1
-	{"basx651", "0E+1", "0E+1", 9, big.ToPositiveInf},
+	{"basx651", "0E+1", "0E+1", 9, big.ToNearestAway},
 	// basx652 toSci  0E+2             -> 0E+2
-	{"basx652", "0E+2", "0E+2", 9, big.ToPositiveInf},
+	{"basx652", "0E+2", "0E+2", 9, big.ToNearestAway},
 	// basx653 toSci  0E+3             -> 0E+3
-	{"basx653", "0E+3", "0E+3", 9, big.ToPositiveInf},
+	{"basx653", "0E+3", "0E+3", 9, big.ToNearestAway},
 	// basx654 toSci  0E+4             -> 0E+4
-	{"basx654", "0E+4", "0E+4", 9, big.ToPositiveInf},
+	{"basx654", "0E+4", "0E+4", 9, big.ToNearestAway},
 	// basx655 toSci  0E+5             -> 0E+5
-	{"basx655", "0E+5", "0E+5", 9, big.ToPositiveInf},
+	{"basx655", "0E+5", "0E+5", 9, big.ToNearestAway},
 	// basx656 toSci  0E+6             -> 0E+6
-	{"basx656", "0E+6", "0E+6", 9, big.ToPositiveInf},
+	{"basx656", "0E+6", "0E+6", 9, big.ToNearestAway},
 	// basx657 toSci  0E+7             -> 0E+7
-	{"basx657", "0E+7", "0E+7", 9, big.ToPositiveInf},
+	{"basx657", "0E+7", "0E+7", 9, big.ToNearestAway},
 	// basx658 toSci  0E+8             -> 0E+8
-	{"basx658", "0E+8", "0E+8", 9, big.ToPositiveInf},
+	{"basx658", "0E+8", "0E+8", 9, big.ToNearestAway},
 	// basx659 toSci  0E+9             -> 0E+9
-	{"basx659", "0E+9", "0E+9", 9, big.ToPositiveInf},
+	{"basx659", "0E+9", "0E+9", 9, big.ToNearestAway},
 	// basx660 toSci  0.0E-0           -> 0.0
-	{"basx660", "0.0E-0", "0.0", 9, big.ToPositiveInf},
+	{"basx660", "0.0E-0", "0.0", 9, big.ToNearestAway},
 	// basx661 toSci  0.0E-1           -> 0.00
-	{"basx661", "0.0E-1", "0.00", 9, big.ToPositiveInf},
+	{"basx661", "0.0E-1", "0.00", 9, big.ToNearestAway},
 	// basx662 toSci  0.0E-2           -> 0.000
-	{"basx662", "0.0E-2", "0.000", 9, big.ToPositiveInf},
+	{"basx662", "0.0E-2", "0.000", 9, big.ToNearestAway},
 	// basx663 toSci  0.0E-3           -> 0.0000
-	{"basx663", "0.0E-3", "0.0000", 9, big.ToPositiveInf},
+	{"basx663", "0.0E-3", "0.0000", 9, big.ToNearestAway},
 	// basx664 toSci  0.0E-4           -> 0.00000
-	{"basx664", "0.0E-4", "0.00000", 9, big.ToPositiveInf},
+	{"basx664", "0.0E-4", "0.00000", 9, big.ToNearestAway},
 	// basx665 toSci  0.0E-5           -> 0.000000
-	{"basx665", "0.0E-5", "0.000000", 9, big.ToPositiveInf},
+	{"basx665", "0.0E-5", "0.000000", 9, big.ToNearestAway},
 	// basx666 toSci  0.0E-6           -> 0E-7
-	{"basx666", "0.0E-6", "0E-7", 9, big.ToPositiveInf},
+	{"basx666", "0.0E-6", "0E-7", 9, big.ToNearestAway},
 	// basx667 toSci  0.0E-7           -> 0E-8
-	{"basx667", "0.0E-7", "0E-8", 9, big.ToPositiveInf},
+	{"basx667", "0.0E-7", "0E-8", 9, big.ToNearestAway},
 	// basx668 toSci  0.0E-8           -> 0E-9
-	{"basx668", "0.0E-8", "0E-9", 9, big.ToPositiveInf},
+	{"basx668", "0.0E-8", "0E-9", 9, big.ToNearestAway},
 	// basx669 toSci  0.0E-9           -> 0E-10
-	{"basx669", "0.0E-9", "0E-10", 9, big.ToPositiveInf},
+	{"basx669", "0.0E-9", "0E-10", 9, big.ToNearestAway},
 	// basx670 toSci  0.00E-0          -> 0.00
-	{"basx670", "0.00E-0", "0.00", 9, big.ToPositiveInf},
+	{"basx670", "0.00E-0", "0.00", 9, big.ToNearestAway},
 	// basx671 toSci  0.00E-1          -> 0.000
-	{"basx671", "0.00E-1", "0.000", 9, big.ToPositiveInf},
+	{"basx671", "0.00E-1", "0.000", 9, big.ToNearestAway},
 	// basx672 toSci  0.00E-2          -> 0.0000
-	{"basx672", "0.00E-2", "0.0000", 9, big.ToPositiveInf},
+	{"basx672", "0.00E-2", "0.0000", 9, big.ToNearestAway},
 	// basx673 toSci  0.00E-3          -> 0.00000
-	{"basx673", "0.00E-3", "0.00000", 9, big.ToPositiveInf},
+	{"basx673", "0.00E-3", "0.00000", 9, big.ToNearestAway},
 	// basx674 toSci  0.00E-4          -> 0.000000
-	{"basx674", "0.00E-4", "0.000000", 9, big.ToPositiveInf},
+	{"basx674", "0.00E-4", "0.000000", 9, big.ToNearestAway},
 	// basx675 toSci  0.00E-5          -> 0E-7
-	{"basx675", "0.00E-5", "0E-7", 9, big.ToPositiveInf},
+	{"basx675", "0.00E-5", "0E-7", 9, big.ToNearestAway},
 	// basx676 toSci  0.00E-6          -> 0E-8
-	{"basx676", "0.00E-6", "0E-8", 9, big.ToPositiveInf},
+	{"basx676", "0.00E-6", "0E-8", 9, big.ToNearestAway},
 	// basx677 toSci  0.00E-7          -> 0E-9
-	{"basx677", "0.00E-7", "0E-9", 9, big.ToPositiveInf},
+	{"basx677", "0.00E-7", "0E-9", 9, big.ToNearestAway},
 	// basx678 toSci  0.00E-8          -> 0E-10
-	{"basx678", "0.00E-8", "0E-10", 9, big.ToPositiveInf},
+	{"basx678", "0.00E-8", "0E-10", 9, big.ToNearestAway},
 	// basx679 toSci  0.00E-9          -> 0E-11
-	{"basx679", "0.00E-9", "0E-11", 9, big.ToPositiveInf},
+	{"basx679", "0.00E-9", "0E-11", 9, big.ToNearestAway},
 	// basx680 toSci  000000.          ->  0
-	{"basx680", "000000.", "0", 9, big.ToPositiveInf},
+	{"basx680", "000000.", "0", 9, big.ToNearestAway},
 	// basx681 toSci   00000.          ->  0
-	{"basx681", "00000.", "0", 9, big.ToPositiveInf},
+	{"basx681", "00000.", "0", 9, big.ToNearestAway},
 	// basx682 toSci    0000.          ->  0
-	{"basx682", "0000.", "0", 9, big.ToPositiveInf},
+	{"basx682", "0000.", "0", 9, big.ToNearestAway},
 	// basx683 toSci     000.          ->  0
-	{"basx683", "000.", "0", 9, big.ToPositiveInf},
+	{"basx683", "000.", "0", 9, big.ToNearestAway},
 	// basx684 toSci      00.          ->  0
-	{"basx684", "00.", "0", 9, big.ToPositiveInf},
+	{"basx684", "00.", "0", 9, big.ToNearestAway},
 	// basx685 toSci       0.          ->  0
-	{"basx685", "0.", "0", 9, big.ToPositiveInf},
+	{"basx685", "0.", "0", 9, big.ToNearestAway},
 	// basx686 toSci  +00000.          ->  0
-	{"basx686", "+00000.", "0", 9, big.ToPositiveInf},
+	{"basx686", "+00000.", "0", 9, big.ToNearestAway},
 	// basx687 toSci  -00000.          -> -0
-	{"basx687", "-00000.", "-0", 9, big.ToPositiveInf},
+	{"basx687", "-00000.", "-0", 9, big.ToNearestAway},
 	// basx688 toSci  +0.              ->  0
-	{"basx688", "+0.", "0", 9, big.ToPositiveInf},
+	{"basx688", "+0.", "0", 9, big.ToNearestAway},
 	// basx689 toSci  -0.              -> -0
-	{"basx689", "-0.", "-0", 9, big.ToPositiveInf},
+	{"basx689", "-0.", "-0", 9, big.ToNearestAway},
 	// Specials
+	// precision: 4
 	// basx700 toSci "NaN"             -> NaN
-	{"basx700", "NaN", "", 4, big.ToPositiveInf},
+	{"basx700", "NaN", "", 4, big.ToNearestAway},
 	// basx701 toSci "nan"             -> NaN
-	{"basx701", "nan", "", 4, big.ToPositiveInf},
+	{"basx701", "nan", "", 4, big.ToNearestAway},
 	// basx702 toSci "nAn"             -> NaN
-	{"basx702", "nAn", "", 4, big.ToPositiveInf},
+	{"basx702", "nAn", "", 4, big.ToNearestAway},
 	// basx703 toSci "NAN"             -> NaN
-	{"basx703", "NAN", "", 4, big.ToPositiveInf},
+	{"basx703", "NAN", "", 4, big.ToNearestAway},
 	// basx704 toSci "+NaN"            -> NaN
-	{"basx704", "+NaN", "", 4, big.ToPositiveInf},
+	{"basx704", "+NaN", "", 4, big.ToNearestAway},
 	// basx705 toSci "+nan"            -> NaN
-	{"basx705", "+nan", "", 4, big.ToPositiveInf},
+	{"basx705", "+nan", "", 4, big.ToNearestAway},
 	// basx706 toSci "+nAn"            -> NaN
-	{"basx706", "+nAn", "", 4, big.ToPositiveInf},
+	{"basx706", "+nAn", "", 4, big.ToNearestAway},
 	// basx707 toSci "+NAN"            -> NaN
-	{"basx707", "+NAN", "", 4, big.ToPositiveInf},
+	{"basx707", "+NAN", "", 4, big.ToNearestAway},
 	// basx708 toSci "-NaN"            -> -NaN
-	{"basx708", "-NaN", "", 4, big.ToPositiveInf},
+	{"basx708", "-NaN", "", 4, big.ToNearestAway},
 	// basx709 toSci "-nan"            -> -NaN
-	{"basx709", "-nan", "", 4, big.ToPositiveInf},
+	{"basx709", "-nan", "", 4, big.ToNearestAway},
 	// basx710 toSci "-nAn"            -> -NaN
-	{"basx710", "-nAn", "", 4, big.ToPositiveInf},
+	{"basx710", "-nAn", "", 4, big.ToNearestAway},
 	// basx711 toSci "-NAN"            -> -NaN
-	{"basx711", "-NAN", "", 4, big.ToPositiveInf},
+	{"basx711", "-NAN", "", 4, big.ToNearestAway},
 	// basx712 toSci 'NaN0'            -> NaN
-	{"basx712", "NaN0", "", 4, big.ToPositiveInf},
+	{"basx712", "NaN0", "", 4, big.ToNearestAway},
 	// basx713 toSci 'NaN1'            -> NaN1
-	{"basx713", "NaN1", "", 4, big.ToPositiveInf},
+	{"basx713", "NaN1", "", 4, big.ToNearestAway},
 	// basx714 toSci 'NaN12'           -> NaN12
-	{"basx714", "NaN12", "", 4, big.ToPositiveInf},
+	{"basx714", "NaN12", "", 4, big.ToNearestAway},
 	// basx715 toSci 'NaN123'          -> NaN123
-	{"basx715", "NaN123", "", 4, big.ToPositiveInf},
+	{"basx715", "NaN123", "", 4, big.ToNearestAway},
 	// basx716 toSci 'NaN1234'         -> NaN1234
-	{"basx716", "NaN1234", "", 4, big.ToPositiveInf},
+	{"basx716", "NaN1234", "", 4, big.ToNearestAway},
 	// basx717 toSci 'NaN01'           -> NaN1
-	{"basx717", "NaN01", "", 4, big.ToPositiveInf},
+	{"basx717", "NaN01", "", 4, big.ToNearestAway},
 	// basx718 toSci 'NaN012'          -> NaN12
-	{"basx718", "NaN012", "", 4, big.ToPositiveInf},
+	{"basx718", "NaN012", "", 4, big.ToNearestAway},
 	// basx719 toSci 'NaN0123'         -> NaN123
-	{"basx719", "NaN0123", "", 4, big.ToPositiveInf},
+	{"basx719", "NaN0123", "", 4, big.ToNearestAway},
 	// basx720 toSci 'NaN01234'        -> NaN1234
-	{"basx720", "NaN01234", "", 4, big.ToPositiveInf},
+	{"basx720", "NaN01234", "", 4, big.ToNearestAway},
 	// basx721 toSci 'NaN001'          -> NaN1
-	{"basx721", "NaN001", "", 4, big.ToPositiveInf},
+	{"basx721", "NaN001", "", 4, big.ToNearestAway},
 	// basx722 toSci 'NaN0012'         -> NaN12
-	{"basx722", "NaN0012", "", 4, big.ToPositiveInf},
+	{"basx722", "NaN0012", "", 4, big.ToNearestAway},
 	// basx723 toSci 'NaN00123'        -> NaN123
-	{"basx723", "NaN00123", "", 4, big.ToPositiveInf},
+	{"basx723", "NaN00123", "", 4, big.ToNearestAway},
 	// basx724 toSci 'NaN001234'       -> NaN1234
-	{"basx724", "NaN001234", "", 4, big.ToPositiveInf},
+	{"basx724", "NaN001234", "", 4, big.ToNearestAway},
 	// basx725 toSci 'NaN12345'        -> NaN Conversion_syntax
-	{"basx725", "NaN12345", "", 4, big.ToPositiveInf},
+	{"basx725", "NaN12345", "", 4, big.ToNearestAway},
 	// basx726 toSci 'NaN123e+1'       -> NaN Conversion_syntax
-	{"basx726", "NaN123e+1", "", 4, big.ToPositiveInf},
+	{"basx726", "NaN123e+1", "", 4, big.ToNearestAway},
 	// basx727 toSci 'NaN12.45'        -> NaN Conversion_syntax
-	{"basx727", "NaN12.45", "", 4, big.ToPositiveInf},
+	{"basx727", "NaN12.45", "", 4, big.ToNearestAway},
 	// basx728 toSci 'NaN-12'          -> NaN Conversion_syntax
-	{"basx728", "NaN-12", "", 4, big.ToPositiveInf},
+	{"basx728", "NaN-12", "", 4, big.ToNearestAway},
 	// basx729 toSci 'NaN+12'          -> NaN Conversion_syntax
-	{"basx729", "NaN+12", "", 4, big.ToPositiveInf},
+	{"basx729", "NaN+12", "", 4, big.ToNearestAway},
 	// basx730 toSci "sNaN"            -> sNaN
-	{"basx730", "sNaN", "", 4, big.ToPositiveInf},
+	{"basx730", "sNaN", "", 4, big.ToNearestAway},
 	// basx731 toSci "snan"            -> sNaN
-	{"basx731", "snan", "", 4, big.ToPositiveInf},
+	{"basx731", "snan", "", 4, big.ToNearestAway},
 	// basx732 toSci "SnAn"            -> sNaN
-	{"basx732", "SnAn", "", 4, big.ToPositiveInf},
+	{"basx732", "SnAn", "", 4, big.ToNearestAway},
 	// basx733 toSci "SNAN"            -> sNaN
-	{"basx733", "SNAN", "", 4, big.ToPositiveInf},
+	{"basx733", "SNAN", "", 4, big.ToNearestAway},
 	// basx734 toSci "+sNaN"           -> sNaN
-	{"basx734", "+sNaN", "", 4, big.ToPositiveInf},
+	{"basx734", "+sNaN", "", 4, big.ToNearestAway},
 	// basx735 toSci "+snan"           -> sNaN
-	{"basx735", "+snan", "", 4, big.ToPositiveInf},
+	{"basx735", "+snan", "", 4, big.ToNearestAway},
 	// basx736 toSci "+SnAn"           -> sNaN
-	{"basx736", "+SnAn", "", 4, big.ToPositiveInf},
+	{"basx736", "+SnAn", "", 4, big.ToNearestAway},
 	// basx737 toSci "+SNAN"           -> sNaN
-	{"basx737", "+SNAN", "", 4, big.ToPositiveInf},
+	{"basx737", "+SNAN", "", 4, big.ToNearestAway},
 	// basx738 toSci "-sNaN"           -> -sNaN
-	{"basx738", "-sNaN", "", 4, big.ToPositiveInf},
+	{"basx738", "-sNaN", "", 4, big.ToNearestAway},
 	// basx739 toSci "-snan"           -> -sNaN
-	{"basx739", "-snan", "", 4, big.ToPositiveInf},
+	{"basx739", "-snan", "", 4, big.ToNearestAway},
 	// basx740 toSci "-SnAn"           -> -sNaN
-	{"basx740", "-SnAn", "", 4, big.ToPositiveInf},
+	{"basx740", "-SnAn", "", 4, big.ToNearestAway},
 	// basx741 toSci "-SNAN"           -> -sNaN
-	{"basx741", "-SNAN", "", 4, big.ToPositiveInf},
+	{"basx741", "-SNAN", "", 4, big.ToNearestAway},
 	// basx742 toSci 'sNaN0000'        -> sNaN
-	{"basx742", "sNaN0000", "", 4, big.ToPositiveInf},
+	{"basx742", "sNaN0000", "", 4, big.ToNearestAway},
 	// basx743 toSci 'sNaN7'           -> sNaN7
-	{"basx743", "sNaN7", "", 4, big.ToPositiveInf},
+	{"basx743", "sNaN7", "", 4, big.ToNearestAway},
 	// basx744 toSci 'sNaN007234'      -> sNaN7234
-	{"basx744", "sNaN007234", "", 4, big.ToPositiveInf},
+	{"basx744", "sNaN007234", "", 4, big.ToNearestAway},
 	// basx745 toSci 'sNaN72345'       -> NaN Conversion_syntax
-	{"basx745", "sNaN72345", "", 4, big.ToPositiveInf},
+	{"basx745", "sNaN72345", "", 4, big.ToNearestAway},
 	// basx746 toSci 'sNaN72.45'       -> NaN Conversion_syntax
-	{"basx746", "sNaN72.45", "", 4, big.ToPositiveInf},
+	{"basx746", "sNaN72.45", "", 4, big.ToNearestAway},
 	// basx747 toSci 'sNaN-72'         -> NaN Conversion_syntax
-	{"basx747", "sNaN-72", "", 4, big.ToPositiveInf},
+	{"basx747", "sNaN-72", "", 4, big.ToNearestAway},
 	// SKIP: basx748 toSci "Inf"             -> Infinity
 	// SKIP: basx749 toSci "inf"             -> Infinity
 	// SKIP: basx750 toSci "iNf"             -> Infinity
@@ -1404,146 +1428,159 @@ var toSciTests = []struct {
 	// SKIP: basx877 toEng  0.00E-7          -> 0E-9
 	// SKIP: basx878 toEng  0.00E-8          -> 0.0E-9
 	// SKIP: basx879 toEng  0.00E-9          -> 0.00E-9
+	// rounding: half_up
+	// precision: 9
 	// subnormals and overflows
 	// basx906 toSci '99e999999999'       -> Infinity Overflow  Inexact Rounded
-	{"basx906", "99e999999999", "Inf", 9, big.ToPositiveInf},
+	{"basx906", "99e999999999", "Inf", 9, big.ToNearestAway},
 	// basx907 toSci '999e999999999'      -> Infinity Overflow  Inexact Rounded
-	{"basx907", "999e999999999", "Inf", 9, big.ToPositiveInf},
+	{"basx907", "999e999999999", "Inf", 9, big.ToNearestAway},
 	// basx908 toSci '0.9e-999999999'     -> 9E-1000000000 Subnormal
-	{"basx908", "0.9e-999999999", "9E-1000000000", 9, big.ToPositiveInf},
+	{"basx908", "0.9e-999999999", "9E-1000000000", 9, big.ToNearestAway},
 	// basx909 toSci '0.09e-999999999'    -> 9E-1000000001 Subnormal
-	{"basx909", "0.09e-999999999", "9E-1000000001", 9, big.ToPositiveInf},
+	{"basx909", "0.09e-999999999", "9E-1000000001", 9, big.ToNearestAway},
 	// basx910 toSci '0.1e1000000000'     -> 1E+999999999
-	{"basx910", "0.1e1000000000", "1E+999999999", 9, big.ToPositiveInf},
+	{"basx910", "0.1e1000000000", "1E+999999999", 9, big.ToNearestAway},
 	// basx911 toSci '10e-1000000000'     -> 1.0E-999999999
-	{"basx911", "10e-1000000000", "1.0E-999999999", 9, big.ToPositiveInf},
+	{"basx911", "10e-1000000000", "1.0E-999999999", 9, big.ToNearestAway},
 	// basx912 toSci '0.9e9999999999'     -> Infinity Overflow  Inexact Rounded
-	{"basx912", "0.9e9999999999", "Inf", 9, big.ToPositiveInf},
+	{"basx912", "0.9e9999999999", "Inf", 9, big.ToNearestAway},
 	// basx913 toSci '99e-9999999999'     -> 0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx913", "99e-9999999999", "0E-1000000007", 9, big.ToPositiveInf},
+	{"basx913", "99e-9999999999", "0E-1000000007", 9, big.ToNearestAway},
 	// basx914 toSci '111e9999999999'     -> Infinity Overflow  Inexact Rounded
-	{"basx914", "111e9999999999", "Inf", 9, big.ToPositiveInf},
+	{"basx914", "111e9999999999", "Inf", 9, big.ToNearestAway},
 	// basx915 toSci '1111e-9999999999'   -> 0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx915", "1111e-9999999999", "0E-1000000007", 9, big.ToPositiveInf},
+	{"basx915", "1111e-9999999999", "0E-1000000007", 9, big.ToNearestAway},
 	// basx916 toSci '1111e-99999999999'  -> 0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx916", "1111e-99999999999", "0E-1000000007", 9, big.ToPositiveInf},
+	{"basx916", "1111e-99999999999", "0E-1000000007", 9, big.ToNearestAway},
 	// basx917 toSci '7e1000000000'       -> Infinity Overflow  Inexact Rounded
-	{"basx917", "7e1000000000", "Inf", 9, big.ToPositiveInf},
+	{"basx917", "7e1000000000", "Inf", 9, big.ToNearestAway},
 	// negatives the same
 	// basx918 toSci '-99e999999999'      -> -Infinity Overflow  Inexact Rounded
-	{"basx918", "-99e999999999", "-Inf", 9, big.ToPositiveInf},
+	{"basx918", "-99e999999999", "-Inf", 9, big.ToNearestAway},
 	// basx919 toSci '-999e999999999'     -> -Infinity Overflow  Inexact Rounded
-	{"basx919", "-999e999999999", "-Inf", 9, big.ToPositiveInf},
+	{"basx919", "-999e999999999", "-Inf", 9, big.ToNearestAway},
 	// basx920 toSci '-0.9e-999999999'    -> -9E-1000000000 Subnormal
-	{"basx920", "-0.9e-999999999", "-9E-1000000000", 9, big.ToPositiveInf},
+	{"basx920", "-0.9e-999999999", "-9E-1000000000", 9, big.ToNearestAway},
 	// basx921 toSci '-0.09e-999999999'   -> -9E-1000000001 Subnormal
-	{"basx921", "-0.09e-999999999", "-9E-1000000001", 9, big.ToPositiveInf},
+	{"basx921", "-0.09e-999999999", "-9E-1000000001", 9, big.ToNearestAway},
 	// basx922 toSci '-0.1e1000000000'    -> -1E+999999999
-	{"basx922", "-0.1e1000000000", "-1E+999999999", 9, big.ToPositiveInf},
+	{"basx922", "-0.1e1000000000", "-1E+999999999", 9, big.ToNearestAway},
 	// basx923 toSci '-10e-1000000000'    -> -1.0E-999999999
-	{"basx923", "-10e-1000000000", "-1.0E-999999999", 9, big.ToPositiveInf},
+	{"basx923", "-10e-1000000000", "-1.0E-999999999", 9, big.ToNearestAway},
 	// basx924 toSci '-0.9e9999999999'    -> -Infinity Overflow  Inexact Rounded
-	{"basx924", "-0.9e9999999999", "-Inf", 9, big.ToPositiveInf},
+	{"basx924", "-0.9e9999999999", "-Inf", 9, big.ToNearestAway},
 	// basx925 toSci '-99e-9999999999'    -> -0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx925", "-99e-9999999999", "-0E-1000000007", 9, big.ToPositiveInf},
+	{"basx925", "-99e-9999999999", "-0E-1000000007", 9, big.ToNearestAway},
 	// basx926 toSci '-111e9999999999'    -> -Infinity Overflow  Inexact Rounded
-	{"basx926", "-111e9999999999", "-Inf", 9, big.ToPositiveInf},
+	{"basx926", "-111e9999999999", "-Inf", 9, big.ToNearestAway},
 	// basx927 toSci '-1111e-9999999999'  -> -0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx927", "-1111e-9999999999", "-0E-1000000007", 9, big.ToPositiveInf},
+	{"basx927", "-1111e-9999999999", "-0E-1000000007", 9, big.ToNearestAway},
 	// basx928 toSci '-1111e-99999999999' -> -0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
-	{"basx928", "-1111e-99999999999", "-0E-1000000007", 9, big.ToPositiveInf},
+	{"basx928", "-1111e-99999999999", "-0E-1000000007", 9, big.ToNearestAway},
 	// basx929 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
-	{"basx929", "-7e1000000000", "-Inf", 9, big.ToPositiveInf},
+	{"basx929", "-7e1000000000", "-Inf", 9, big.ToNearestAway},
+	// rounding: ceiling
 	// basx930 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
 	{"basx930", "7e1000000000", "Inf", 9, big.ToPositiveInf},
 	// basx931 toSci '-7e1000000000'      -> -9.99999999E+999999999 Overflow  Inexact Rounded
 	{"basx931", "-7e1000000000", "-9.99999999E+999999999", 9, big.ToPositiveInf},
+	// rounding: up
 	// basx932 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
-	{"basx932", "7e1000000000", "Inf", 9, big.ToPositiveInf},
+	{"basx932", "7e1000000000", "Inf", 9, big.AwayFromZero},
 	// basx933 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
-	{"basx933", "-7e1000000000", "-Inf", 9, big.ToPositiveInf},
+	{"basx933", "-7e1000000000", "-Inf", 9, big.AwayFromZero},
+	// rounding: down
 	// basx934 toSci  '7e1000000000'      ->  9.99999999E+999999999 Overflow  Inexact Rounded
-	{"basx934", "7e1000000000", "9.99999999E+999999999", 9, big.ToNegativeInf},
+	{"basx934", "7e1000000000", "9.99999999E+999999999", 9, big.ToZero},
 	// basx935 toSci '-7e1000000000'      -> -9.99999999E+999999999 Overflow  Inexact Rounded
-	{"basx935", "-7e1000000000", "-9.99999999E+999999999", 9, big.ToNegativeInf},
+	{"basx935", "-7e1000000000", "-9.99999999E+999999999", 9, big.ToZero},
+	// rounding: floor
 	// basx936 toSci  '7e1000000000'      ->  9.99999999E+999999999 Overflow  Inexact Rounded
 	{"basx936", "7e1000000000", "9.99999999E+999999999", 9, big.ToNegativeInf},
 	// basx937 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
 	{"basx937", "-7e1000000000", "-Inf", 9, big.ToNegativeInf},
+	// rounding: half_up
 	// basx938 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
-	{"basx938", "7e1000000000", "Inf", 9, big.ToPositiveInf},
+	{"basx938", "7e1000000000", "Inf", 9, big.ToNearestAway},
 	// basx939 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
-	{"basx939", "-7e1000000000", "-Inf", 9, big.ToPositiveInf},
+	{"basx939", "-7e1000000000", "-Inf", 9, big.ToNearestAway},
+	// rounding: half_even
 	// basx940 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
-	{"basx940", "7e1000000000", "Inf", 9, big.ToNegativeInf},
+	{"basx940", "7e1000000000", "Inf", 9, big.ToNearestEven},
 	// basx941 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
-	{"basx941", "-7e1000000000", "-Inf", 9, big.ToNegativeInf},
-	// basx942 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
-	{"basx942", "7e1000000000", "Inf", 9, big.ToNegativeInf},
-	// basx943 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
-	{"basx943", "-7e1000000000", "-Inf", 9, big.ToNegativeInf},
+	{"basx941", "-7e1000000000", "-Inf", 9, big.ToNearestEven},
+	// rounding: half_down
+	// SKIP: basx942 toSci  '7e1000000000'      ->  Infinity Overflow  Inexact Rounded
+	// SKIP: basx943 toSci '-7e1000000000'      -> -Infinity Overflow  Inexact Rounded
+	// rounding: half_even
 	// Giga exponent initial tests
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// basx951 toSci '99e999'          -> '9.9E+1000'
-	{"basx951", "99e999", "9.9E+1000", 9, big.ToNegativeInf},
+	{"basx951", "99e999", "9.9E+1000", 9, big.ToNearestEven},
 	// basx952 toSci '999e999'         -> '9.99E+1001'
-	{"basx952", "999e999", "9.99E+1001", 9, big.ToNegativeInf},
+	{"basx952", "999e999", "9.99E+1001", 9, big.ToNearestEven},
 	// basx953 toSci '0.9e-999'        -> '9E-1000'
-	{"basx953", "0.9e-999", "9E-1000", 9, big.ToNegativeInf},
+	{"basx953", "0.9e-999", "9E-1000", 9, big.ToNearestEven},
 	// basx954 toSci '0.09e-999'       -> '9E-1001'
-	{"basx954", "0.09e-999", "9E-1001", 9, big.ToNegativeInf},
+	{"basx954", "0.09e-999", "9E-1001", 9, big.ToNearestEven},
 	// basx955 toSci '0.1e1001'        -> '1E+1000'
-	{"basx955", "0.1e1001", "1E+1000", 9, big.ToNegativeInf},
+	{"basx955", "0.1e1001", "1E+1000", 9, big.ToNearestEven},
 	// basx956 toSci '10e-1001'        -> '1.0E-1000'
-	{"basx956", "10e-1001", "1.0E-1000", 9, big.ToNegativeInf},
+	{"basx956", "10e-1001", "1.0E-1000", 9, big.ToNearestEven},
 	// basx957 toSci '0.9e9999'        -> '9E+9998'
-	{"basx957", "0.9e9999", "9E+9998", 9, big.ToNegativeInf},
+	{"basx957", "0.9e9999", "9E+9998", 9, big.ToNearestEven},
 	// basx958 toSci '99e-9999'        -> '9.9E-9998'
-	{"basx958", "99e-9999", "9.9E-9998", 9, big.ToNegativeInf},
+	{"basx958", "99e-9999", "9.9E-9998", 9, big.ToNearestEven},
 	// basx959 toSci '111e9997'        -> '1.11E+9999'
-	{"basx959", "111e9997", "1.11E+9999", 9, big.ToNegativeInf},
+	{"basx959", "111e9997", "1.11E+9999", 9, big.ToNearestEven},
 	// basx960 toSci '1111e-9999'      -> '1.111E-9996'
-	{"basx960", "1111e-9999", "1.111E-9996", 9, big.ToNegativeInf},
+	{"basx960", "1111e-9999", "1.111E-9996", 9, big.ToNearestEven},
 	// basx961 toSci '99e9999'         -> '9.9E+10000'
-	{"basx961", "99e9999", "9.9E+10000", 9, big.ToNegativeInf},
+	{"basx961", "99e9999", "9.9E+10000", 9, big.ToNearestEven},
 	// basx962 toSci '999e9999'        -> '9.99E+10001'
-	{"basx962", "999e9999", "9.99E+10001", 9, big.ToNegativeInf},
+	{"basx962", "999e9999", "9.99E+10001", 9, big.ToNearestEven},
 	// basx963 toSci '0.9e-9999'       -> '9E-10000'
-	{"basx963", "0.9e-9999", "9E-10000", 9, big.ToNegativeInf},
+	{"basx963", "0.9e-9999", "9E-10000", 9, big.ToNearestEven},
 	// basx964 toSci '0.09e-9999'      -> '9E-10001'
-	{"basx964", "0.09e-9999", "9E-10001", 9, big.ToNegativeInf},
+	{"basx964", "0.09e-9999", "9E-10001", 9, big.ToNearestEven},
 	// basx965 toSci '0.1e10001'       -> '1E+10000'
-	{"basx965", "0.1e10001", "1E+10000", 9, big.ToNegativeInf},
+	{"basx965", "0.1e10001", "1E+10000", 9, big.ToNearestEven},
 	// basx966 toSci '10e-10001'       -> '1.0E-10000'
-	{"basx966", "10e-10001", "1.0E-10000", 9, big.ToNegativeInf},
+	{"basx966", "10e-10001", "1.0E-10000", 9, big.ToNearestEven},
 	// basx967 toSci '0.9e99999'       -> '9E+99998'
-	{"basx967", "0.9e99999", "9E+99998", 9, big.ToNegativeInf},
+	{"basx967", "0.9e99999", "9E+99998", 9, big.ToNearestEven},
 	// basx968 toSci '99e-99999'       -> '9.9E-99998'
-	{"basx968", "99e-99999", "9.9E-99998", 9, big.ToNegativeInf},
+	{"basx968", "99e-99999", "9.9E-99998", 9, big.ToNearestEven},
 	// basx969 toSci '111e99999'       -> '1.11E+100001'
-	{"basx969", "111e99999", "1.11E+100001", 9, big.ToNegativeInf},
+	{"basx969", "111e99999", "1.11E+100001", 9, big.ToNearestEven},
 	// basx970 toSci '1111e-99999'     -> '1.111E-99996'
-	{"basx970", "1111e-99999", "1.111E-99996", 9, big.ToNegativeInf},
+	{"basx970", "1111e-99999", "1.111E-99996", 9, big.ToNearestEven},
 	// basx971 toSci "0.09e999999999"  -> '9E+999999997'
-	{"basx971", "0.09e999999999", "9E+999999997", 9, big.ToNegativeInf},
+	{"basx971", "0.09e999999999", "9E+999999997", 9, big.ToNearestEven},
 	// basx972 toSci "0.9e999999999"   -> '9E+999999998'
-	{"basx972", "0.9e999999999", "9E+999999998", 9, big.ToNegativeInf},
+	{"basx972", "0.9e999999999", "9E+999999998", 9, big.ToNearestEven},
 	// basx973 toSci "9e999999999"     -> '9E+999999999'
-	{"basx973", "9e999999999", "9E+999999999", 9, big.ToNegativeInf},
+	{"basx973", "9e999999999", "9E+999999999", 9, big.ToNearestEven},
 	// basx974 toSci "9.9e999999999"   -> '9.9E+999999999'
-	{"basx974", "9.9e999999999", "9.9E+999999999", 9, big.ToNegativeInf},
+	{"basx974", "9.9e999999999", "9.9E+999999999", 9, big.ToNearestEven},
 	// basx975 toSci "9.99e999999999"  -> '9.99E+999999999'
-	{"basx975", "9.99e999999999", "9.99E+999999999", 9, big.ToNegativeInf},
+	{"basx975", "9.99e999999999", "9.99E+999999999", 9, big.ToNearestEven},
 	// basx976 toSci "9.99e-999999999" -> '9.99E-999999999'
-	{"basx976", "9.99e-999999999", "9.99E-999999999", 9, big.ToNegativeInf},
+	{"basx976", "9.99e-999999999", "9.99E-999999999", 9, big.ToNearestEven},
 	// basx977 toSci "9.9e-999999999"  -> '9.9E-999999999'
-	{"basx977", "9.9e-999999999", "9.9E-999999999", 9, big.ToNegativeInf},
+	{"basx977", "9.9e-999999999", "9.9E-999999999", 9, big.ToNearestEven},
 	// basx978 toSci "9e-999999999"    -> '9E-999999999'
-	{"basx978", "9e-999999999", "9E-999999999", 9, big.ToNegativeInf},
+	{"basx978", "9e-999999999", "9E-999999999", 9, big.ToNearestEven},
 	// basx979 toSci "99e-999999999"   -> '9.9E-999999998'
-	{"basx979", "99e-999999999", "9.9E-999999998", 9, big.ToNegativeInf},
+	{"basx979", "99e-999999999", "9.9E-999999998", 9, big.ToNearestEven},
 	// basx980 toSci "999e-999999999"  -> '9.99E-999999997'
-	{"basx980", "999e-999999999", "9.99E-999999997", 9, big.ToNegativeInf},
+	{"basx980", "999e-999999999", "9.99E-999999997", 9, big.ToNearestEven},
 	// Varying exponent maximums
+	// precision: 5
+	// maxexponent: 0
+	// minexponent: 0
 	// SKIP: emax001 toSci -1E+2  -> -Infinity Overflow Inexact Rounded
 	// SKIP: emax002 toSci -100   -> -Infinity Overflow Inexact Rounded
 	// SKIP: emax003 toSci  -10   -> -Infinity Overflow Inexact Rounded
@@ -1562,6 +1599,8 @@ var toSciTests = []struct {
 	// SKIP: emax016 toSci   0.01 ->  0.01 Subnormal
 	// SKIP: emax017 toSci  1E-1  ->  0.1 Subnormal
 	// SKIP: emax018 toSci  1E-2  ->  0.01 Subnormal
+	// maxexponent: 1
+	// minexponent: -1
 	// SKIP: emax100 toSci -1E+3  -> -Infinity Overflow Inexact Rounded
 	// SKIP: emax101 toSci -1E+2  -> -Infinity Overflow Inexact Rounded
 	// SKIP: emax102 toSci -100   -> -Infinity Overflow Inexact Rounded
@@ -1588,6 +1627,9 @@ var toSciTests = []struct {
 	// SKIP: emax123 toSci  1.111E-3  ->  0.00111 Subnormal Underflow Inexact Rounded
 	// SKIP: emax124 toSci  1.1111E-3  ->  0.00111 Subnormal Underflow Inexact Rounded
 	// SKIP: emax125 toSci  1.11111E-3  ->  0.00111 Subnormal Underflow Inexact Rounded
+	// maxexponent: 2
+	// minexponent: -2
+	// precision: 9
 	// SKIP: emax200 toSci -1E+3  -> -Infinity Overflow Inexact Rounded
 	// SKIP: emax201 toSci -1E+2  -> -1E+2
 	// SKIP: emax202 toSci -100   -> -100
@@ -1619,6 +1661,8 @@ var toSciTests = []struct {
 	// SKIP: emax228 toSci  1E-10 ->  1E-10 Subnormal
 	// SKIP: emax229 toSci  1E-11 ->  0E-10 Underflow Subnormal Inexact Rounded Clamped
 	// SKIP: emax230 toSci  1E-12 ->  0E-10 Underflow Subnormal Inexact Rounded Clamped
+	// maxexponent: 7
+	// minexponent: -7
 	// SKIP: emax231 toSci  1E-8  ->  1E-8 Subnormal
 	// SKIP: emax232 toSci  1E-7  ->  1E-7
 	// SKIP: emax233 toSci  1E-6  ->  0.000001
@@ -1627,6 +1671,8 @@ var toSciTests = []struct {
 	// SKIP: emax236 toSci  1E+6  ->  1E+6
 	// SKIP: emax237 toSci  1E+7  ->  1E+7
 	// SKIP: emax238 toSci  1E+8  ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 9
+	// minexponent: -9
 	// SKIP: emax240 toSci  1E-21 ->  0E-17 Subnormal Underflow Inexact Rounded Clamped
 	// SKIP: emax241 toSci  1E-10 ->  1E-10 Subnormal
 	// SKIP: emax242 toSci  1E-9  ->  1E-9
@@ -1636,6 +1682,8 @@ var toSciTests = []struct {
 	// SKIP: emax246 toSci  1E+8  ->  1E+8
 	// SKIP: emax247 toSci  1E+9  ->  1E+9
 	// SKIP: emax248 toSci  1E+10 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 10  -- boundary
+	// minexponent: -10
 	// SKIP: emax250 toSci  1E-21 ->  0E-18 Underflow Subnormal Inexact Rounded Clamped
 	// SKIP: emax251 toSci  1E-11 ->  1E-11 Subnormal
 	// SKIP: emax252 toSci  1E-10 ->  1E-10
@@ -1663,6 +1711,8 @@ var toSciTests = []struct {
 	// SKIP: emax276 toSci  9.99E+9  ->  9.99E+9
 	// SKIP: emax277 toSci  9.99E+10 ->  9.99E+10
 	// SKIP: emax278 toSci  9.99E+11 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 99
+	// minexponent: -99
 	// SKIP: emax280 toSci  1E-120 ->  0E-107 Underflow Subnormal Inexact Rounded Clamped
 	// SKIP: emax281 toSci  1E-100 ->  1E-100 Subnormal
 	// SKIP: emax282 toSci  1E-99  ->  1E-99
@@ -1670,30 +1720,44 @@ var toSciTests = []struct {
 	// SKIP: emax284 toSci  1E+98  ->  1E+98
 	// SKIP: emax285 toSci  1E+99  ->  1E+99
 	// SKIP: emax286 toSci  1E+100 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 999
+	// minexponent: -999
 	// SKIP: emax291 toSci  1E-1000 ->  1E-1000 Subnormal
 	// SKIP: emax292 toSci  1E-999  ->  1E-999
 	// SKIP: emax293 toSci  1E+999  ->  1E+999
 	// SKIP: emax294 toSci  1E+1000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 9999
+	// minexponent: -9999
 	// SKIP: emax301 toSci  1E-10000 ->  1E-10000 Subnormal
 	// SKIP: emax302 toSci  1E-9999  ->  1E-9999
 	// SKIP: emax303 toSci  1E+9999  ->  1E+9999
 	// SKIP: emax304 toSci  1E+10000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 99999
+	// minexponent: -99999
 	// SKIP: emax311 toSci  1E-100000 ->  1E-100000 Subnormal
 	// SKIP: emax312 toSci  1E-99999  ->  1E-99999
 	// SKIP: emax313 toSci  1E+99999  ->  1E+99999
 	// SKIP: emax314 toSci  1E+100000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 999999
+	// minexponent: -999999
 	// SKIP: emax321 toSci  1E-1000000 ->  1E-1000000 Subnormal
 	// SKIP: emax322 toSci  1E-999999  ->  1E-999999
 	// SKIP: emax323 toSci  1E+999999  ->  1E+999999
 	// SKIP: emax324 toSci  1E+1000000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 9999999
+	// minexponent: -9999999
 	// SKIP: emax331 toSci  1E-10000000 ->  1E-10000000 Subnormal
 	// SKIP: emax332 toSci  1E-9999999  ->  1E-9999999
 	// SKIP: emax333 toSci  1E+9999999  ->  1E+9999999
 	// SKIP: emax334 toSci  1E+10000000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 99999999
+	// minexponent: -99999999
 	// SKIP: emax341 toSci  1E-100000000 ->  1E-100000000 Subnormal
 	// SKIP: emax342 toSci  1E-99999999  ->  1E-99999999
 	// SKIP: emax343 toSci  1E+99999999  ->  1E+99999999
 	// SKIP: emax344 toSci  1E+100000000 ->  Infinity Overflow Inexact Rounded
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// SKIP: emax347 toSci  1E-1000000008     ->  0E-1000000007 Underflow Subnormal Inexact Rounded Clamped
 	// SKIP: emax348 toSci  1E-1000000007     ->  1E-1000000007 Subnormal
 	// SKIP: emax349 toSci  1E-1000000000     ->  1E-1000000000 Subnormal
@@ -1742,6 +1806,10 @@ var toSciTests = []struct {
 	// SKIP: emax392 toSci -9.999E+999999999  -> -9.999E+999999999
 	// SKIP: emax393 toSci -9.999E+1000000000 -> -Infinity Overflow Inexact Rounded
 	// Now check 854 rounding of subnormals and proper underflow to 0
+	// precision: 5
+	// maxexponent: 999
+	// minexponent: -999
+	// rounding: half_even
 	// SKIP: emax400 toSci  1.0000E-999     -> 1.0000E-999
 	// SKIP: emax401 toSci  0.1E-999        -> 1E-1000     Subnormal
 	// SKIP: emax402 toSci  0.1000E-999     -> 1.000E-1000 Subnormal
@@ -1815,77 +1883,99 @@ var toSciTests = []struct {
 	// SKIP: emax477 toSci  0.00000099999E-999  -> 0E-1003     Underflow Subnormal Inexact Rounded Clamped
 	// SKIP: emax478 toSci  0.000000099999E-999 -> 0E-1003     Underflow Subnormal Inexact Rounded Clamped
 	// Exponents with insignificant leading zeros
+	// precision: 16
+	// maxexponent: 999999999
+	// minexponent: -999999999
 	// basx1001 toSci  1e999999999 -> 1E+999999999
-	{"basx1001", "1e999999999", "1E+999999999", 16, big.ToNegativeInf},
+	{"basx1001", "1e999999999", "1E+999999999", 16, big.ToNearestEven},
 	// basx1002 toSci  1e0999999999 -> 1E+999999999
-	{"basx1002", "1e0999999999", "1E+999999999", 16, big.ToNegativeInf},
+	{"basx1002", "1e0999999999", "1E+999999999", 16, big.ToNearestEven},
 	// basx1003 toSci  1e00999999999 -> 1E+999999999
-	{"basx1003", "1e00999999999", "1E+999999999", 16, big.ToNegativeInf},
+	{"basx1003", "1e00999999999", "1E+999999999", 16, big.ToNearestEven},
 	// basx1004 toSci  1e000999999999 -> 1E+999999999
-	{"basx1004", "1e000999999999", "1E+999999999", 16, big.ToNegativeInf},
+	{"basx1004", "1e000999999999", "1E+999999999", 16, big.ToNearestEven},
 	// basx1005 toSci  1e000000000000999999999 -> 1E+999999999
-	{"basx1005", "1e000000000000999999999", "1E+999999999", 16, big.ToNegativeInf},
+	{"basx1005", "1e000000000000999999999", "1E+999999999", 16, big.ToNearestEven},
 	// basx1006 toSci  1e000000000001000000007 -> Infinity Overflow Inexact Rounded
-	{"basx1006", "1e000000000001000000007", "Inf", 16, big.ToNegativeInf},
+	{"basx1006", "1e000000000001000000007", "Inf", 16, big.ToNearestEven},
 	// basx1007 toSci  1e-999999999 -> 1E-999999999
-	{"basx1007", "1e-999999999", "1E-999999999", 16, big.ToNegativeInf},
+	{"basx1007", "1e-999999999", "1E-999999999", 16, big.ToNearestEven},
 	// basx1008 toSci  1e-0999999999 -> 1E-999999999
-	{"basx1008", "1e-0999999999", "1E-999999999", 16, big.ToNegativeInf},
+	{"basx1008", "1e-0999999999", "1E-999999999", 16, big.ToNearestEven},
 	// basx1009 toSci  1e-00999999999 -> 1E-999999999
-	{"basx1009", "1e-00999999999", "1E-999999999", 16, big.ToNegativeInf},
+	{"basx1009", "1e-00999999999", "1E-999999999", 16, big.ToNearestEven},
 	// basx1010 toSci  1e-000999999999 -> 1E-999999999
-	{"basx1010", "1e-000999999999", "1E-999999999", 16, big.ToNegativeInf},
+	{"basx1010", "1e-000999999999", "1E-999999999", 16, big.ToNearestEven},
 	// basx1011 toSci  1e-000000000000999999999 -> 1E-999999999
-	{"basx1011", "1e-000000000000999999999", "1E-999999999", 16, big.ToNegativeInf},
+	{"basx1011", "1e-000000000000999999999", "1E-999999999", 16, big.ToNearestEven},
 	// basx1012 toSci  1e-000000000001000000007 -> 1E-1000000007 Subnormal
-	{"basx1012", "1e-000000000001000000007", "1E-1000000007", 16, big.ToNegativeInf},
+	{"basx1012", "1e-000000000001000000007", "1E-1000000007", 16, big.ToNearestEven},
 	// Edge cases for int32 exponents...
 	// basx1021 tosci 1e+2147483649 -> Infinity Overflow Inexact Rounded
-	{"basx1021", "1e+2147483649", "Inf", 16, big.ToNegativeInf},
+	{"basx1021", "1e+2147483649", "Inf", 16, big.ToNearestEven},
 	// basx1022 tosci 1e+2147483648 -> Infinity Overflow Inexact Rounded
-	{"basx1022", "1e+2147483648", "Inf", 16, big.ToNegativeInf},
+	{"basx1022", "1e+2147483648", "Inf", 16, big.ToNearestEven},
 	// basx1023 tosci 1e+2147483647 -> Infinity Overflow Inexact Rounded
-	{"basx1023", "1e+2147483647", "Inf", 16, big.ToNegativeInf},
+	{"basx1023", "1e+2147483647", "Inf", 16, big.ToNearestEven},
 	// basx1024 tosci 1e-2147483647 -> 0E-1000000014 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1024", "1e-2147483647", "0E-1000000014", 16, big.ToNegativeInf},
+	{"basx1024", "1e-2147483647", "0E-1000000014", 16, big.ToNearestEven},
 	// basx1025 tosci 1e-2147483648 -> 0E-1000000014 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1025", "1e-2147483648", "0E-1000000014", 16, big.ToNegativeInf},
+	{"basx1025", "1e-2147483648", "0E-1000000014", 16, big.ToNearestEven},
 	// basx1026 tosci 1e-2147483649 -> 0E-1000000014 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1026", "1e-2147483649", "0E-1000000014", 16, big.ToNegativeInf},
+	{"basx1026", "1e-2147483649", "0E-1000000014", 16, big.ToNearestEven},
 	// same unbalanced
+	// precision: 7
+	// maxexponent: 96
+	// minexponent: -95
 	// basx1031 tosci 1e+2147483649 -> Infinity Overflow Inexact Rounded
-	{"basx1031", "1e+2147483649", "Inf", 7, big.ToNegativeInf},
+	{"basx1031", "1e+2147483649", "Inf", 7, big.ToNearestEven},
 	// basx1032 tosci 1e+2147483648 -> Infinity Overflow Inexact Rounded
-	{"basx1032", "1e+2147483648", "Inf", 7, big.ToNegativeInf},
+	{"basx1032", "1e+2147483648", "Inf", 7, big.ToNearestEven},
 	// basx1033 tosci 1e+2147483647 -> Infinity Overflow Inexact Rounded
-	{"basx1033", "1e+2147483647", "Inf", 7, big.ToNegativeInf},
+	{"basx1033", "1e+2147483647", "Inf", 7, big.ToNearestEven},
 	// basx1034 tosci 1e-2147483647 -> 0E-101 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1034", "1e-2147483647", "0E-101", 7, big.ToNegativeInf},
+	{"basx1034", "1e-2147483647", "0E-101", 7, big.ToNearestEven},
 	// basx1035 tosci 1e-2147483648 -> 0E-101 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1035", "1e-2147483648", "0E-101", 7, big.ToNegativeInf},
+	{"basx1035", "1e-2147483648", "0E-101", 7, big.ToNearestEven},
 	// basx1036 tosci 1e-2147483649 -> 0E-101 Underflow Subnormal Inexact Rounded Clamped
-	{"basx1036", "1e-2147483649", "0E-101", 7, big.ToNegativeInf},
+	{"basx1036", "1e-2147483649", "0E-101", 7, big.ToNearestEven},
 	// check for double-rounded subnormals
+	// precision: 5
+	// maxexponent: 79
+	// minexponent: -79
 	// basx1041 toSci     1.52444E-80  ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"basx1041", "1.52444E-80", "1.524E-80", 5, big.ToNegativeInf},
+	{"basx1041", "1.52444E-80", "1.524E-80", 5, big.ToNearestEven},
 	// basx1042 toSci     1.52445E-80  ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"basx1042", "1.52445E-80", "1.524E-80", 5, big.ToNegativeInf},
+	{"basx1042", "1.52445E-80", "1.524E-80", 5, big.ToNearestEven},
 	// basx1043 toSci     1.52446E-80  ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"basx1043", "1.52446E-80", "1.524E-80", 5, big.ToNegativeInf},
+	{"basx1043", "1.52446E-80", "1.524E-80", 5, big.ToNearestEven},
 	// clamped zeros [see also clamp.decTest]
+	// precision: 34
+	// maxexponent: 6144
+	// minexponent: -6143
 	// SKIP: basx1061 apply   0e+10000  ->  0E+6144 Clamped
 	// SKIP: basx1062 apply   0e-10000  ->  0E-6176 Clamped
 	// SKIP: basx1063 apply  -0e+10000  -> -0E+6144 Clamped
 	// SKIP: basx1064 apply  -0e-10000  -> -0E-6176 Clamped
+	// precision: 16
+	// maxexponent: 384
+	// minexponent: -383
 	// SKIP: basx1065 apply   0e+10000  ->  0E+384  Clamped
 	// SKIP: basx1066 apply   0e-10000  ->  0E-398  Clamped
 	// SKIP: basx1067 apply  -0e+10000  -> -0E+384  Clamped
 	// SKIP: basx1068 apply  -0e-10000  -> -0E-398  Clamped
 	// same with IEEE clamping
+	// clamp: 1
+	// precision: 34
+	// maxexponent: 6144
+	// minexponent: -6143
 	// SKIP: basx1071 apply   0e+10000  ->  0E+6111 Clamped
 	// SKIP: basx1072 apply   0e-10000  ->  0E-6176 Clamped
 	// SKIP: basx1073 apply  -0e+10000  -> -0E+6111 Clamped
 	// SKIP: basx1074 apply  -0e-10000  -> -0E-6176 Clamped
+	// precision: 16
+	// maxexponent: 384
+	// minexponent: -383
 	// SKIP: basx1075 apply   0e+10000  ->  0E+369  Clamped
 	// SKIP: basx1076 apply   0e-10000  ->  0E-398  Clamped
 	// SKIP: basx1077 apply  -0e+10000  -> -0E+369  Clamped

@@ -11,13 +11,20 @@ var copynegateTests = []struct {
 	prec uint
 	mode big.RoundingMode
 }{
+	// version: 2.62
+	// extended: 1
+	// precision: 9
+	// rounding: half_up
+	// maxexponent: 999
+	// minexponent: -999
+	// Sanity check
 	// cpnx001 copynegate       +7.50  -> -7.50
-	{"cpnx001", "+7.50", "-7.50", 9, big.ToPositiveInf},
+	{"cpnx001", "+7.50", "-7.50", 9, big.ToNearestAway},
 	// Infinities
 	// cpnx011 copynegate  Infinity    -> -Infinity
-	{"cpnx011", "Inf", "-Inf", 9, big.ToPositiveInf},
+	{"cpnx011", "Inf", "-Inf", 9, big.ToNearestAway},
 	// cpnx012 copynegate  -Infinity   -> Infinity
-	{"cpnx012", "-Inf", "Inf", 9, big.ToPositiveInf},
+	{"cpnx012", "-Inf", "Inf", 9, big.ToNearestAway},
 	// NaNs, 0 payload
 	// SKIP: cpnx021 copynegate         NaN  -> -NaN
 	// SKIP: cpnx022 copynegate        -NaN  -> NaN
@@ -34,62 +41,62 @@ var copynegateTests = []struct {
 	// SKIP: cpnx038 copynegate     -sNaN101 -> sNaN101
 	// finites
 	// cpnx101 copynegate          7   -> -7
-	{"cpnx101", "7", "-7", 9, big.ToPositiveInf},
+	{"cpnx101", "7", "-7", 9, big.ToNearestAway},
 	// cpnx102 copynegate         -7   -> 7
-	{"cpnx102", "-7", "7", 9, big.ToPositiveInf},
+	{"cpnx102", "-7", "7", 9, big.ToNearestAway},
 	// cpnx103 copynegate         75   -> -75
-	{"cpnx103", "75", "-75", 9, big.ToPositiveInf},
+	{"cpnx103", "75", "-75", 9, big.ToNearestAway},
 	// cpnx104 copynegate        -75   -> 75
-	{"cpnx104", "-75", "75", 9, big.ToPositiveInf},
+	{"cpnx104", "-75", "75", 9, big.ToNearestAway},
 	// cpnx105 copynegate       7.50   -> -7.50
-	{"cpnx105", "7.50", "-7.50", 9, big.ToPositiveInf},
+	{"cpnx105", "7.50", "-7.50", 9, big.ToNearestAway},
 	// cpnx106 copynegate      -7.50   -> 7.50
-	{"cpnx106", "-7.50", "7.50", 9, big.ToPositiveInf},
+	{"cpnx106", "-7.50", "7.50", 9, big.ToNearestAway},
 	// cpnx107 copynegate       7.500  -> -7.500
-	{"cpnx107", "7.500", "-7.500", 9, big.ToPositiveInf},
+	{"cpnx107", "7.500", "-7.500", 9, big.ToNearestAway},
 	// cpnx108 copynegate      -7.500  -> 7.500
-	{"cpnx108", "-7.500", "7.500", 9, big.ToPositiveInf},
+	{"cpnx108", "-7.500", "7.500", 9, big.ToNearestAway},
 	// zeros
 	// cpnx111 copynegate          0   -> -0
-	{"cpnx111", "0", "-0", 9, big.ToPositiveInf},
+	{"cpnx111", "0", "-0", 9, big.ToNearestAway},
 	// cpnx112 copynegate         -0   -> 0
-	{"cpnx112", "-0", "0", 9, big.ToPositiveInf},
+	{"cpnx112", "-0", "0", 9, big.ToNearestAway},
 	// cpnx113 copynegate       0E+4   -> -0E+4
-	{"cpnx113", "0E+4", "-0E+4", 9, big.ToPositiveInf},
+	{"cpnx113", "0E+4", "-0E+4", 9, big.ToNearestAway},
 	// cpnx114 copynegate      -0E+4   -> 0E+4
-	{"cpnx114", "-0E+4", "0E+4", 9, big.ToPositiveInf},
+	{"cpnx114", "-0E+4", "0E+4", 9, big.ToNearestAway},
 	// cpnx115 copynegate     0.0000   -> -0.0000
-	{"cpnx115", "0.0000", "-0.0000", 9, big.ToPositiveInf},
+	{"cpnx115", "0.0000", "-0.0000", 9, big.ToNearestAway},
 	// cpnx116 copynegate    -0.0000   -> 0.0000
-	{"cpnx116", "-0.0000", "0.0000", 9, big.ToPositiveInf},
+	{"cpnx116", "-0.0000", "0.0000", 9, big.ToNearestAway},
 	// cpnx117 copynegate      0E-141  -> -0E-141
-	{"cpnx117", "0E-141", "-0E-141", 9, big.ToPositiveInf},
+	{"cpnx117", "0E-141", "-0E-141", 9, big.ToNearestAway},
 	// cpnx118 copynegate     -0E-141  -> 0E-141
-	{"cpnx118", "-0E-141", "0E-141", 9, big.ToPositiveInf},
+	{"cpnx118", "-0E-141", "0E-141", 9, big.ToNearestAway},
 	// full coefficients, alternating bits
 	// cpnx121 copynegate  268268268         -> -268268268
-	{"cpnx121", "268268268", "-268268268", 9, big.ToPositiveInf},
+	{"cpnx121", "268268268", "-268268268", 9, big.ToNearestAway},
 	// cpnx122 copynegate  -268268268        -> 268268268
-	{"cpnx122", "-268268268", "268268268", 9, big.ToPositiveInf},
+	{"cpnx122", "-268268268", "268268268", 9, big.ToNearestAway},
 	// cpnx123 copynegate  134134134         -> -134134134
-	{"cpnx123", "134134134", "-134134134", 9, big.ToPositiveInf},
+	{"cpnx123", "134134134", "-134134134", 9, big.ToNearestAway},
 	// cpnx124 copynegate  -134134134        -> 134134134
-	{"cpnx124", "-134134134", "134134134", 9, big.ToPositiveInf},
+	{"cpnx124", "-134134134", "134134134", 9, big.ToNearestAway},
 	// Nmax, Nmin, Ntiny
 	// cpnx131 copynegate  9.99999999E+999   -> -9.99999999E+999
-	{"cpnx131", "9.99999999E+999", "-9.99999999E+999", 9, big.ToPositiveInf},
+	{"cpnx131", "9.99999999E+999", "-9.99999999E+999", 9, big.ToNearestAway},
 	// cpnx132 copynegate  1E-999                     -> -1E-999
-	{"cpnx132", "1E-999", "-1E-999", 9, big.ToPositiveInf},
+	{"cpnx132", "1E-999", "-1E-999", 9, big.ToNearestAway},
 	// cpnx133 copynegate  1.00000000E-999   -> -1.00000000E-999
-	{"cpnx133", "1.00000000E-999", "-1.00000000E-999", 9, big.ToPositiveInf},
+	{"cpnx133", "1.00000000E-999", "-1.00000000E-999", 9, big.ToNearestAway},
 	// cpnx134 copynegate  1E-1007                    -> -1E-1007
-	{"cpnx134", "1E-1007", "-1E-1007", 9, big.ToPositiveInf},
+	{"cpnx134", "1E-1007", "-1E-1007", 9, big.ToNearestAway},
 	// cpnx135 copynegate  -1E-1007                   -> 1E-1007
-	{"cpnx135", "-1E-1007", "1E-1007", 9, big.ToPositiveInf},
+	{"cpnx135", "-1E-1007", "1E-1007", 9, big.ToNearestAway},
 	// cpnx136 copynegate  -1.00000000E-999  -> 1.00000000E-999
-	{"cpnx136", "-1.00000000E-999", "1.00000000E-999", 9, big.ToPositiveInf},
+	{"cpnx136", "-1.00000000E-999", "1.00000000E-999", 9, big.ToNearestAway},
 	// cpnx137 copynegate  -1E-999                    -> 1E-999
-	{"cpnx137", "-1E-999", "1E-999", 9, big.ToPositiveInf},
+	{"cpnx137", "-1E-999", "1E-999", 9, big.ToNearestAway},
 	// cpnx138 copynegate  -9.99999999E+999  -> 9.99999999E+999
-	{"cpnx138", "-9.99999999E+999", "9.99999999E+999", 9, big.ToPositiveInf},
+	{"cpnx138", "-9.99999999E+999", "9.99999999E+999", 9, big.ToNearestAway},
 }
