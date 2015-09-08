@@ -51,6 +51,8 @@ var stringTests = []struct {
 	{in: "1E+009", ok: true, out: "1E+9", unscaled: "1", scale: -9, prec: 1},
 	{in: "1E0", ok: true, out: "1", unscaled: "1", scale: 0, prec: 1},
 	{in: "2E-1", ok: true, out: "0.2", unscaled: "2", scale: 1, prec: 1},
+	{in: "0.9e99999999991", ok: true, out: "Inf"},
+	{in: "-0.9e99999999991", ok: true, out: "-Inf"},
 }
 
 func TestSetGetString(t *testing.T) {

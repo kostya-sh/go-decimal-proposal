@@ -59,9 +59,13 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 		e = strings.Index(s, "E")
 	}
 	if e > 0 {
-		exp64, err := strconv.ParseInt(s[e+1:], 10, 32)
+		exp64, err := strconv.ParseInt(s[e+1:], 10, 64)
 		if err != nil {
 			return nil, false
+		}
+		if exp64 > big.MaxExp {
+			z.inf = true
+			return z, true // TODO: return true or false here (check Float)
 		}
 		s = s[:e]
 		exp = int32(exp64)
