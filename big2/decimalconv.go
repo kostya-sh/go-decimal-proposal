@@ -14,6 +14,78 @@ import (
 	"strings"
 )
 
+func inc(z *big.Int) {
+	z.Add(z, big.NewInt(1))
+}
+
+func dec(z *big.Int) {
+	z.Sub(z, big.NewInt(1))
+}
+
+// round rounds z according to its Prec() and Mode()
+func (z *Decimal) round() {
+	if z.prec == 0 {
+		panic("shouldn't happen (round of z with prec = 0)")
+	}
+	if z.inf {
+		return
+	}
+
+	s := (&z.abs).String()
+	extra := len(s) - int(z.prec)
+	if extra <= 0 {
+		return
+	}
+
+	// TODO: check overflow
+	z.scale -= int32(extra)
+
+	z.abs.SetString(s[:z.prec], 10)
+
+	exact := true
+	for _, d := range s[z.prec:] {
+		if d != '0' {
+			exact = false
+			break
+		}
+	}
+	if exact {
+		return
+	}
+
+	d := int(s[z.prec] - '0')
+	switch z.mode {
+	case big.ToNearestEven:
+		if d > 5 {
+			inc(&z.abs)
+		} else if d == 5 {
+			switch s[z.prec-1] {
+			case '1', '3', '5', '7', '9':
+				inc(&z.abs)
+			}
+		}
+	case big.ToNearestAway:
+		if d >= 5 {
+			inc(&z.abs)
+		}
+	case big.ToZero:
+		break
+	case big.AwayFromZero:
+		inc(&z.abs)
+	case big.ToNegativeInf:
+		if z.neg {
+			inc(&z.abs)
+		}
+	case big.ToPositiveInf:
+		if !z.neg {
+			inc(&z.abs)
+		}
+	}
+
+	// potentially round one more time (in case of 999.9 -> 1000)
+	z.round()
+}
+
 // TODO: update docs
 // SetString sets z to the value of s and returns z and a boolean indicating
 // success. s must be a floating-point decimal number of the same format as
@@ -87,7 +159,11 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 	}
 
 	// precision
-	z.prec = uint32(len((&z.abs).String()))
+	if z.prec == 0 {
+		z.prec = uint32(len((&z.abs).String()))
+	} else {
+		z.round()
+	}
 
 	return z, true
 }

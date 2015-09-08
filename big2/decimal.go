@@ -89,6 +89,7 @@ func NewDecimal(x float64) *Decimal {
 // If prec > MaxPrec, it is set to MaxPrec.
 func (z *Decimal) SetPrec(prec uint) *Decimal {
 	// TODO: implement
+	z.prec = uint32(prec)
 	return z
 }
 

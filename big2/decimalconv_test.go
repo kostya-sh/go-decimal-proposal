@@ -101,7 +101,9 @@ func TestSetGetString(t *testing.T) {
 
 		// initialize to a non-zero value so that issues with parsing
 		// 0 are detected
+		// TODO: think about usefullness of tmp in this test
 		tmp.SetInt64(1234567890)
+		tmp.SetPrec(0) // reset prec to 0
 		d1, ok1 := new(Decimal).SetString(test.in)
 		d2, ok2 := tmp.SetString(test.in)
 
