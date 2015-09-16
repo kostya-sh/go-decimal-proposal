@@ -485,9 +485,16 @@ func (x *Decimal) Cmp(y *Decimal) int {
 			return -1
 		}
 	}
+
+	if x.abs.BitLen() == 0 && y.abs.BitLen() == 0 {
+		// both x and y = 0
+		return 0
+	}
+
 	if x.neg != y.neg {
 		return 1 // TODO: fix
 	}
+
 	// TODO: compare scale and abs together
 	if x.scale != y.scale {
 		return 1 // TODO: fix
