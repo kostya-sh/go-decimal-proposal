@@ -276,7 +276,6 @@ func (z *Decimal) SetInf(signbit bool) *Decimal {
 	return z
 }
 
-// TODO: update docs
 // Set sets z to the (possibly rounded) value of x and returns z.
 // If z's precision is 0, it is changed to the precision of x
 // before setting z (and rounding will have no effect).
@@ -284,7 +283,20 @@ func (z *Decimal) SetInf(signbit bool) *Decimal {
 // mode; and z's accuracy reports the result error relative to the
 // exact (not rounded) result.
 func (z *Decimal) Set(x *Decimal) *Decimal {
-	// TODO: implement
+	// TODO: accuracy
+	if z != x {
+		z.neg = x.neg
+		z.inf = x.inf
+		if !x.inf {
+			z.scale = x.scale
+			z.abs.Set(&x.abs)
+		}
+		if z.prec == 0 {
+			z.prec = x.prec
+		} else if z.prec < x.prec {
+			z.round()
+		}
+	}
 	return z
 }
 
@@ -367,7 +379,8 @@ func (x *Decimal) Rat(z *big.Rat) (*big.Rat, big.Accuracy) {
 // Abs sets z to the (possibly rounded) value |x| (the absolute value of x)
 // and returns z.
 func (z *Decimal) Abs(x *Decimal) *Decimal {
-	// TODO: implement
+	z.Set(x)
+	z.neg = false
 	return z
 }
 

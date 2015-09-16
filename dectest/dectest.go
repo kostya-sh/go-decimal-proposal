@@ -223,9 +223,9 @@ type operation struct {
 
 func findOperation(name string) *operation {
 	switch name {
-	case "copynegate":
+	case "abs", "copynegate":
 		return &operation{
-			name: "copynegate",
+			name: name,
 			structFields: []string{
 				"id   string",
 				"in   string",
