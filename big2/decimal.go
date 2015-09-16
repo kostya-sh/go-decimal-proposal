@@ -387,14 +387,8 @@ func (z *Decimal) Abs(x *Decimal) *Decimal {
 // Neg sets z to the (possibly rounded) value of x with its sign negated,
 // and returns z.
 func (z *Decimal) Neg(x *Decimal) *Decimal {
-	// TODO: implement rounding
-	// TODO: how to handle nil?
-	z.scale = x.scale
+	z.Set(x)
 	z.neg = !x.neg
-	z.inf = x.inf
-	if !x.inf {
-		(&z.abs).Set(&x.abs)
-	}
 	return z
 }
 

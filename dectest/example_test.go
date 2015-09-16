@@ -82,7 +82,7 @@ absx001 abs '1'      -> '1'
 	// }
 }
 
-func ExampleCopyNegate() {
+func ExampleMinus() {
 	file := `
 -- this coment should be ignored
 version: 2.62
@@ -94,8 +94,8 @@ maxExponent: 999
 minExponent: -999
 
 -- Sanity check
-cpnx001 copynegate       +7.50  -> -7.50
-cpnx021 copynegate         NaN  -> -NaN
+minx001 minus       +7.50  -> -7.50
+minx021 minus         NaN  -> -NaN
 
 `
 
@@ -111,7 +111,7 @@ cpnx021 copynegate         NaN  -> -NaN
 	//
 	// import "math/big"
 	//
-	// var copynegateTests = []struct {
+	// var minusTests = []struct {
 	// 	id   string
 	// 	in   string
 	// 	out  string
@@ -125,9 +125,9 @@ cpnx021 copynegate         NaN  -> -NaN
 	// 	// maxexponent: 999
 	// 	// minexponent: -999
 	// 	// Sanity check
-	// 	// cpnx001 copynegate       +7.50  -> -7.50
-	// 	{"cpnx001", "+7.50", "-7.50", 9, big.ToNearestAway},
-	// 	// SKIP: cpnx021 copynegate         NaN  -> -NaN
+	// 	// minx001 minus       +7.50  -> -7.50
+	// 	{"minx001", "+7.50", "-7.50", 9, big.ToNearestAway},
+	// 	// SKIP: minx021 minus         NaN  -> -NaN
 	// }
 }
 

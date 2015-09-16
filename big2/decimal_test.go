@@ -51,9 +51,30 @@ func TestAbs(t *testing.T) {
 	}
 }
 
-//go:generate bash -c "dectest < ~/tmp/dectest/copynegate.decTest > copynegate_test.go"
-func TestCopyNegate(t *testing.T) {
-	for _, test := range copynegateTests {
+//go:generate bash -c "dectest < ~/tmp/dectest/minus.decTest > minus_test.go"
+func TestMinus(t *testing.T) {
+	for _, test := range minusTests {
+		switch test.id {
+		case "minx005", "minx006", "minx007", "minx008", "minx009",
+			"minx024", "minx025", "minx026", "minx027":
+			// TODO: clarify behaviour
+			t.Logf("Confirm: Neg(0) = 0 or -0")
+			continue
+		case "minx100", "minx101":
+			// TODO: skip in dectest
+			t.Logf("Emax not supported")
+			continue
+		case "minx113":
+			// TODO: investigate
+			t.Logf("check Cmp and also Subnormal impl")
+			continue
+		case "minx115", "minx116", "minx117", "minx118", "minx119", "minx120",
+			"minx133", "minx135", "minx136", "minx137", "minx138", "minx139", "minx140":
+			// TODO: disable in doctest
+			t.Logf("Emin not supported")
+			continue
+		}
+
 		in := new(Decimal)
 		_, ok := in.SetString(test.in)
 		if !ok {
@@ -79,6 +100,8 @@ func TestCopyNegate(t *testing.T) {
 		if out.Cmp(r) != 0 {
 			t.Errorf("%s: Neg(%s) got: %s want: %s", test.id, test.in, r.String(), out.String())
 		}
+
+		// TODO: check accuracy
 	}
 }
 

@@ -223,7 +223,7 @@ type operation struct {
 
 func findOperation(name string) *operation {
 	switch name {
-	case "abs", "copynegate":
+	case "abs", "minus":
 		return &operation{
 			name: name,
 			structFields: []string{
