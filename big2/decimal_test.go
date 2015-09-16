@@ -8,16 +8,16 @@ func TestAbs(t *testing.T) {
 		switch test.id {
 		case "absx120":
 			// TODO: disable in doctest
-			t.Logf("Emax not supported")
+			t.Logf("%s: Emax not supported", test.id)
 			continue
 		case "absx213":
 			// TODO: investigate
-			t.Logf("check Cmp and also Subnormal impl")
+			t.Logf("%s: check Cmp and also Subnormal impl", test.id)
 			continue
 		case "absx215", "absx216", "absx217", "absx218", "absx219", "absx220",
 			"absx233", "absx235", "absx236", "absx237", "absx238", "absx239", "absx240":
 			// TODO: disable in doctest
-			t.Logf("Emin not supported")
+			t.Logf("%s: Emin not supported", test.id)
 			continue
 		}
 
@@ -58,20 +58,20 @@ func TestMinus(t *testing.T) {
 		case "minx005", "minx006", "minx007", "minx008", "minx009",
 			"minx024", "minx025", "minx026", "minx027":
 			// TODO: clarify behaviour
-			t.Logf("Confirm: Neg(0) = 0 or -0")
+			t.Logf("%s: Confirm: Neg(0) = 0 or -0", test.id)
 			continue
 		case "minx100", "minx101":
 			// TODO: skip in dectest
-			t.Logf("Emax not supported")
+			t.Logf("%s: Emax not supported", test.id)
 			continue
 		case "minx113":
 			// TODO: investigate
-			t.Logf("check Cmp and also Subnormal impl")
+			t.Logf("%s: check Cmp and also Subnormal impl", test.id)
 			continue
 		case "minx115", "minx116", "minx117", "minx118", "minx119", "minx120",
 			"minx133", "minx135", "minx136", "minx137", "minx138", "minx139", "minx140":
 			// TODO: disable in doctest
-			t.Logf("Emin not supported")
+			t.Logf("%s: Emin not supported", test.id)
 			continue
 		}
 
@@ -110,7 +110,7 @@ func TestCompare(t *testing.T) {
 	for _, test := range compareTests {
 		if test.out != 0 {
 			// TODO: implement
-			t.Logf("not implemented")
+			t.Logf("%s: not implemented", test.id)
 			continue
 		}
 		switch test.id {
@@ -123,7 +123,7 @@ func TestCompare(t *testing.T) {
 			"comx691", "comx692", "comx693", "comx694", "comx695", "comx696", "comx697", "comx698", "comx699",
 			"comx743", "comx753":
 			// TODO: implement properly
-			t.Logf("known bugs")
+			t.Logf("%s: known bugs", test.id)
 			continue
 		}
 
