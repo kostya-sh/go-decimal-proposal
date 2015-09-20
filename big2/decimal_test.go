@@ -7,16 +7,12 @@ func TestAbs(t *testing.T) {
 	for _, test := range absTests {
 		switch test.id {
 		case "absx120":
-			// TODO: disable in doctest
+			// TODO: disable in dectest
 			t.Logf("%s: Emax not supported", test.id)
-			continue
-		case "absx213":
-			// TODO: investigate
-			t.Logf("%s: check Cmp and also Subnormal impl", test.id)
 			continue
 		case "absx215", "absx216", "absx217", "absx218", "absx219", "absx220",
 			"absx233", "absx235", "absx236", "absx237", "absx238", "absx239", "absx240":
-			// TODO: disable in doctest
+			// TODO: disable in dectest
 			t.Logf("%s: Emin not supported", test.id)
 			continue
 		}
@@ -57,20 +53,16 @@ func TestMinus(t *testing.T) {
 		switch test.id {
 		case "minx005", "minx006", "minx007", "minx008", "minx009",
 			"minx024", "minx025", "minx026", "minx027":
-			// TODO: clarify behaviour
-			t.Logf("%s: Confirm: Neg(0) = 0 or -0", test.id)
+			// TODO: skip in dectest
+			t.Logf("%s: Neg(0) = -0 (not 0) similar to big.Float", test.id)
 			continue
 		case "minx100", "minx101":
 			// TODO: skip in dectest
 			t.Logf("%s: Emax not supported", test.id)
 			continue
-		case "minx113":
-			// TODO: investigate
-			t.Logf("%s: check Cmp and also Subnormal impl", test.id)
-			continue
 		case "minx115", "minx116", "minx117", "minx118", "minx119", "minx120",
 			"minx133", "minx135", "minx136", "minx137", "minx138", "minx139", "minx140":
-			// TODO: disable in doctest
+			// TODO: disable in dectest
 			t.Logf("%s: Emin not supported", test.id)
 			continue
 		}
@@ -108,22 +100,12 @@ func TestMinus(t *testing.T) {
 //go:generate bash -c "dectest < ~/tmp/dectest/compare.decTest > compare_test.go"
 func TestCompare(t *testing.T) {
 	for _, test := range compareTests {
-		if test.out != 0 {
-			// TODO: implement
-			t.Logf("%s: not implemented", test.id)
-			continue
-		}
 		switch test.id {
-		case "comx101", "comx102", "comx103", "comx106", "comx107", "comx110",
-			"comx401", "comx402", "comx403", "comx406", "comx407", "comx410",
-			"comx470", "comx471", "comx472", "comx473", "comx474", "comx475", "comx476", "comx477", "comx478", "comx479",
-			"comx480", "comx481", "comx482", "comx484", "comx485", "comx486", "comx487", "comx488", "comx489",
-			"comx490", "comx491", "comx492", "comx493", "comx494", "comx495", "comx496",
-			"comx681", "comx682", "comx683", "comx684", "comx685", "comx686", "comx687", "comx688", "comx689",
-			"comx691", "comx692", "comx693", "comx694", "comx695", "comx696", "comx697", "comx698", "comx699",
-			"comx743", "comx753":
-			// TODO: implement properly
-			t.Logf("%s: known bugs", test.id)
+		case "comx880", "comx881", "comx882", "comx883", "comx889", "comx890", "comx891",
+			"comx892", "comx893", "comx894", "comx895", "comx896", "comx897",
+			"comx898", "comx899", "comx900", "comx901", "comx904", "comx905", "comx908":
+			// TODO: implement
+			t.Logf("not implemented (big scale diff)")
 			continue
 		}
 
@@ -146,4 +128,40 @@ func TestCompare(t *testing.T) {
 			t.Errorf("%s: Cmp(%s, %s) got: %d want: %d", test.id, test.in1, test.in2, r, test.out)
 		}
 	}
+}
+
+func TestCompareInfinities(t *testing.T) {
+	plusInf, _ := new(Decimal).SetString("+Inf")
+	minusInf, _ := new(Decimal).SetString("-Inf")
+	plusOne, _ := new(Decimal).SetString("1")
+	minusOne, _ := new(Decimal).SetString("-1")
+
+	tests := []struct {
+		x    *Decimal
+		y    *Decimal
+		want int
+	}{
+		{plusInf, plusInf, 0},
+		{minusInf, minusInf, 0},
+		{plusInf, minusInf, 1},
+		{minusInf, plusInf, -1},
+
+		{plusInf, plusOne, 1},
+		{plusInf, minusOne, 1},
+		{plusOne, plusInf, -1},
+		{minusOne, plusInf, -1},
+
+		{minusInf, plusOne, -1},
+		{minusInf, minusOne, -1},
+		{plusOne, minusInf, 1},
+		{minusOne, minusInf, 1},
+	}
+
+	for _, test := range tests {
+		got := test.x.Cmp(test.y)
+		if test.want != got {
+			t.Errorf("Cmp(%d, %d): want %d, got %d", test.x, test.y, test.want, got)
+		}
+	}
+
 }

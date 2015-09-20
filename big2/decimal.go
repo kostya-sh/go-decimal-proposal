@@ -463,12 +463,8 @@ func (z *Decimal) Quo(x, y *Decimal) *Decimal {
 //
 // TODO: implement properly and add tests
 func (x *Decimal) Cmp(y *Decimal) int {
-	if x == nil && y == nil {
-		// TODO: should Cmp support nils?
-		return 0
-	}
-	// TODO: double check this logic
-	if x.inf == true && y.inf == true && x.neg == y.neg {
+	// TODO: should Cmp support nils?
+	if x.inf && y.inf && x.neg == y.neg {
 		return 0
 	}
 	if x.inf {
@@ -491,13 +487,36 @@ func (x *Decimal) Cmp(y *Decimal) int {
 		return 0
 	}
 
-	if x.neg != y.neg {
-		return 1 // TODO: fix
+	if !x.neg && y.neg {
+		return 1
+	}
+	if x.neg && !y.neg {
+		return -1
 	}
 
-	// TODO: compare scale and abs together
+	var absCmp int
 	if x.scale != y.scale {
-		return 1 // TODO: fix
+		// really naive but should work for now
+		if x.scale < y.scale {
+			return -y.Cmp(x)
+		}
+		ya := new(big.Int).Set(&y.abs)
+		ten := new(big.Int).SetInt64(10)
+		if x.scale-y.scale > 10000 {
+			// TODO: just a little hack for now to avoild long running Cmp
+			absCmp = 1
+		} else {
+			for i := y.scale; i < x.scale; i++ {
+				ya.Mul(ya, ten)
+			}
+			xa := &x.abs
+			absCmp = xa.Cmp(ya)
+		}
+	} else {
+		absCmp = (&x.abs).Cmp(&y.abs)
 	}
-	return (&x.abs).Cmp(&y.abs)
+	if x.neg { // and y.neg
+		return -absCmp
+	}
+	return absCmp
 }
