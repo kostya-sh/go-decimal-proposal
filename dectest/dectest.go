@@ -9,20 +9,18 @@ import (
 	"strconv"
 )
 
-// This program can generate testcase for "go test" from http://speleotrove.com/decimal/
+// This program generates test data to drive tests for arbitrary precision
+// decimal implementation in Go.
 //
-// Format spec: http://speleotrove.com/decimal/dectest.pdf
+// File format spec: http://speleotrove.com/decimal/dectest.pdf
 //
-// Testcase:
+// Testcase files:
 //   http://speleotrove.com/decimal/dectest.zip
 //   http://speleotrove.com/decimal/dectest0.zip
 
 // testcase environment
 // see http://speleotrove.com/decimal/dtfile.html#direct
 type testEnv struct {
-	// configuration
-	supportNaN bool
-
 	// required directives with no default values
 	precision   uint
 	rounding    string
@@ -35,6 +33,8 @@ type testEnv struct {
 	clamp    int // 0 (the default) or 1
 }
 
+// generate reads a file in dectest format from in and generates a Go source
+// file with the test data for a single operation (like add or neg)
 func generate(in io.Reader, out io.Writer) error {
 	w := bufio.NewWriter(out)
 
@@ -70,7 +70,10 @@ func generate(in io.Reader, out io.Writer) error {
 					fmt.Fprintf(w, "\t%s\n", f)
 				}
 				fmt.Fprintln(w, "}{")
-				initialComments.WriteTo(w)
+				_, err := initialComments.WriteTo(w)
+				if err != nil {
+					return err
+				}
 			}
 
 			testLine := op.testDataFunc(t, &env)
@@ -100,6 +103,9 @@ func generate(in io.Reader, out io.Writer) error {
 			}
 		case comment:
 			if seenDirective {
+				// start collecting comments only after a frist directive
+				// (usually version) to avoid including a big header that comes
+				// at the beggining of every dectest file.
 				if op == nil {
 					fmt.Fprintf(initialComments, "\t//%s\n", t)
 				} else {

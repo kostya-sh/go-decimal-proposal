@@ -6,17 +6,18 @@ import (
 	"strings"
 )
 
-func ExampleAbs() {
-	file := `
-precision:   9
-rounding:    half_up
-absx001 abs '1'      -> '1'
-`
-
-	err := generate(strings.NewReader(file), os.Stdout)
+func generateFromString(s string) {
+	err := generate(strings.NewReader(s), os.Stdout)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err)
 	}
+}
+
+func ExampleAbs() {
+	generateFromString(`
+precision:   9
+rounding:    half_up
+absx001 abs '1'      -> '1'`)
 
 	// Output:
 	// package big2
@@ -40,7 +41,7 @@ absx001 abs '1'      -> '1'
 }
 
 func ExampleMinus() {
-	file := `
+	generateFromString(`
 -- this coment should be ignored
 version: 2.62
 
@@ -54,12 +55,7 @@ minExponent: -999
 minx001 minus       +7.50  -> -7.50
 minx021 minus         NaN  -> -NaN
 
-`
-
-	err := generate(strings.NewReader(file), os.Stdout)
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err)
-	}
+`)
 
 	// Output:
 	// package big2
@@ -89,19 +85,14 @@ minx021 minus         NaN  -> -NaN
 }
 
 func ExampleCompare() {
-	file := `
+	generateFromString(`
 precision:   9
 rounding:    half_up
 
 -- sanity checks
 comx001 compare  -2  -2  -> 0
 
-`
-
-	err := generate(strings.NewReader(file), os.Stdout)
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err)
-	}
+`)
 
 	// Output:
 	// package big2
@@ -123,7 +114,7 @@ comx001 compare  -2  -2  -> 0
 }
 
 func ExampleToSci() {
-	file := `
+	generateFromString(`
 precision:   16
 rounding:    half_up
 maxExponent: 384
@@ -135,12 +126,7 @@ basx302 toEng 10e12  -> 10E+12
 emax006 toSci   -1   -> -1
 precision:   9
 basx748 toSci "+InFinity" -> Infinity
-`
-
-	err := generate(strings.NewReader(file), os.Stdout)
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err)
-	}
+`)
 
 	// Output:
 	// package big2
@@ -172,16 +158,11 @@ basx748 toSci "+InFinity" -> Infinity
 }
 
 func ExampleAdd() {
-	file := `
+	generateFromString(`
 precision:   9
 rounding:    half_up
 
-addx001 add 1       1       ->  2`
-
-	err := generate(strings.NewReader(file), os.Stdout)
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err)
-	}
+addx001 add 1       1       ->  2`)
 
 	// Output:
 	// package big2
@@ -206,17 +187,12 @@ addx001 add 1       1       ->  2`
 }
 
 func ExampleSub() {
-	file := `
+	generateFromString(`
 precision:   9
 rounding:    half_up
 
 subx001 subtract  0   0  -> '0'
-`
-
-	err := generate(strings.NewReader(file), os.Stdout)
-	if err != nil {
-		fmt.Printf("ERROR: %s\n", err)
-	}
+`)
 
 	// Output:
 	// package big2

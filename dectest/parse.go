@@ -25,7 +25,7 @@ func (i invalid) String() string {
 	return string(i)
 }
 
-// directive: key = value
+// directive: keyword = value
 type directive struct {
 	keyword string
 	value   string
@@ -48,7 +48,7 @@ type test struct {
 	result     string
 	conditions []string
 
-	comment string // without '--' prefix
+	comment string // comment without '--' prefix
 }
 
 func (t *test) String() string {
@@ -66,7 +66,7 @@ func normalizeNumber(s string) string {
 	return s
 }
 
-// parseTestLine parses line in the follow format
+// parseTestLine parses line in the following format
 //   id operation operand1 operand2 operand3 -> result conditions
 // and returns parsed test or invalid in case if the like cannot be parsed
 // TODO: support quoting rules (comments, double quotes)
@@ -143,6 +143,7 @@ func parseLine(line string) statement {
 			}
 			return &d
 		}
+		// try to parse this line as a testcase
 		fallthrough
 
 	default:
