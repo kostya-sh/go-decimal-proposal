@@ -205,3 +205,43 @@ func TestAdd(t *testing.T) {
 		// TODO: check accuracy
 	}
 }
+
+//go:generate bash -c "dectest < ~/tmp/dectest/subtract.decTest > subtract_test.go"
+func TestSubtract(t *testing.T) {
+	for _, test := range subtractTests {
+		op1 := new(Decimal)
+		_, ok := op1.SetString(test.op1)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.op1)
+			continue
+		}
+
+		op2 := new(Decimal)
+		_, ok = op2.SetString(test.op2)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.op2)
+			continue
+		}
+
+		out := new(Decimal)
+		_, ok = out.SetString(test.out)
+		if !ok {
+			t.Errorf("%s: failed to parse '%s'", test.id, test.out)
+			continue
+		}
+
+		r := new(Decimal)
+		r.SetPrec(test.prec)
+		r.SetMode(test.mode)
+		r2 := r.Sub(op1, op2)
+		if r != r2 {
+			t.Errorf("%s: return value got: %p want: %d", test.id, r, r2)
+		}
+
+		if out.Cmp(r) != 0 {
+			t.Errorf("%s: Sub(%s, %s) got: %s want: %s", test.id, test.op1, test.op2, r.String(), test.out)
+		}
+
+		// TODO: check accuracy
+	}
+}

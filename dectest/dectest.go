@@ -311,7 +311,7 @@ func findOperation(name string) *operation {
 			},
 			importMathBig: true,
 		}
-	case "add":
+	case "add", "subtract":
 		return &operation{
 			name: name,
 			structFields: []string{
@@ -432,13 +432,3 @@ func main() {
 		fmt.Printf("ERROR: %s\n", err)
 	}
 }
-
-// 	fmt.Fprintf(w, "\tid   string")
-// }
-// fmt.Fprintln(w, "\tin   string")
-// fmt.Fprintln(w, "\tout  string")
-// fmt.Fprintln(w, "\tprec uint")
-// fmt.Fprintln(w, "\tmode big.RoundingMode")
-
-// fmt.Fprintf(w, "\t"+`{"%s", "%s", "%s", %d, big.%s},`+"\n",
-// 	t.id, t.operands[0], t.result, env.precision, rounding2Mode(env.rounding))
