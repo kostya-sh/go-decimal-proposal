@@ -20,11 +20,12 @@ func findOperation(name string) *operation {
 		return &operation{
 			name: name,
 			structFields: []string{
-				"id   string",
-				"in   string",
-				"out  string",
-				"prec uint",
-				"mode big.RoundingMode",
+				"id      string",
+				"in      string",
+				"out     string",
+				"inexact bool",
+				"prec    uint",
+				"mode    big.RoundingMode",
 			},
 			testDataFunc: func(t *test, env *testEnv) (string, bool) {
 				if strings.Index(t.src, "NaN") >= 0 {
@@ -34,8 +35,8 @@ func findOperation(name string) *operation {
 				if !ok {
 					return "unsupported rounding", false
 				}
-				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
-					t.id, t.operands[0], t.result, env.precision, mode), true
+				return fmt.Sprintf(`"%s", "%s", "%s", %t, %d, big.%s`,
+					t.id, t.operands[0], t.result, isInexact(t), env.precision, mode), true
 			},
 			importMathBig: true,
 		}
@@ -62,11 +63,12 @@ func findOperation(name string) *operation {
 		return &operation{
 			name: "toSci",
 			structFields: []string{
-				"id   string",
-				"in   string",
-				"out  string",
-				"prec uint",
-				"mode big.RoundingMode",
+				"id      string",
+				"in      string",
+				"out     string",
+				"inexact bool",
+				"prec    uint",
+				"mode    big.RoundingMode",
 			},
 			testDataFunc: func(t *test, env *testEnv) (string, bool) {
 				// TODO: support tests for parse errors
@@ -95,8 +97,8 @@ func findOperation(name string) *operation {
 					out = "" // empty string means "unparseable value"
 				}
 
-				return fmt.Sprintf(`"%s", "%s", "%s", %d, big.%s`,
-					t.id, t.operands[0], out, env.precision, mode), true
+				return fmt.Sprintf(`"%s", "%s", "%s", %t, %d, big.%s`,
+					t.id, t.operands[0], out, isInexact(t), env.precision, mode), true
 			},
 			importMathBig: true,
 		}
@@ -104,12 +106,13 @@ func findOperation(name string) *operation {
 		return &operation{
 			name: name,
 			structFields: []string{
-				"id   string",
-				"op1  string",
-				"op2  string",
-				"out  string",
-				"prec uint",
-				"mode big.RoundingMode",
+				"id      string",
+				"in1     string",
+				"in2     string",
+				"out     string",
+				"inexact bool",
+				"prec    uint",
+				"mode    big.RoundingMode",
 			},
 			testDataFunc: func(t *test, env *testEnv) (string, bool) {
 				if len(t.operands) != 2 {
@@ -122,13 +125,22 @@ func findOperation(name string) *operation {
 				if !ok {
 					return "unsupported rounding", false
 				}
-				return fmt.Sprintf(`"%s", "%s", "%s", "%s", %d, big.%s`,
-					t.id, t.operands[0], t.operands[1], t.result, env.precision, mode), true
+				return fmt.Sprintf(`"%s", "%s", "%s", "%s", %t, %d, big.%s`,
+					t.id, t.operands[0], t.operands[1], t.result, isInexact(t), env.precision, mode), true
 			},
 			importMathBig: true,
 		}
 	}
 	return nil
+}
+
+func isInexact(t *test) bool {
+	for _, c := range t.conditions {
+		if c == "inexact" {
+			return true
+		}
+	}
+	return false
 }
 
 func rounding2Mode(s string) (big.RoundingMode, bool) {

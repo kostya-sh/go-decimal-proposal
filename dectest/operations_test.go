@@ -27,16 +27,17 @@ absx001 abs '1'      -> '1'`)
 	// import "math/big"
 	//
 	// var absTests = []struct {
-	// 	id   string
-	// 	in   string
-	// 	out  string
-	// 	prec uint
-	// 	mode big.RoundingMode
+	// 	id      string
+	// 	in      string
+	// 	out     string
+	// 	inexact bool
+	// 	prec    uint
+	// 	mode    big.RoundingMode
 	// }{
 	// 	// precision: 9
 	// 	// rounding: half_up
 	// 	// absx001 abs '1'      -> '1'
-	// 	{"absx001", "1", "1", 9, big.ToNearestAway},
+	// 	{"absx001", "1", "1", false, 9, big.ToNearestAway},
 	// }
 }
 
@@ -65,11 +66,12 @@ minx021 minus         NaN  -> -NaN
 	// import "math/big"
 	//
 	// var minusTests = []struct {
-	// 	id   string
-	// 	in   string
-	// 	out  string
-	// 	prec uint
-	// 	mode big.RoundingMode
+	// 	id      string
+	// 	in      string
+	// 	out     string
+	// 	inexact bool
+	// 	prec    uint
+	// 	mode    big.RoundingMode
 	// }{
 	// 	// version: 2.62
 	// 	// extended: 1
@@ -79,7 +81,7 @@ minx021 minus         NaN  -> -NaN
 	// 	// minexponent: -999
 	// 	// Sanity check
 	// 	// minx001 minus       +7.50  -> -7.50
-	// 	{"minx001", "+7.50", "-7.50", 9, big.ToNearestAway},
+	// 	{"minx001", "+7.50", "-7.50", false, 9, big.ToNearestAway},
 	// 	// SKIP (NaN): minx021 minus         NaN  -> -NaN
 	// }
 }
@@ -124,8 +126,11 @@ basx001 toSci       0 -> 0
 basx500 toSci '1..2' -> NaN Conversion_syntax
 basx302 toEng 10e12  -> 10E+12
 emax006 toSci   -1   -> -1
-precision:   9
 basx748 toSci "+InFinity" -> Infinity
+precision: 5
+rounding:  ceiling
+bsrx402  toSci  1.234549   ->  1.2346  Rounded Inexact
+
 `)
 
 	// Output:
@@ -136,24 +141,28 @@ basx748 toSci "+InFinity" -> Infinity
 	// import "math/big"
 	//
 	// var toSciTests = []struct {
-	// 	id   string
-	// 	in   string
-	// 	out  string
-	// 	prec uint
-	// 	mode big.RoundingMode
+	// 	id      string
+	// 	in      string
+	// 	out     string
+	// 	inexact bool
+	// 	prec    uint
+	// 	mode    big.RoundingMode
 	// }{
 	// 	// precision: 16
 	// 	// rounding: half_up
 	// 	// maxexponent: 384
 	// 	// minexponent: -383
 	// 	// basx001 toSci       0 -> 0
-	// 	{"basx001", "0", "0", 16, big.ToNearestAway},
+	// 	{"basx001", "0", "0", false, 16, big.ToNearestAway},
 	// 	// basx500 toSci '1..2' -> NaN Conversion_syntax
-	// 	{"basx500", "1..2", "", 16, big.ToNearestAway},
+	// 	{"basx500", "1..2", "", false, 16, big.ToNearestAway},
 	// 	// SKIP (toeng not supported): basx302 toEng 10e12  -> 10E+12
 	// 	// SKIP (emax not supported): emax006 toSci   -1   -> -1
-	// 	// precision: 9
 	// 	// SKIP (infinity test): basx748 toSci "+InFinity" -> Infinity
+	// 	// precision: 5
+	// 	// rounding: ceiling
+	// 	// bsrx402  toSci  1.234549   ->  1.2346  Rounded Inexact
+	// 	{"bsrx402", "1.234549", "1.2346", true, 5, big.ToPositiveInf},
 	// }
 }
 
@@ -172,17 +181,18 @@ addx001 add 1       1       ->  2`)
 	// import "math/big"
 	//
 	// var addTests = []struct {
-	// 	id   string
-	// 	op1  string
-	// 	op2  string
-	// 	out  string
-	// 	prec uint
-	// 	mode big.RoundingMode
+	// 	id      string
+	// 	in1     string
+	// 	in2     string
+	// 	out     string
+	// 	inexact bool
+	// 	prec    uint
+	// 	mode    big.RoundingMode
 	// }{
 	// 	// precision: 9
 	// 	// rounding: half_up
 	// 	// addx001 add 1       1       ->  2
-	// 	{"addx001", "1", "1", "2", 9, big.ToNearestAway},
+	// 	{"addx001", "1", "1", "2", false, 9, big.ToNearestAway},
 	// }
 }
 
@@ -202,16 +212,17 @@ subx001 subtract  0   0  -> '0'
 	// import "math/big"
 	//
 	// var subtractTests = []struct {
-	// 	id   string
-	// 	op1  string
-	// 	op2  string
-	// 	out  string
-	// 	prec uint
-	// 	mode big.RoundingMode
+	// 	id      string
+	// 	in1     string
+	// 	in2     string
+	// 	out     string
+	// 	inexact bool
+	// 	prec    uint
+	// 	mode    big.RoundingMode
 	// }{
 	// 	// precision: 9
 	// 	// rounding: half_up
 	// 	// subx001 subtract  0   0  -> '0'
-	// 	{"subx001", "0", "0", "0", 9, big.ToNearestAway},
+	// 	{"subx001", "0", "0", "0", false, 9, big.ToNearestAway},
 	// }
 }
