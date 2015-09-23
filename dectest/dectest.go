@@ -311,6 +311,33 @@ func findOperation(name string) *operation {
 			},
 			importMathBig: true,
 		}
+	case "add":
+		return &operation{
+			name: name,
+			structFields: []string{
+				"id   string",
+				"op1  string",
+				"op2  string",
+				"out  string",
+				"prec uint",
+				"mode big.RoundingMode",
+			},
+			testDataFunc: func(t *test, env *testEnv) string {
+				if len(t.operands) != 2 {
+					return "" // invalid test
+				}
+				if strings.Index(t.src, "NaN") >= 0 {
+					return "" // skip tests with NaN values
+				}
+				mode, ok := rounding2Mode(env.rounding)
+				if !ok {
+					return "" // mode not supported
+				}
+				return fmt.Sprintf(`"%s", "%s", "%s", "%s", %d, big.%s`,
+					t.id, t.operands[0], t.operands[1], t.result, env.precision, mode)
+			},
+			importMathBig: true,
+		}
 	}
 	return nil
 }

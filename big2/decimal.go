@@ -421,7 +421,60 @@ func (z *Decimal) Neg(x *Decimal) *Decimal {
 //
 // BUG(gri) When rounding ToNegativeInf, the sign of Float values rounded to 0 is incorrect.
 func (z *Decimal) Add(x, y *Decimal) *Decimal {
-	// TODO: implement
+	// TODO: implement properly
+	// TODO: panic if x.inf and y.inf and x.neg = !y.neg
+	if x.inf {
+		z.inf = true
+		z.neg = x.neg
+		return z
+	}
+	if y.inf {
+		z.inf = true
+		z.neg = y.neg
+		return z
+	}
+
+	if x.abs.BitLen() == 0 {
+		z.neg = y.neg
+		z.scale = y.scale
+		z.abs.Set(&y.abs)
+	} else if y.abs.BitLen() == 0 {
+		z.neg = x.neg
+		z.scale = x.scale
+		z.abs.Set(&x.abs)
+	} else {
+		if !x.neg && y.neg {
+			return z.Sub(x, y)
+		}
+		if x.neg && !y.neg {
+			return z.Sub(y, x)
+		}
+		// x.neg == y.neg here
+		if x.scale < y.scale {
+			if y.scale-x.scale > 10000 {
+				// TODO: implement
+				return z
+			}
+			ten := new(big.Int).SetInt64(10)
+			xa := new(big.Int)
+			xa.Set(&x.abs)
+			for i := x.scale; i < y.scale; i++ {
+				xa.Mul(xa, ten)
+			}
+			z.abs.Add(xa, &y.abs)
+			z.neg = x.neg
+			z.scale = y.scale
+		} else if x.scale > y.scale {
+			return z.Add(y, x)
+		} else { // x.scale == y.scale
+			z.abs.Add(&x.abs, &y.abs)
+			z.neg = x.neg
+			z.scale = x.scale
+		}
+	}
+	if z.prec != 0 {
+		z.round()
+	}
 	return z
 }
 
@@ -432,6 +485,43 @@ func (z *Decimal) Add(x, y *Decimal) *Decimal {
 // signs. The value of z is undefined in that case.
 func (z *Decimal) Sub(x, y *Decimal) *Decimal {
 	// TODO: implement
+	if x.scale < y.scale {
+		if y.scale-x.scale > 10000 {
+			// TODO: implement
+			return z
+		}
+		ten := new(big.Int).SetInt64(10)
+		xa := new(big.Int)
+		xa.Set(&x.abs)
+		for i := x.scale; i < y.scale; i++ {
+			xa.Mul(xa, ten)
+		}
+		z.abs.Sub(xa, &y.abs)
+		if z.abs.Sign() < 0 {
+			z.neg = true
+			z.abs.Neg(&z.abs)
+		} else {
+			z.neg = false
+		}
+		z.scale = y.scale
+	} else if x.scale > y.scale {
+		z = z.Sub(y, x)
+		return z.Neg(z)
+	} else { // x.scale == y.scale
+		z.abs.Sub(&x.abs, &y.abs)
+		if z.abs.Sign() < 0 {
+			z.neg = true
+			z.abs.Neg(&z.abs)
+		} else {
+			z.neg = false
+		}
+		z.scale = x.scale
+	}
+
+	if z.prec != 0 {
+		z.round()
+	}
+
 	return z
 }
 
@@ -518,5 +608,6 @@ func (x *Decimal) Cmp(y *Decimal) int {
 	if x.neg { // and y.neg
 		return -absCmp
 	}
+
 	return absCmp
 }
