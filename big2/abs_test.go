@@ -5,11 +5,12 @@ package big2
 import "math/big"
 
 var absTests = []struct {
-	id   string
-	in   string
-	out  string
-	prec uint
-	mode big.RoundingMode
+	id      string
+	in      string
+	out     string
+	inexact bool
+	prec    uint
+	mode    big.RoundingMode
 }{
 	// version: 2.62
 	// This set of tests primarily tests the existence of the operator.
@@ -21,200 +22,200 @@ var absTests = []struct {
 	// minexponent: -383
 	// extended: 1
 	// absx001 abs '1'      -> '1'
-	{"absx001", "1", "1", 9, big.ToNearestAway},
+	{"absx001", "1", "1", false, 9, big.ToNearestAway},
 	// absx002 abs '-1'     -> '1'
-	{"absx002", "-1", "1", 9, big.ToNearestAway},
+	{"absx002", "-1", "1", false, 9, big.ToNearestAway},
 	// absx003 abs '1.00'   -> '1.00'
-	{"absx003", "1.00", "1.00", 9, big.ToNearestAway},
+	{"absx003", "1.00", "1.00", false, 9, big.ToNearestAway},
 	// absx004 abs '-1.00'  -> '1.00'
-	{"absx004", "-1.00", "1.00", 9, big.ToNearestAway},
+	{"absx004", "-1.00", "1.00", false, 9, big.ToNearestAway},
 	// absx005 abs '0'      -> '0'
-	{"absx005", "0", "0", 9, big.ToNearestAway},
+	{"absx005", "0", "0", false, 9, big.ToNearestAway},
 	// absx006 abs '0.00'   -> '0.00'
-	{"absx006", "0.00", "0.00", 9, big.ToNearestAway},
+	{"absx006", "0.00", "0.00", false, 9, big.ToNearestAway},
 	// absx007 abs '00.0'   -> '0.0'
-	{"absx007", "00.0", "0.0", 9, big.ToNearestAway},
+	{"absx007", "00.0", "0.0", false, 9, big.ToNearestAway},
 	// absx008 abs '00.00'  -> '0.00'
-	{"absx008", "00.00", "0.00", 9, big.ToNearestAway},
+	{"absx008", "00.00", "0.00", false, 9, big.ToNearestAway},
 	// absx009 abs '00'     -> '0'
-	{"absx009", "00", "0", 9, big.ToNearestAway},
+	{"absx009", "00", "0", false, 9, big.ToNearestAway},
 	// absx010 abs '-2'     -> '2'
-	{"absx010", "-2", "2", 9, big.ToNearestAway},
+	{"absx010", "-2", "2", false, 9, big.ToNearestAway},
 	// absx011 abs '2'      -> '2'
-	{"absx011", "2", "2", 9, big.ToNearestAway},
+	{"absx011", "2", "2", false, 9, big.ToNearestAway},
 	// absx012 abs '-2.00'  -> '2.00'
-	{"absx012", "-2.00", "2.00", 9, big.ToNearestAway},
+	{"absx012", "-2.00", "2.00", false, 9, big.ToNearestAway},
 	// absx013 abs '2.00'   -> '2.00'
-	{"absx013", "2.00", "2.00", 9, big.ToNearestAway},
+	{"absx013", "2.00", "2.00", false, 9, big.ToNearestAway},
 	// absx014 abs '-0'     -> '0'
-	{"absx014", "-0", "0", 9, big.ToNearestAway},
+	{"absx014", "-0", "0", false, 9, big.ToNearestAway},
 	// absx015 abs '-0.00'  -> '0.00'
-	{"absx015", "-0.00", "0.00", 9, big.ToNearestAway},
+	{"absx015", "-0.00", "0.00", false, 9, big.ToNearestAway},
 	// absx016 abs '-00.0'  -> '0.0'
-	{"absx016", "-00.0", "0.0", 9, big.ToNearestAway},
+	{"absx016", "-00.0", "0.0", false, 9, big.ToNearestAway},
 	// absx017 abs '-00.00' -> '0.00'
-	{"absx017", "-00.00", "0.00", 9, big.ToNearestAway},
+	{"absx017", "-00.00", "0.00", false, 9, big.ToNearestAway},
 	// absx018 abs '-00'    -> '0'
-	{"absx018", "-00", "0", 9, big.ToNearestAway},
+	{"absx018", "-00", "0", false, 9, big.ToNearestAway},
 	// absx020 abs '-2000000' -> '2000000'
-	{"absx020", "-2000000", "2000000", 9, big.ToNearestAway},
+	{"absx020", "-2000000", "2000000", false, 9, big.ToNearestAway},
 	// absx021 abs '2000000'  -> '2000000'
-	{"absx021", "2000000", "2000000", 9, big.ToNearestAway},
+	{"absx021", "2000000", "2000000", false, 9, big.ToNearestAway},
 	// precision: 7
 	// absx022 abs '-2000000' -> '2000000'
-	{"absx022", "-2000000", "2000000", 7, big.ToNearestAway},
+	{"absx022", "-2000000", "2000000", false, 7, big.ToNearestAway},
 	// absx023 abs '2000000'  -> '2000000'
-	{"absx023", "2000000", "2000000", 7, big.ToNearestAway},
+	{"absx023", "2000000", "2000000", false, 7, big.ToNearestAway},
 	// precision: 6
 	// absx024 abs '-2000000' -> '2.00000E+6' Rounded
-	{"absx024", "-2000000", "2.00000E+6", 6, big.ToNearestAway},
+	{"absx024", "-2000000", "2.00000E+6", false, 6, big.ToNearestAway},
 	// absx025 abs '2000000'  -> '2.00000E+6' Rounded
-	{"absx025", "2000000", "2.00000E+6", 6, big.ToNearestAway},
+	{"absx025", "2000000", "2.00000E+6", false, 6, big.ToNearestAway},
 	// precision: 3
 	// absx026 abs '-2000000' -> '2.00E+6' Rounded
-	{"absx026", "-2000000", "2.00E+6", 3, big.ToNearestAway},
+	{"absx026", "-2000000", "2.00E+6", false, 3, big.ToNearestAway},
 	// absx027 abs '2000000'  -> '2.00E+6' Rounded
-	{"absx027", "2000000", "2.00E+6", 3, big.ToNearestAway},
+	{"absx027", "2000000", "2.00E+6", false, 3, big.ToNearestAway},
 	// absx030 abs '+0.1'            -> '0.1'
-	{"absx030", "+0.1", "0.1", 3, big.ToNearestAway},
+	{"absx030", "+0.1", "0.1", false, 3, big.ToNearestAway},
 	// absx031 abs '-0.1'            -> '0.1'
-	{"absx031", "-0.1", "0.1", 3, big.ToNearestAway},
+	{"absx031", "-0.1", "0.1", false, 3, big.ToNearestAway},
 	// absx032 abs '+0.01'           -> '0.01'
-	{"absx032", "+0.01", "0.01", 3, big.ToNearestAway},
+	{"absx032", "+0.01", "0.01", false, 3, big.ToNearestAway},
 	// absx033 abs '-0.01'           -> '0.01'
-	{"absx033", "-0.01", "0.01", 3, big.ToNearestAway},
+	{"absx033", "-0.01", "0.01", false, 3, big.ToNearestAway},
 	// absx034 abs '+0.001'          -> '0.001'
-	{"absx034", "+0.001", "0.001", 3, big.ToNearestAway},
+	{"absx034", "+0.001", "0.001", false, 3, big.ToNearestAway},
 	// absx035 abs '-0.001'          -> '0.001'
-	{"absx035", "-0.001", "0.001", 3, big.ToNearestAway},
+	{"absx035", "-0.001", "0.001", false, 3, big.ToNearestAway},
 	// absx036 abs '+0.000001'       -> '0.000001'
-	{"absx036", "+0.000001", "0.000001", 3, big.ToNearestAway},
+	{"absx036", "+0.000001", "0.000001", false, 3, big.ToNearestAway},
 	// absx037 abs '-0.000001'       -> '0.000001'
-	{"absx037", "-0.000001", "0.000001", 3, big.ToNearestAway},
+	{"absx037", "-0.000001", "0.000001", false, 3, big.ToNearestAway},
 	// absx038 abs '+0.000000000001' -> '1E-12'
-	{"absx038", "+0.000000000001", "1E-12", 3, big.ToNearestAway},
+	{"absx038", "+0.000000000001", "1E-12", false, 3, big.ToNearestAway},
 	// absx039 abs '-0.000000000001' -> '1E-12'
-	{"absx039", "-0.000000000001", "1E-12", 3, big.ToNearestAway},
+	{"absx039", "-0.000000000001", "1E-12", false, 3, big.ToNearestAway},
 	// examples from decArith
 	// precision: 9
 	// absx040 abs '2.1'     ->  '2.1'
-	{"absx040", "2.1", "2.1", 9, big.ToNearestAway},
+	{"absx040", "2.1", "2.1", false, 9, big.ToNearestAway},
 	// absx041 abs '-100'    ->  '100'
-	{"absx041", "-100", "100", 9, big.ToNearestAway},
+	{"absx041", "-100", "100", false, 9, big.ToNearestAway},
 	// absx042 abs '101.5'   ->  '101.5'
-	{"absx042", "101.5", "101.5", 9, big.ToNearestAway},
+	{"absx042", "101.5", "101.5", false, 9, big.ToNearestAway},
 	// absx043 abs '-101.5'  ->  '101.5'
-	{"absx043", "-101.5", "101.5", 9, big.ToNearestAway},
+	{"absx043", "-101.5", "101.5", false, 9, big.ToNearestAway},
 	// more fixed, potential LHS swaps/overlays if done by subtract 0
 	// precision: 9
 	// absx060 abs '-56267E-10'  -> '0.0000056267'
-	{"absx060", "-56267E-10", "0.0000056267", 9, big.ToNearestAway},
+	{"absx060", "-56267E-10", "0.0000056267", false, 9, big.ToNearestAway},
 	// absx061 abs '-56267E-5'   -> '0.56267'
-	{"absx061", "-56267E-5", "0.56267", 9, big.ToNearestAway},
+	{"absx061", "-56267E-5", "0.56267", false, 9, big.ToNearestAway},
 	// absx062 abs '-56267E-2'   -> '562.67'
-	{"absx062", "-56267E-2", "562.67", 9, big.ToNearestAway},
+	{"absx062", "-56267E-2", "562.67", false, 9, big.ToNearestAway},
 	// absx063 abs '-56267E-1'   -> '5626.7'
-	{"absx063", "-56267E-1", "5626.7", 9, big.ToNearestAway},
+	{"absx063", "-56267E-1", "5626.7", false, 9, big.ToNearestAway},
 	// absx065 abs '-56267E-0'   -> '56267'
-	{"absx065", "-56267E-0", "56267", 9, big.ToNearestAway},
+	{"absx065", "-56267E-0", "56267", false, 9, big.ToNearestAway},
 	// overflow tests
 	// maxexponent: 999999999
 	// minexponent: -999999999
 	// precision: 3
 	// absx120 abs 9.999E+999999999 -> Infinity Inexact Overflow Rounded
-	{"absx120", "9.999E+999999999", "Inf", 3, big.ToNearestAway},
+	{"absx120", "9.999E+999999999", "Inf", true, 3, big.ToNearestAway},
 	// subnormals and underflow
 	// precision: 3
 	// maxexponent: 999
 	// minexponent: -999
 	// absx210 abs  1.00E-999        ->   1.00E-999
-	{"absx210", "1.00E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"absx210", "1.00E-999", "1.00E-999", false, 3, big.ToNearestAway},
 	// absx211 abs  0.1E-999         ->   1E-1000   Subnormal
-	{"absx211", "0.1E-999", "1E-1000", 3, big.ToNearestAway},
+	{"absx211", "0.1E-999", "1E-1000", false, 3, big.ToNearestAway},
 	// absx212 abs  0.10E-999        ->   1.0E-1000 Subnormal
-	{"absx212", "0.10E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx212", "0.10E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// absx213 abs  0.100E-999       ->   1.0E-1000 Subnormal Rounded
-	{"absx213", "0.100E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx213", "0.100E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// absx214 abs  0.01E-999        ->   1E-1001   Subnormal
-	{"absx214", "0.01E-999", "1E-1001", 3, big.ToNearestAway},
+	{"absx214", "0.01E-999", "1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Emin
 	// absx215 abs  0.999E-999       ->   1.00E-999 Inexact Rounded Subnormal Underflow
-	{"absx215", "0.999E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"absx215", "0.999E-999", "1.00E-999", true, 3, big.ToNearestAway},
 	// absx216 abs  0.099E-999       ->   1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"absx216", "0.099E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx216", "0.099E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// absx217 abs  0.009E-999       ->   1E-1001   Inexact Rounded Subnormal Underflow
-	{"absx217", "0.009E-999", "1E-1001", 3, big.ToNearestAway},
+	{"absx217", "0.009E-999", "1E-1001", true, 3, big.ToNearestAway},
 	// absx218 abs  0.001E-999       ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx218", "0.001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx218", "0.001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// absx219 abs  0.0009E-999      ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx219", "0.0009E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx219", "0.0009E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// absx220 abs  0.0001E-999      ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx220", "0.0001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx220", "0.0001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// absx230 abs -1.00E-999        ->   1.00E-999
-	{"absx230", "-1.00E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"absx230", "-1.00E-999", "1.00E-999", false, 3, big.ToNearestAway},
 	// absx231 abs -0.1E-999         ->   1E-1000   Subnormal
-	{"absx231", "-0.1E-999", "1E-1000", 3, big.ToNearestAway},
+	{"absx231", "-0.1E-999", "1E-1000", false, 3, big.ToNearestAway},
 	// absx232 abs -0.10E-999        ->   1.0E-1000 Subnormal
-	{"absx232", "-0.10E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx232", "-0.10E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// absx233 abs -0.100E-999       ->   1.0E-1000 Subnormal Rounded
-	{"absx233", "-0.100E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx233", "-0.100E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// absx234 abs -0.01E-999        ->   1E-1001   Subnormal
-	{"absx234", "-0.01E-999", "1E-1001", 3, big.ToNearestAway},
+	{"absx234", "-0.01E-999", "1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Emin
 	// absx235 abs -0.999E-999       ->   1.00E-999 Inexact Rounded Subnormal Underflow
-	{"absx235", "-0.999E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"absx235", "-0.999E-999", "1.00E-999", true, 3, big.ToNearestAway},
 	// absx236 abs -0.099E-999       ->   1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"absx236", "-0.099E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"absx236", "-0.099E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// absx237 abs -0.009E-999       ->   1E-1001   Inexact Rounded Subnormal Underflow
-	{"absx237", "-0.009E-999", "1E-1001", 3, big.ToNearestAway},
+	{"absx237", "-0.009E-999", "1E-1001", true, 3, big.ToNearestAway},
 	// absx238 abs -0.001E-999       ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx238", "-0.001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx238", "-0.001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// absx239 abs -0.0009E-999      ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx239", "-0.0009E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx239", "-0.0009E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// absx240 abs -0.0001E-999      ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"absx240", "-0.0001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"absx240", "-0.0001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// long operand tests
 	// maxexponent: 999
 	// minexponent: -999
 	// precision: 9
 	// absx301 abs 12345678000  -> 1.23456780E+10 Rounded
-	{"absx301", "12345678000", "1.23456780E+10", 9, big.ToNearestAway},
+	{"absx301", "12345678000", "1.23456780E+10", false, 9, big.ToNearestAway},
 	// absx302 abs 1234567800   -> 1.23456780E+9 Rounded
-	{"absx302", "1234567800", "1.23456780E+9", 9, big.ToNearestAway},
+	{"absx302", "1234567800", "1.23456780E+9", false, 9, big.ToNearestAway},
 	// absx303 abs 1234567890   -> 1.23456789E+9 Rounded
-	{"absx303", "1234567890", "1.23456789E+9", 9, big.ToNearestAway},
+	{"absx303", "1234567890", "1.23456789E+9", false, 9, big.ToNearestAway},
 	// absx304 abs 1234567891   -> 1.23456789E+9 Inexact Rounded
-	{"absx304", "1234567891", "1.23456789E+9", 9, big.ToNearestAway},
+	{"absx304", "1234567891", "1.23456789E+9", true, 9, big.ToNearestAway},
 	// absx305 abs 12345678901  -> 1.23456789E+10 Inexact Rounded
-	{"absx305", "12345678901", "1.23456789E+10", 9, big.ToNearestAway},
+	{"absx305", "12345678901", "1.23456789E+10", true, 9, big.ToNearestAway},
 	// absx306 abs 1234567896   -> 1.23456790E+9 Inexact Rounded
-	{"absx306", "1234567896", "1.23456790E+9", 9, big.ToNearestAway},
+	{"absx306", "1234567896", "1.23456790E+9", true, 9, big.ToNearestAway},
 	// precision: 15
 	// absx321 abs 12345678000  -> 12345678000
-	{"absx321", "12345678000", "12345678000", 15, big.ToNearestAway},
+	{"absx321", "12345678000", "12345678000", false, 15, big.ToNearestAway},
 	// absx322 abs 1234567800   -> 1234567800
-	{"absx322", "1234567800", "1234567800", 15, big.ToNearestAway},
+	{"absx322", "1234567800", "1234567800", false, 15, big.ToNearestAway},
 	// absx323 abs 1234567890   -> 1234567890
-	{"absx323", "1234567890", "1234567890", 15, big.ToNearestAway},
+	{"absx323", "1234567890", "1234567890", false, 15, big.ToNearestAway},
 	// absx324 abs 1234567891   -> 1234567891
-	{"absx324", "1234567891", "1234567891", 15, big.ToNearestAway},
+	{"absx324", "1234567891", "1234567891", false, 15, big.ToNearestAway},
 	// absx325 abs 12345678901  -> 12345678901
-	{"absx325", "12345678901", "12345678901", 15, big.ToNearestAway},
+	{"absx325", "12345678901", "12345678901", false, 15, big.ToNearestAway},
 	// absx326 abs 1234567896   -> 1234567896
-	{"absx326", "1234567896", "1234567896", 15, big.ToNearestAway},
+	{"absx326", "1234567896", "1234567896", false, 15, big.ToNearestAway},
 	// Specials
 	// precision: 9
 	// specials
 	// absx520 abs 'Inf'    -> 'Infinity'
-	{"absx520", "Inf", "Inf", 9, big.ToNearestAway},
+	{"absx520", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// absx521 abs '-Inf'   -> 'Infinity'
-	{"absx521", "-Inf", "Inf", 9, big.ToNearestAway},
-	// SKIP: absx522 abs   NaN    ->  NaN
-	// SKIP: absx523 abs  sNaN    ->  NaN   Invalid_operation
-	// SKIP: absx524 abs   NaN22  ->  NaN22
-	// SKIP: absx525 abs  sNaN33  ->  NaN33 Invalid_operation
-	// SKIP: absx526 abs  -NaN22  -> -NaN22
-	// SKIP: absx527 abs -sNaN33  -> -NaN33 Invalid_operation
+	{"absx521", "-Inf", "Inf", false, 9, big.ToNearestAway},
+	// SKIP (NaN): absx522 abs   NaN    ->  NaN
+	// SKIP (NaN): absx523 abs  sNaN    ->  NaN   Invalid_operation
+	// SKIP (NaN): absx524 abs   NaN22  ->  NaN22
+	// SKIP (NaN): absx525 abs  sNaN33  ->  NaN33 Invalid_operation
+	// SKIP (NaN): absx526 abs  -NaN22  -> -NaN22
+	// SKIP (NaN): absx527 abs -sNaN33  -> -NaN33 Invalid_operation
 	// Null tests
-	// SKIP: absx900 abs  # -> NaN Invalid_operation
+	// SKIP (NaN): absx900 abs  # -> NaN Invalid_operation
 }

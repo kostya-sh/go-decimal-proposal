@@ -5,12 +5,13 @@ package big2
 import "math/big"
 
 var addTests = []struct {
-	id   string
-	op1  string
-	op2  string
-	out  string
-	prec uint
-	mode big.RoundingMode
+	id      string
+	in1     string
+	in2     string
+	out     string
+	inexact bool
+	prec    uint
+	mode    big.RoundingMode
 }{
 	// version: 2.62
 	// precision: 9
@@ -20,1574 +21,1574 @@ var addTests = []struct {
 	// extended: 1
 	// [first group are 'quick confidence check']
 	// addx001 add 1       1       ->  2
-	{"addx001", "1", "1", "2", 9, big.ToNearestAway},
+	{"addx001", "1", "1", "2", false, 9, big.ToNearestAway},
 	// addx002 add 2       3       ->  5
-	{"addx002", "2", "3", "5", 9, big.ToNearestAway},
+	{"addx002", "2", "3", "5", false, 9, big.ToNearestAway},
 	// addx003 add '5.75'  '3.3'   ->  9.05
-	{"addx003", "5.75", "3.3", "9.05", 9, big.ToNearestAway},
+	{"addx003", "5.75", "3.3", "9.05", false, 9, big.ToNearestAway},
 	// addx004 add '5'     '-3'    ->  2
-	{"addx004", "5", "-3", "2", 9, big.ToNearestAway},
+	{"addx004", "5", "-3", "2", false, 9, big.ToNearestAway},
 	// addx005 add '-5'    '-3'    ->  -8
-	{"addx005", "-5", "-3", "-8", 9, big.ToNearestAway},
+	{"addx005", "-5", "-3", "-8", false, 9, big.ToNearestAway},
 	// addx006 add '-7'    '2.5'   ->  -4.5
-	{"addx006", "-7", "2.5", "-4.5", 9, big.ToNearestAway},
+	{"addx006", "-7", "2.5", "-4.5", false, 9, big.ToNearestAway},
 	// addx007 add '0.7'   '0.3'   ->  1.0
-	{"addx007", "0.7", "0.3", "1.0", 9, big.ToNearestAway},
+	{"addx007", "0.7", "0.3", "1.0", false, 9, big.ToNearestAway},
 	// addx008 add '1.25'  '1.25'  ->  2.50
-	{"addx008", "1.25", "1.25", "2.50", 9, big.ToNearestAway},
+	{"addx008", "1.25", "1.25", "2.50", false, 9, big.ToNearestAway},
 	// addx009 add '1.23456789'  '1.00000000' -> '2.23456789'
-	{"addx009", "1.23456789", "1.00000000", "2.23456789", 9, big.ToNearestAway},
+	{"addx009", "1.23456789", "1.00000000", "2.23456789", false, 9, big.ToNearestAway},
 	// addx010 add '1.23456789'  '1.00000011' -> '2.23456800'
-	{"addx010", "1.23456789", "1.00000011", "2.23456800", 9, big.ToNearestAway},
+	{"addx010", "1.23456789", "1.00000011", "2.23456800", false, 9, big.ToNearestAway},
 	// addx011 add '0.4444444444'  '0.5555555555' -> '1.00000000' Inexact Rounded
-	{"addx011", "0.4444444444", "0.5555555555", "1.00000000", 9, big.ToNearestAway},
+	{"addx011", "0.4444444444", "0.5555555555", "1.00000000", true, 9, big.ToNearestAway},
 	// addx012 add '0.4444444440'  '0.5555555555' -> '1.00000000' Inexact Rounded
-	{"addx012", "0.4444444440", "0.5555555555", "1.00000000", 9, big.ToNearestAway},
+	{"addx012", "0.4444444440", "0.5555555555", "1.00000000", true, 9, big.ToNearestAway},
 	// addx013 add '0.4444444444'  '0.5555555550' -> '0.999999999' Inexact Rounded
-	{"addx013", "0.4444444444", "0.5555555550", "0.999999999", 9, big.ToNearestAway},
+	{"addx013", "0.4444444444", "0.5555555550", "0.999999999", true, 9, big.ToNearestAway},
 	// addx014 add '0.44444444449'    '0' -> '0.444444444' Inexact Rounded
-	{"addx014", "0.44444444449", "0", "0.444444444", 9, big.ToNearestAway},
+	{"addx014", "0.44444444449", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// addx015 add '0.444444444499'   '0' -> '0.444444444' Inexact Rounded
-	{"addx015", "0.444444444499", "0", "0.444444444", 9, big.ToNearestAway},
+	{"addx015", "0.444444444499", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// addx016 add '0.4444444444999'  '0' -> '0.444444444' Inexact Rounded
-	{"addx016", "0.4444444444999", "0", "0.444444444", 9, big.ToNearestAway},
+	{"addx016", "0.4444444444999", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// addx017 add '0.4444444445000'  '0' -> '0.444444445' Inexact Rounded
-	{"addx017", "0.4444444445000", "0", "0.444444445", 9, big.ToNearestAway},
+	{"addx017", "0.4444444445000", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// addx018 add '0.4444444445001'  '0' -> '0.444444445' Inexact Rounded
-	{"addx018", "0.4444444445001", "0", "0.444444445", 9, big.ToNearestAway},
+	{"addx018", "0.4444444445001", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// addx019 add '0.444444444501'   '0' -> '0.444444445' Inexact Rounded
-	{"addx019", "0.444444444501", "0", "0.444444445", 9, big.ToNearestAway},
+	{"addx019", "0.444444444501", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// addx020 add '0.44444444451'    '0' -> '0.444444445' Inexact Rounded
-	{"addx020", "0.44444444451", "0", "0.444444445", 9, big.ToNearestAway},
+	{"addx020", "0.44444444451", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// addx021 add 0 1 -> 1
-	{"addx021", "0", "1", "1", 9, big.ToNearestAway},
+	{"addx021", "0", "1", "1", false, 9, big.ToNearestAway},
 	// addx022 add 1 1 -> 2
-	{"addx022", "1", "1", "2", 9, big.ToNearestAway},
+	{"addx022", "1", "1", "2", false, 9, big.ToNearestAway},
 	// addx023 add 2 1 -> 3
-	{"addx023", "2", "1", "3", 9, big.ToNearestAway},
+	{"addx023", "2", "1", "3", false, 9, big.ToNearestAway},
 	// addx024 add 3 1 -> 4
-	{"addx024", "3", "1", "4", 9, big.ToNearestAway},
+	{"addx024", "3", "1", "4", false, 9, big.ToNearestAway},
 	// addx025 add 4 1 -> 5
-	{"addx025", "4", "1", "5", 9, big.ToNearestAway},
+	{"addx025", "4", "1", "5", false, 9, big.ToNearestAway},
 	// addx026 add 5 1 -> 6
-	{"addx026", "5", "1", "6", 9, big.ToNearestAway},
+	{"addx026", "5", "1", "6", false, 9, big.ToNearestAway},
 	// addx027 add 6 1 -> 7
-	{"addx027", "6", "1", "7", 9, big.ToNearestAway},
+	{"addx027", "6", "1", "7", false, 9, big.ToNearestAway},
 	// addx028 add 7 1 -> 8
-	{"addx028", "7", "1", "8", 9, big.ToNearestAway},
+	{"addx028", "7", "1", "8", false, 9, big.ToNearestAway},
 	// addx029 add 8 1 -> 9
-	{"addx029", "8", "1", "9", 9, big.ToNearestAway},
+	{"addx029", "8", "1", "9", false, 9, big.ToNearestAway},
 	// addx030 add 9 1 -> 10
-	{"addx030", "9", "1", "10", 9, big.ToNearestAway},
+	{"addx030", "9", "1", "10", false, 9, big.ToNearestAway},
 	// some carrying effects
 	// addx031 add '0.9998'  '0.0000' -> '0.9998'
-	{"addx031", "0.9998", "0.0000", "0.9998", 9, big.ToNearestAway},
+	{"addx031", "0.9998", "0.0000", "0.9998", false, 9, big.ToNearestAway},
 	// addx032 add '0.9998'  '0.0001' -> '0.9999'
-	{"addx032", "0.9998", "0.0001", "0.9999", 9, big.ToNearestAway},
+	{"addx032", "0.9998", "0.0001", "0.9999", false, 9, big.ToNearestAway},
 	// addx033 add '0.9998'  '0.0002' -> '1.0000'
-	{"addx033", "0.9998", "0.0002", "1.0000", 9, big.ToNearestAway},
+	{"addx033", "0.9998", "0.0002", "1.0000", false, 9, big.ToNearestAway},
 	// addx034 add '0.9998'  '0.0003' -> '1.0001'
-	{"addx034", "0.9998", "0.0003", "1.0001", 9, big.ToNearestAway},
+	{"addx034", "0.9998", "0.0003", "1.0001", false, 9, big.ToNearestAway},
 	// addx035 add '70'  '10000e+9' -> '1.00000000E+13' Inexact Rounded
-	{"addx035", "70", "10000e+9", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx035", "70", "10000e+9", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx036 add '700'  '10000e+9' -> '1.00000000E+13' Inexact Rounded
-	{"addx036", "700", "10000e+9", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx036", "700", "10000e+9", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx037 add '7000'  '10000e+9' -> '1.00000000E+13' Inexact Rounded
-	{"addx037", "7000", "10000e+9", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx037", "7000", "10000e+9", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx038 add '70000'  '10000e+9' -> '1.00000001E+13' Inexact Rounded
-	{"addx038", "70000", "10000e+9", "1.00000001E+13", 9, big.ToNearestAway},
+	{"addx038", "70000", "10000e+9", "1.00000001E+13", true, 9, big.ToNearestAway},
 	// addx039 add '700000'  '10000e+9' -> '1.00000007E+13' Rounded
-	{"addx039", "700000", "10000e+9", "1.00000007E+13", 9, big.ToNearestAway},
+	{"addx039", "700000", "10000e+9", "1.00000007E+13", false, 9, big.ToNearestAway},
 	// symmetry:
 	// addx040 add '10000e+9'  '70' -> '1.00000000E+13' Inexact Rounded
-	{"addx040", "10000e+9", "70", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx040", "10000e+9", "70", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx041 add '10000e+9'  '700' -> '1.00000000E+13' Inexact Rounded
-	{"addx041", "10000e+9", "700", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx041", "10000e+9", "700", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx042 add '10000e+9'  '7000' -> '1.00000000E+13' Inexact Rounded
-	{"addx042", "10000e+9", "7000", "1.00000000E+13", 9, big.ToNearestAway},
+	{"addx042", "10000e+9", "7000", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// addx044 add '10000e+9'  '70000' -> '1.00000001E+13' Inexact Rounded
-	{"addx044", "10000e+9", "70000", "1.00000001E+13", 9, big.ToNearestAway},
+	{"addx044", "10000e+9", "70000", "1.00000001E+13", true, 9, big.ToNearestAway},
 	// addx045 add '10000e+9'  '700000' -> '1.00000007E+13' Rounded
-	{"addx045", "10000e+9", "700000", "1.00000007E+13", 9, big.ToNearestAway},
+	{"addx045", "10000e+9", "700000", "1.00000007E+13", false, 9, big.ToNearestAway},
 	// same, higher precision
 	// precision: 15
 	// addx046 add '10000e+9'  '7' -> '10000000000007'
-	{"addx046", "10000e+9", "7", "10000000000007", 15, big.ToNearestAway},
+	{"addx046", "10000e+9", "7", "10000000000007", false, 15, big.ToNearestAway},
 	// addx047 add '10000e+9'  '70' -> '10000000000070'
-	{"addx047", "10000e+9", "70", "10000000000070", 15, big.ToNearestAway},
+	{"addx047", "10000e+9", "70", "10000000000070", false, 15, big.ToNearestAway},
 	// addx048 add '10000e+9'  '700' -> '10000000000700'
-	{"addx048", "10000e+9", "700", "10000000000700", 15, big.ToNearestAway},
+	{"addx048", "10000e+9", "700", "10000000000700", false, 15, big.ToNearestAway},
 	// addx049 add '10000e+9'  '7000' -> '10000000007000'
-	{"addx049", "10000e+9", "7000", "10000000007000", 15, big.ToNearestAway},
+	{"addx049", "10000e+9", "7000", "10000000007000", false, 15, big.ToNearestAway},
 	// addx050 add '10000e+9'  '70000' -> '10000000070000'
-	{"addx050", "10000e+9", "70000", "10000000070000", 15, big.ToNearestAway},
+	{"addx050", "10000e+9", "70000", "10000000070000", false, 15, big.ToNearestAway},
 	// addx051 add '10000e+9'  '700000' -> '10000000700000'
-	{"addx051", "10000e+9", "700000", "10000000700000", 15, big.ToNearestAway},
+	{"addx051", "10000e+9", "700000", "10000000700000", false, 15, big.ToNearestAway},
 	// addx052 add '10000e+9'  '7000000' -> '10000007000000'
-	{"addx052", "10000e+9", "7000000", "10000007000000", 15, big.ToNearestAway},
+	{"addx052", "10000e+9", "7000000", "10000007000000", false, 15, big.ToNearestAway},
 	// examples from decarith
 	// addx053 add '12' '7.00' -> '19.00'
-	{"addx053", "12", "7.00", "19.00", 15, big.ToNearestAway},
+	{"addx053", "12", "7.00", "19.00", false, 15, big.ToNearestAway},
 	// addx054 add '1.3' '-1.07' -> '0.23'
-	{"addx054", "1.3", "-1.07", "0.23", 15, big.ToNearestAway},
+	{"addx054", "1.3", "-1.07", "0.23", false, 15, big.ToNearestAway},
 	// addx055 add '1.3' '-1.30' -> '0.00'
-	{"addx055", "1.3", "-1.30", "0.00", 15, big.ToNearestAway},
+	{"addx055", "1.3", "-1.30", "0.00", false, 15, big.ToNearestAway},
 	// addx056 add '1.3' '-2.07' -> '-0.77'
-	{"addx056", "1.3", "-2.07", "-0.77", 15, big.ToNearestAway},
+	{"addx056", "1.3", "-2.07", "-0.77", false, 15, big.ToNearestAway},
 	// addx057 add '1E+2' '1E+4' -> '1.01E+4'
-	{"addx057", "1E+2", "1E+4", "1.01E+4", 15, big.ToNearestAway},
+	{"addx057", "1E+2", "1E+4", "1.01E+4", false, 15, big.ToNearestAway},
 	// zero preservation
 	// precision: 6
 	// addx060 add '10000e+9'  '70000' -> '1.00000E+13' Inexact Rounded
-	{"addx060", "10000e+9", "70000", "1.00000E+13", 6, big.ToNearestAway},
+	{"addx060", "10000e+9", "70000", "1.00000E+13", true, 6, big.ToNearestAway},
 	// addx061 add 1 '0.0001' -> '1.0001'
-	{"addx061", "1", "0.0001", "1.0001", 6, big.ToNearestAway},
+	{"addx061", "1", "0.0001", "1.0001", false, 6, big.ToNearestAway},
 	// addx062 add 1 '0.00001' -> '1.00001'
-	{"addx062", "1", "0.00001", "1.00001", 6, big.ToNearestAway},
+	{"addx062", "1", "0.00001", "1.00001", false, 6, big.ToNearestAway},
 	// addx063 add 1 '0.000001' -> '1.00000' Inexact Rounded
-	{"addx063", "1", "0.000001", "1.00000", 6, big.ToNearestAway},
+	{"addx063", "1", "0.000001", "1.00000", true, 6, big.ToNearestAway},
 	// addx064 add 1 '0.0000001' -> '1.00000' Inexact Rounded
-	{"addx064", "1", "0.0000001", "1.00000", 6, big.ToNearestAway},
+	{"addx064", "1", "0.0000001", "1.00000", true, 6, big.ToNearestAway},
 	// addx065 add 1 '0.00000001' -> '1.00000' Inexact Rounded
-	{"addx065", "1", "0.00000001", "1.00000", 6, big.ToNearestAway},
+	{"addx065", "1", "0.00000001", "1.00000", true, 6, big.ToNearestAway},
 	// some funny zeros [in case of bad signum]
 	// addx070 add 1  0    -> 1
-	{"addx070", "1", "0", "1", 6, big.ToNearestAway},
+	{"addx070", "1", "0", "1", false, 6, big.ToNearestAway},
 	// addx071 add 1 0.    -> 1
-	{"addx071", "1", "0.", "1", 6, big.ToNearestAway},
+	{"addx071", "1", "0.", "1", false, 6, big.ToNearestAway},
 	// addx072 add 1  .0   -> 1.0
-	{"addx072", "1", ".0", "1.0", 6, big.ToNearestAway},
+	{"addx072", "1", ".0", "1.0", false, 6, big.ToNearestAway},
 	// addx073 add 1 0.0   -> 1.0
-	{"addx073", "1", "0.0", "1.0", 6, big.ToNearestAway},
+	{"addx073", "1", "0.0", "1.0", false, 6, big.ToNearestAway},
 	// addx074 add 1 0.00  -> 1.00
-	{"addx074", "1", "0.00", "1.00", 6, big.ToNearestAway},
+	{"addx074", "1", "0.00", "1.00", false, 6, big.ToNearestAway},
 	// addx075 add  0  1   -> 1
-	{"addx075", "0", "1", "1", 6, big.ToNearestAway},
+	{"addx075", "0", "1", "1", false, 6, big.ToNearestAway},
 	// addx076 add 0.  1   -> 1
-	{"addx076", "0.", "1", "1", 6, big.ToNearestAway},
+	{"addx076", "0.", "1", "1", false, 6, big.ToNearestAway},
 	// addx077 add  .0 1   -> 1.0
-	{"addx077", ".0", "1", "1.0", 6, big.ToNearestAway},
+	{"addx077", ".0", "1", "1.0", false, 6, big.ToNearestAway},
 	// addx078 add 0.0 1   -> 1.0
-	{"addx078", "0.0", "1", "1.0", 6, big.ToNearestAway},
+	{"addx078", "0.0", "1", "1.0", false, 6, big.ToNearestAway},
 	// addx079 add 0.00 1  -> 1.00
-	{"addx079", "0.00", "1", "1.00", 6, big.ToNearestAway},
+	{"addx079", "0.00", "1", "1.00", false, 6, big.ToNearestAway},
 	// precision: 9
 	// some carries
 	// addx080 add 999999998 1  -> 999999999
-	{"addx080", "999999998", "1", "999999999", 9, big.ToNearestAway},
+	{"addx080", "999999998", "1", "999999999", false, 9, big.ToNearestAway},
 	// addx081 add 999999999 1  -> 1.00000000E+9 Rounded
-	{"addx081", "999999999", "1", "1.00000000E+9", 9, big.ToNearestAway},
+	{"addx081", "999999999", "1", "1.00000000E+9", false, 9, big.ToNearestAway},
 	// addx082 add  99999999 1  -> 100000000
-	{"addx082", "99999999", "1", "100000000", 9, big.ToNearestAway},
+	{"addx082", "99999999", "1", "100000000", false, 9, big.ToNearestAway},
 	// addx083 add   9999999 1  -> 10000000
-	{"addx083", "9999999", "1", "10000000", 9, big.ToNearestAway},
+	{"addx083", "9999999", "1", "10000000", false, 9, big.ToNearestAway},
 	// addx084 add    999999 1  -> 1000000
-	{"addx084", "999999", "1", "1000000", 9, big.ToNearestAway},
+	{"addx084", "999999", "1", "1000000", false, 9, big.ToNearestAway},
 	// addx085 add     99999 1  -> 100000
-	{"addx085", "99999", "1", "100000", 9, big.ToNearestAway},
+	{"addx085", "99999", "1", "100000", false, 9, big.ToNearestAway},
 	// addx086 add      9999 1  -> 10000
-	{"addx086", "9999", "1", "10000", 9, big.ToNearestAway},
+	{"addx086", "9999", "1", "10000", false, 9, big.ToNearestAway},
 	// addx087 add       999 1  -> 1000
-	{"addx087", "999", "1", "1000", 9, big.ToNearestAway},
+	{"addx087", "999", "1", "1000", false, 9, big.ToNearestAway},
 	// addx088 add        99 1  -> 100
-	{"addx088", "99", "1", "100", 9, big.ToNearestAway},
+	{"addx088", "99", "1", "100", false, 9, big.ToNearestAway},
 	// addx089 add         9 1  -> 10
-	{"addx089", "9", "1", "10", 9, big.ToNearestAway},
+	{"addx089", "9", "1", "10", false, 9, big.ToNearestAway},
 	// more LHS swaps
 	// addx090 add '-56267E-10'   0 ->  '-0.0000056267'
-	{"addx090", "-56267E-10", "0", "-0.0000056267", 9, big.ToNearestAway},
+	{"addx090", "-56267E-10", "0", "-0.0000056267", false, 9, big.ToNearestAway},
 	// addx091 add '-56267E-6'    0 ->  '-0.056267'
-	{"addx091", "-56267E-6", "0", "-0.056267", 9, big.ToNearestAway},
+	{"addx091", "-56267E-6", "0", "-0.056267", false, 9, big.ToNearestAway},
 	// addx092 add '-56267E-5'    0 ->  '-0.56267'
-	{"addx092", "-56267E-5", "0", "-0.56267", 9, big.ToNearestAway},
+	{"addx092", "-56267E-5", "0", "-0.56267", false, 9, big.ToNearestAway},
 	// addx093 add '-56267E-4'    0 ->  '-5.6267'
-	{"addx093", "-56267E-4", "0", "-5.6267", 9, big.ToNearestAway},
+	{"addx093", "-56267E-4", "0", "-5.6267", false, 9, big.ToNearestAway},
 	// addx094 add '-56267E-3'    0 ->  '-56.267'
-	{"addx094", "-56267E-3", "0", "-56.267", 9, big.ToNearestAway},
+	{"addx094", "-56267E-3", "0", "-56.267", false, 9, big.ToNearestAway},
 	// addx095 add '-56267E-2'    0 ->  '-562.67'
-	{"addx095", "-56267E-2", "0", "-562.67", 9, big.ToNearestAway},
+	{"addx095", "-56267E-2", "0", "-562.67", false, 9, big.ToNearestAway},
 	// addx096 add '-56267E-1'    0 ->  '-5626.7'
-	{"addx096", "-56267E-1", "0", "-5626.7", 9, big.ToNearestAway},
+	{"addx096", "-56267E-1", "0", "-5626.7", false, 9, big.ToNearestAway},
 	// addx097 add '-56267E-0'    0 ->  '-56267'
-	{"addx097", "-56267E-0", "0", "-56267", 9, big.ToNearestAway},
+	{"addx097", "-56267E-0", "0", "-56267", false, 9, big.ToNearestAway},
 	// addx098 add '-5E-10'       0 ->  '-5E-10'
-	{"addx098", "-5E-10", "0", "-5E-10", 9, big.ToNearestAway},
+	{"addx098", "-5E-10", "0", "-5E-10", false, 9, big.ToNearestAway},
 	// addx099 add '-5E-7'        0 ->  '-5E-7'
-	{"addx099", "-5E-7", "0", "-5E-7", 9, big.ToNearestAway},
+	{"addx099", "-5E-7", "0", "-5E-7", false, 9, big.ToNearestAway},
 	// addx100 add '-5E-6'        0 ->  '-0.000005'
-	{"addx100", "-5E-6", "0", "-0.000005", 9, big.ToNearestAway},
+	{"addx100", "-5E-6", "0", "-0.000005", false, 9, big.ToNearestAway},
 	// addx101 add '-5E-5'        0 ->  '-0.00005'
-	{"addx101", "-5E-5", "0", "-0.00005", 9, big.ToNearestAway},
+	{"addx101", "-5E-5", "0", "-0.00005", false, 9, big.ToNearestAway},
 	// addx102 add '-5E-4'        0 ->  '-0.0005'
-	{"addx102", "-5E-4", "0", "-0.0005", 9, big.ToNearestAway},
+	{"addx102", "-5E-4", "0", "-0.0005", false, 9, big.ToNearestAway},
 	// addx103 add '-5E-1'        0 ->  '-0.5'
-	{"addx103", "-5E-1", "0", "-0.5", 9, big.ToNearestAway},
+	{"addx103", "-5E-1", "0", "-0.5", false, 9, big.ToNearestAway},
 	// addx104 add '-5E0'         0 ->  '-5'
-	{"addx104", "-5E0", "0", "-5", 9, big.ToNearestAway},
+	{"addx104", "-5E0", "0", "-5", false, 9, big.ToNearestAway},
 	// addx105 add '-5E1'         0 ->  '-50'
-	{"addx105", "-5E1", "0", "-50", 9, big.ToNearestAway},
+	{"addx105", "-5E1", "0", "-50", false, 9, big.ToNearestAway},
 	// addx106 add '-5E5'         0 ->  '-500000'
-	{"addx106", "-5E5", "0", "-500000", 9, big.ToNearestAway},
+	{"addx106", "-5E5", "0", "-500000", false, 9, big.ToNearestAway},
 	// addx107 add '-5E8'         0 ->  '-500000000'
-	{"addx107", "-5E8", "0", "-500000000", 9, big.ToNearestAway},
+	{"addx107", "-5E8", "0", "-500000000", false, 9, big.ToNearestAway},
 	// addx108 add '-5E9'         0 ->  '-5.00000000E+9'   Rounded
-	{"addx108", "-5E9", "0", "-5.00000000E+9", 9, big.ToNearestAway},
+	{"addx108", "-5E9", "0", "-5.00000000E+9", false, 9, big.ToNearestAway},
 	// addx109 add '-5E10'        0 ->  '-5.00000000E+10'  Rounded
-	{"addx109", "-5E10", "0", "-5.00000000E+10", 9, big.ToNearestAway},
+	{"addx109", "-5E10", "0", "-5.00000000E+10", false, 9, big.ToNearestAway},
 	// addx110 add '-5E11'        0 ->  '-5.00000000E+11'  Rounded
-	{"addx110", "-5E11", "0", "-5.00000000E+11", 9, big.ToNearestAway},
+	{"addx110", "-5E11", "0", "-5.00000000E+11", false, 9, big.ToNearestAway},
 	// addx111 add '-5E100'       0 ->  '-5.00000000E+100' Rounded
-	{"addx111", "-5E100", "0", "-5.00000000E+100", 9, big.ToNearestAway},
+	{"addx111", "-5E100", "0", "-5.00000000E+100", false, 9, big.ToNearestAway},
 	// more RHS swaps
 	// addx113 add 0  '-56267E-10' ->  '-0.0000056267'
-	{"addx113", "0", "-56267E-10", "-0.0000056267", 9, big.ToNearestAway},
+	{"addx113", "0", "-56267E-10", "-0.0000056267", false, 9, big.ToNearestAway},
 	// addx114 add 0  '-56267E-6'  ->  '-0.056267'
-	{"addx114", "0", "-56267E-6", "-0.056267", 9, big.ToNearestAway},
+	{"addx114", "0", "-56267E-6", "-0.056267", false, 9, big.ToNearestAway},
 	// addx116 add 0  '-56267E-5'  ->  '-0.56267'
-	{"addx116", "0", "-56267E-5", "-0.56267", 9, big.ToNearestAway},
+	{"addx116", "0", "-56267E-5", "-0.56267", false, 9, big.ToNearestAway},
 	// addx117 add 0  '-56267E-4'  ->  '-5.6267'
-	{"addx117", "0", "-56267E-4", "-5.6267", 9, big.ToNearestAway},
+	{"addx117", "0", "-56267E-4", "-5.6267", false, 9, big.ToNearestAway},
 	// addx119 add 0  '-56267E-3'  ->  '-56.267'
-	{"addx119", "0", "-56267E-3", "-56.267", 9, big.ToNearestAway},
+	{"addx119", "0", "-56267E-3", "-56.267", false, 9, big.ToNearestAway},
 	// addx120 add 0  '-56267E-2'  ->  '-562.67'
-	{"addx120", "0", "-56267E-2", "-562.67", 9, big.ToNearestAway},
+	{"addx120", "0", "-56267E-2", "-562.67", false, 9, big.ToNearestAway},
 	// addx121 add 0  '-56267E-1'  ->  '-5626.7'
-	{"addx121", "0", "-56267E-1", "-5626.7", 9, big.ToNearestAway},
+	{"addx121", "0", "-56267E-1", "-5626.7", false, 9, big.ToNearestAway},
 	// addx122 add 0  '-56267E-0'  ->  '-56267'
-	{"addx122", "0", "-56267E-0", "-56267", 9, big.ToNearestAway},
+	{"addx122", "0", "-56267E-0", "-56267", false, 9, big.ToNearestAway},
 	// addx123 add 0  '-5E-10'     ->  '-5E-10'
-	{"addx123", "0", "-5E-10", "-5E-10", 9, big.ToNearestAway},
+	{"addx123", "0", "-5E-10", "-5E-10", false, 9, big.ToNearestAway},
 	// addx124 add 0  '-5E-7'      ->  '-5E-7'
-	{"addx124", "0", "-5E-7", "-5E-7", 9, big.ToNearestAway},
+	{"addx124", "0", "-5E-7", "-5E-7", false, 9, big.ToNearestAway},
 	// addx125 add 0  '-5E-6'      ->  '-0.000005'
-	{"addx125", "0", "-5E-6", "-0.000005", 9, big.ToNearestAway},
+	{"addx125", "0", "-5E-6", "-0.000005", false, 9, big.ToNearestAway},
 	// addx126 add 0  '-5E-5'      ->  '-0.00005'
-	{"addx126", "0", "-5E-5", "-0.00005", 9, big.ToNearestAway},
+	{"addx126", "0", "-5E-5", "-0.00005", false, 9, big.ToNearestAway},
 	// addx127 add 0  '-5E-4'      ->  '-0.0005'
-	{"addx127", "0", "-5E-4", "-0.0005", 9, big.ToNearestAway},
+	{"addx127", "0", "-5E-4", "-0.0005", false, 9, big.ToNearestAway},
 	// addx128 add 0  '-5E-1'      ->  '-0.5'
-	{"addx128", "0", "-5E-1", "-0.5", 9, big.ToNearestAway},
+	{"addx128", "0", "-5E-1", "-0.5", false, 9, big.ToNearestAway},
 	// addx129 add 0  '-5E0'       ->  '-5'
-	{"addx129", "0", "-5E0", "-5", 9, big.ToNearestAway},
+	{"addx129", "0", "-5E0", "-5", false, 9, big.ToNearestAway},
 	// addx130 add 0  '-5E1'       ->  '-50'
-	{"addx130", "0", "-5E1", "-50", 9, big.ToNearestAway},
+	{"addx130", "0", "-5E1", "-50", false, 9, big.ToNearestAway},
 	// addx131 add 0  '-5E5'       ->  '-500000'
-	{"addx131", "0", "-5E5", "-500000", 9, big.ToNearestAway},
+	{"addx131", "0", "-5E5", "-500000", false, 9, big.ToNearestAway},
 	// addx132 add 0  '-5E8'       ->  '-500000000'
-	{"addx132", "0", "-5E8", "-500000000", 9, big.ToNearestAway},
+	{"addx132", "0", "-5E8", "-500000000", false, 9, big.ToNearestAway},
 	// addx133 add 0  '-5E9'       ->  '-5.00000000E+9'    Rounded
-	{"addx133", "0", "-5E9", "-5.00000000E+9", 9, big.ToNearestAway},
+	{"addx133", "0", "-5E9", "-5.00000000E+9", false, 9, big.ToNearestAway},
 	// addx134 add 0  '-5E10'      ->  '-5.00000000E+10'   Rounded
-	{"addx134", "0", "-5E10", "-5.00000000E+10", 9, big.ToNearestAway},
+	{"addx134", "0", "-5E10", "-5.00000000E+10", false, 9, big.ToNearestAway},
 	// addx135 add 0  '-5E11'      ->  '-5.00000000E+11'   Rounded
-	{"addx135", "0", "-5E11", "-5.00000000E+11", 9, big.ToNearestAway},
+	{"addx135", "0", "-5E11", "-5.00000000E+11", false, 9, big.ToNearestAway},
 	// addx136 add 0  '-5E100'     ->  '-5.00000000E+100'  Rounded
-	{"addx136", "0", "-5E100", "-5.00000000E+100", 9, big.ToNearestAway},
+	{"addx136", "0", "-5E100", "-5.00000000E+100", false, 9, big.ToNearestAway},
 	// related
 	// addx137 add  1  '0E-12'      ->  '1.00000000'  Rounded
-	{"addx137", "1", "0E-12", "1.00000000", 9, big.ToNearestAway},
+	{"addx137", "1", "0E-12", "1.00000000", false, 9, big.ToNearestAway},
 	// addx138 add -1  '0E-12'      ->  '-1.00000000' Rounded
-	{"addx138", "-1", "0E-12", "-1.00000000", 9, big.ToNearestAway},
+	{"addx138", "-1", "0E-12", "-1.00000000", false, 9, big.ToNearestAway},
 	// addx139 add '0E-12' 1        ->  '1.00000000'  Rounded
-	{"addx139", "0E-12", "1", "1.00000000", 9, big.ToNearestAway},
+	{"addx139", "0E-12", "1", "1.00000000", false, 9, big.ToNearestAway},
 	// addx140 add '0E-12' -1       ->  '-1.00000000' Rounded
-	{"addx140", "0E-12", "-1", "-1.00000000", 9, big.ToNearestAway},
+	{"addx140", "0E-12", "-1", "-1.00000000", false, 9, big.ToNearestAway},
 	// addx141 add 1E+4    0.0000   ->  '10000.0000'
-	{"addx141", "1E+4", "0.0000", "10000.0000", 9, big.ToNearestAway},
+	{"addx141", "1E+4", "0.0000", "10000.0000", false, 9, big.ToNearestAway},
 	// addx142 add 1E+4    0.00000  ->  '10000.0000'  Rounded
-	{"addx142", "1E+4", "0.00000", "10000.0000", 9, big.ToNearestAway},
+	{"addx142", "1E+4", "0.00000", "10000.0000", false, 9, big.ToNearestAway},
 	// addx143 add 0.000   1E+5     ->  '100000.000'
-	{"addx143", "0.000", "1E+5", "100000.000", 9, big.ToNearestAway},
+	{"addx143", "0.000", "1E+5", "100000.000", false, 9, big.ToNearestAway},
 	// addx144 add 0.0000  1E+5     ->  '100000.000'  Rounded
-	{"addx144", "0.0000", "1E+5", "100000.000", 9, big.ToNearestAway},
+	{"addx144", "0.0000", "1E+5", "100000.000", false, 9, big.ToNearestAway},
 	// [some of the next group are really constructor tests]
 	// addx146 add '00.0'  0       ->  '0.0'
-	{"addx146", "00.0", "0", "0.0", 9, big.ToNearestAway},
+	{"addx146", "00.0", "0", "0.0", false, 9, big.ToNearestAway},
 	// addx147 add '0.00'  0       ->  '0.00'
-	{"addx147", "0.00", "0", "0.00", 9, big.ToNearestAway},
+	{"addx147", "0.00", "0", "0.00", false, 9, big.ToNearestAway},
 	// addx148 add  0      '0.00'  ->  '0.00'
-	{"addx148", "0", "0.00", "0.00", 9, big.ToNearestAway},
+	{"addx148", "0", "0.00", "0.00", false, 9, big.ToNearestAway},
 	// addx149 add  0      '00.0'  ->  '0.0'
-	{"addx149", "0", "00.0", "0.0", 9, big.ToNearestAway},
+	{"addx149", "0", "00.0", "0.0", false, 9, big.ToNearestAway},
 	// addx150 add '00.0'  '0.00'  ->  '0.00'
-	{"addx150", "00.0", "0.00", "0.00", 9, big.ToNearestAway},
+	{"addx150", "00.0", "0.00", "0.00", false, 9, big.ToNearestAway},
 	// addx151 add '0.00'  '00.0'  ->  '0.00'
-	{"addx151", "0.00", "00.0", "0.00", 9, big.ToNearestAway},
+	{"addx151", "0.00", "00.0", "0.00", false, 9, big.ToNearestAway},
 	// addx152 add '3'     '.3'    ->  '3.3'
-	{"addx152", "3", ".3", "3.3", 9, big.ToNearestAway},
+	{"addx152", "3", ".3", "3.3", false, 9, big.ToNearestAway},
 	// addx153 add '3.'    '.3'    ->  '3.3'
-	{"addx153", "3.", ".3", "3.3", 9, big.ToNearestAway},
+	{"addx153", "3.", ".3", "3.3", false, 9, big.ToNearestAway},
 	// addx154 add '3.0'   '.3'    ->  '3.3'
-	{"addx154", "3.0", ".3", "3.3", 9, big.ToNearestAway},
+	{"addx154", "3.0", ".3", "3.3", false, 9, big.ToNearestAway},
 	// addx155 add '3.00'  '.3'    ->  '3.30'
-	{"addx155", "3.00", ".3", "3.30", 9, big.ToNearestAway},
+	{"addx155", "3.00", ".3", "3.30", false, 9, big.ToNearestAway},
 	// addx156 add '3'     '3'     ->  '6'
-	{"addx156", "3", "3", "6", 9, big.ToNearestAway},
+	{"addx156", "3", "3", "6", false, 9, big.ToNearestAway},
 	// addx157 add '3'     '+3'    ->  '6'
-	{"addx157", "3", "+3", "6", 9, big.ToNearestAway},
+	{"addx157", "3", "+3", "6", false, 9, big.ToNearestAway},
 	// addx158 add '3'     '-3'    ->  '0'
-	{"addx158", "3", "-3", "0", 9, big.ToNearestAway},
+	{"addx158", "3", "-3", "0", false, 9, big.ToNearestAway},
 	// addx159 add '0.3'   '-0.3'  ->  '0.0'
-	{"addx159", "0.3", "-0.3", "0.0", 9, big.ToNearestAway},
+	{"addx159", "0.3", "-0.3", "0.0", false, 9, big.ToNearestAway},
 	// addx160 add '0.03'  '-0.03' ->  '0.00'
-	{"addx160", "0.03", "-0.03", "0.00", 9, big.ToNearestAway},
+	{"addx160", "0.03", "-0.03", "0.00", false, 9, big.ToNearestAway},
 	// try borderline precision, with carries, etc.
 	// precision: 15
 	// addx161 add '1E+12' '-1'    -> '999999999999'
-	{"addx161", "1E+12", "-1", "999999999999", 15, big.ToNearestAway},
+	{"addx161", "1E+12", "-1", "999999999999", false, 15, big.ToNearestAway},
 	// addx162 add '1E+12'  '1.11' -> '1000000000001.11'
-	{"addx162", "1E+12", "1.11", "1000000000001.11", 15, big.ToNearestAway},
+	{"addx162", "1E+12", "1.11", "1000000000001.11", false, 15, big.ToNearestAway},
 	// addx163 add '1.11'  '1E+12' -> '1000000000001.11'
-	{"addx163", "1.11", "1E+12", "1000000000001.11", 15, big.ToNearestAway},
+	{"addx163", "1.11", "1E+12", "1000000000001.11", false, 15, big.ToNearestAway},
 	// addx164 add '-1'    '1E+12' -> '999999999999'
-	{"addx164", "-1", "1E+12", "999999999999", 15, big.ToNearestAway},
+	{"addx164", "-1", "1E+12", "999999999999", false, 15, big.ToNearestAway},
 	// addx165 add '7E+12' '-1'    -> '6999999999999'
-	{"addx165", "7E+12", "-1", "6999999999999", 15, big.ToNearestAway},
+	{"addx165", "7E+12", "-1", "6999999999999", false, 15, big.ToNearestAway},
 	// addx166 add '7E+12'  '1.11' -> '7000000000001.11'
-	{"addx166", "7E+12", "1.11", "7000000000001.11", 15, big.ToNearestAway},
+	{"addx166", "7E+12", "1.11", "7000000000001.11", false, 15, big.ToNearestAway},
 	// addx167 add '1.11'  '7E+12' -> '7000000000001.11'
-	{"addx167", "1.11", "7E+12", "7000000000001.11", 15, big.ToNearestAway},
+	{"addx167", "1.11", "7E+12", "7000000000001.11", false, 15, big.ToNearestAway},
 	// addx168 add '-1'    '7E+12' -> '6999999999999'
-	{"addx168", "-1", "7E+12", "6999999999999", 15, big.ToNearestAway},
+	{"addx168", "-1", "7E+12", "6999999999999", false, 15, big.ToNearestAway},
 	//             123456789012345      123456789012345      1 23456789012345
 	// addx170 add '0.444444444444444'  '0.555555555555563' -> '1.00000000000001' Inexact Rounded
-	{"addx170", "0.444444444444444", "0.555555555555563", "1.00000000000001", 15, big.ToNearestAway},
+	{"addx170", "0.444444444444444", "0.555555555555563", "1.00000000000001", true, 15, big.ToNearestAway},
 	// addx171 add '0.444444444444444'  '0.555555555555562' -> '1.00000000000001' Inexact Rounded
-	{"addx171", "0.444444444444444", "0.555555555555562", "1.00000000000001", 15, big.ToNearestAway},
+	{"addx171", "0.444444444444444", "0.555555555555562", "1.00000000000001", true, 15, big.ToNearestAway},
 	// addx172 add '0.444444444444444'  '0.555555555555561' -> '1.00000000000001' Inexact Rounded
-	{"addx172", "0.444444444444444", "0.555555555555561", "1.00000000000001", 15, big.ToNearestAway},
+	{"addx172", "0.444444444444444", "0.555555555555561", "1.00000000000001", true, 15, big.ToNearestAway},
 	// addx173 add '0.444444444444444'  '0.555555555555560' -> '1.00000000000000' Inexact Rounded
-	{"addx173", "0.444444444444444", "0.555555555555560", "1.00000000000000", 15, big.ToNearestAway},
+	{"addx173", "0.444444444444444", "0.555555555555560", "1.00000000000000", true, 15, big.ToNearestAway},
 	// addx174 add '0.444444444444444'  '0.555555555555559' -> '1.00000000000000' Inexact Rounded
-	{"addx174", "0.444444444444444", "0.555555555555559", "1.00000000000000", 15, big.ToNearestAway},
+	{"addx174", "0.444444444444444", "0.555555555555559", "1.00000000000000", true, 15, big.ToNearestAway},
 	// addx175 add '0.444444444444444'  '0.555555555555558' -> '1.00000000000000' Inexact Rounded
-	{"addx175", "0.444444444444444", "0.555555555555558", "1.00000000000000", 15, big.ToNearestAway},
+	{"addx175", "0.444444444444444", "0.555555555555558", "1.00000000000000", true, 15, big.ToNearestAway},
 	// addx176 add '0.444444444444444'  '0.555555555555557' -> '1.00000000000000' Inexact Rounded
-	{"addx176", "0.444444444444444", "0.555555555555557", "1.00000000000000", 15, big.ToNearestAway},
+	{"addx176", "0.444444444444444", "0.555555555555557", "1.00000000000000", true, 15, big.ToNearestAway},
 	// addx177 add '0.444444444444444'  '0.555555555555556' -> '1.00000000000000' Rounded
-	{"addx177", "0.444444444444444", "0.555555555555556", "1.00000000000000", 15, big.ToNearestAway},
+	{"addx177", "0.444444444444444", "0.555555555555556", "1.00000000000000", false, 15, big.ToNearestAway},
 	// addx178 add '0.444444444444444'  '0.555555555555555' -> '0.999999999999999'
-	{"addx178", "0.444444444444444", "0.555555555555555", "0.999999999999999", 15, big.ToNearestAway},
+	{"addx178", "0.444444444444444", "0.555555555555555", "0.999999999999999", false, 15, big.ToNearestAway},
 	// addx179 add '0.444444444444444'  '0.555555555555554' -> '0.999999999999998'
-	{"addx179", "0.444444444444444", "0.555555555555554", "0.999999999999998", 15, big.ToNearestAway},
+	{"addx179", "0.444444444444444", "0.555555555555554", "0.999999999999998", false, 15, big.ToNearestAway},
 	// addx180 add '0.444444444444444'  '0.555555555555553' -> '0.999999999999997'
-	{"addx180", "0.444444444444444", "0.555555555555553", "0.999999999999997", 15, big.ToNearestAway},
+	{"addx180", "0.444444444444444", "0.555555555555553", "0.999999999999997", false, 15, big.ToNearestAway},
 	// addx181 add '0.444444444444444'  '0.555555555555552' -> '0.999999999999996'
-	{"addx181", "0.444444444444444", "0.555555555555552", "0.999999999999996", 15, big.ToNearestAway},
+	{"addx181", "0.444444444444444", "0.555555555555552", "0.999999999999996", false, 15, big.ToNearestAway},
 	// addx182 add '0.444444444444444'  '0.555555555555551' -> '0.999999999999995'
-	{"addx182", "0.444444444444444", "0.555555555555551", "0.999999999999995", 15, big.ToNearestAway},
+	{"addx182", "0.444444444444444", "0.555555555555551", "0.999999999999995", false, 15, big.ToNearestAway},
 	// addx183 add '0.444444444444444'  '0.555555555555550' -> '0.999999999999994'
-	{"addx183", "0.444444444444444", "0.555555555555550", "0.999999999999994", 15, big.ToNearestAway},
+	{"addx183", "0.444444444444444", "0.555555555555550", "0.999999999999994", false, 15, big.ToNearestAway},
 	// and some more, including residue effects and different roundings
 	// precision: 9
 	// rounding: half_up
 	// addx200 add '123456789' 0             -> '123456789'
-	{"addx200", "123456789", "0", "123456789", 9, big.ToNearestAway},
+	{"addx200", "123456789", "0", "123456789", false, 9, big.ToNearestAway},
 	// addx201 add '123456789' 0.000000001   -> '123456789' Inexact Rounded
-	{"addx201", "123456789", "0.000000001", "123456789", 9, big.ToNearestAway},
+	{"addx201", "123456789", "0.000000001", "123456789", true, 9, big.ToNearestAway},
 	// addx202 add '123456789' 0.000001      -> '123456789' Inexact Rounded
-	{"addx202", "123456789", "0.000001", "123456789", 9, big.ToNearestAway},
+	{"addx202", "123456789", "0.000001", "123456789", true, 9, big.ToNearestAway},
 	// addx203 add '123456789' 0.1           -> '123456789' Inexact Rounded
-	{"addx203", "123456789", "0.1", "123456789", 9, big.ToNearestAway},
+	{"addx203", "123456789", "0.1", "123456789", true, 9, big.ToNearestAway},
 	// addx204 add '123456789' 0.4           -> '123456789' Inexact Rounded
-	{"addx204", "123456789", "0.4", "123456789", 9, big.ToNearestAway},
+	{"addx204", "123456789", "0.4", "123456789", true, 9, big.ToNearestAway},
 	// addx205 add '123456789' 0.49          -> '123456789' Inexact Rounded
-	{"addx205", "123456789", "0.49", "123456789", 9, big.ToNearestAway},
+	{"addx205", "123456789", "0.49", "123456789", true, 9, big.ToNearestAway},
 	// addx206 add '123456789' 0.499999      -> '123456789' Inexact Rounded
-	{"addx206", "123456789", "0.499999", "123456789", 9, big.ToNearestAway},
+	{"addx206", "123456789", "0.499999", "123456789", true, 9, big.ToNearestAway},
 	// addx207 add '123456789' 0.499999999   -> '123456789' Inexact Rounded
-	{"addx207", "123456789", "0.499999999", "123456789", 9, big.ToNearestAway},
+	{"addx207", "123456789", "0.499999999", "123456789", true, 9, big.ToNearestAway},
 	// addx208 add '123456789' 0.5           -> '123456790' Inexact Rounded
-	{"addx208", "123456789", "0.5", "123456790", 9, big.ToNearestAway},
+	{"addx208", "123456789", "0.5", "123456790", true, 9, big.ToNearestAway},
 	// addx209 add '123456789' 0.500000001   -> '123456790' Inexact Rounded
-	{"addx209", "123456789", "0.500000001", "123456790", 9, big.ToNearestAway},
+	{"addx209", "123456789", "0.500000001", "123456790", true, 9, big.ToNearestAway},
 	// addx210 add '123456789' 0.500001      -> '123456790' Inexact Rounded
-	{"addx210", "123456789", "0.500001", "123456790", 9, big.ToNearestAway},
+	{"addx210", "123456789", "0.500001", "123456790", true, 9, big.ToNearestAway},
 	// addx211 add '123456789' 0.51          -> '123456790' Inexact Rounded
-	{"addx211", "123456789", "0.51", "123456790", 9, big.ToNearestAway},
+	{"addx211", "123456789", "0.51", "123456790", true, 9, big.ToNearestAway},
 	// addx212 add '123456789' 0.6           -> '123456790' Inexact Rounded
-	{"addx212", "123456789", "0.6", "123456790", 9, big.ToNearestAway},
+	{"addx212", "123456789", "0.6", "123456790", true, 9, big.ToNearestAway},
 	// addx213 add '123456789' 0.9           -> '123456790' Inexact Rounded
-	{"addx213", "123456789", "0.9", "123456790", 9, big.ToNearestAway},
+	{"addx213", "123456789", "0.9", "123456790", true, 9, big.ToNearestAway},
 	// addx214 add '123456789' 0.99999       -> '123456790' Inexact Rounded
-	{"addx214", "123456789", "0.99999", "123456790", 9, big.ToNearestAway},
+	{"addx214", "123456789", "0.99999", "123456790", true, 9, big.ToNearestAway},
 	// addx215 add '123456789' 0.999999999   -> '123456790' Inexact Rounded
-	{"addx215", "123456789", "0.999999999", "123456790", 9, big.ToNearestAway},
+	{"addx215", "123456789", "0.999999999", "123456790", true, 9, big.ToNearestAway},
 	// addx216 add '123456789' 1             -> '123456790'
-	{"addx216", "123456789", "1", "123456790", 9, big.ToNearestAway},
+	{"addx216", "123456789", "1", "123456790", false, 9, big.ToNearestAway},
 	// addx217 add '123456789' 1.000000001   -> '123456790' Inexact Rounded
-	{"addx217", "123456789", "1.000000001", "123456790", 9, big.ToNearestAway},
+	{"addx217", "123456789", "1.000000001", "123456790", true, 9, big.ToNearestAway},
 	// addx218 add '123456789' 1.00001       -> '123456790' Inexact Rounded
-	{"addx218", "123456789", "1.00001", "123456790", 9, big.ToNearestAway},
+	{"addx218", "123456789", "1.00001", "123456790", true, 9, big.ToNearestAway},
 	// addx219 add '123456789' 1.1           -> '123456790' Inexact Rounded
-	{"addx219", "123456789", "1.1", "123456790", 9, big.ToNearestAway},
+	{"addx219", "123456789", "1.1", "123456790", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx220 add '123456789' 0             -> '123456789'
-	{"addx220", "123456789", "0", "123456789", 9, big.ToNearestEven},
+	{"addx220", "123456789", "0", "123456789", false, 9, big.ToNearestEven},
 	// addx221 add '123456789' 0.000000001   -> '123456789' Inexact Rounded
-	{"addx221", "123456789", "0.000000001", "123456789", 9, big.ToNearestEven},
+	{"addx221", "123456789", "0.000000001", "123456789", true, 9, big.ToNearestEven},
 	// addx222 add '123456789' 0.000001      -> '123456789' Inexact Rounded
-	{"addx222", "123456789", "0.000001", "123456789", 9, big.ToNearestEven},
+	{"addx222", "123456789", "0.000001", "123456789", true, 9, big.ToNearestEven},
 	// addx223 add '123456789' 0.1           -> '123456789' Inexact Rounded
-	{"addx223", "123456789", "0.1", "123456789", 9, big.ToNearestEven},
+	{"addx223", "123456789", "0.1", "123456789", true, 9, big.ToNearestEven},
 	// addx224 add '123456789' 0.4           -> '123456789' Inexact Rounded
-	{"addx224", "123456789", "0.4", "123456789", 9, big.ToNearestEven},
+	{"addx224", "123456789", "0.4", "123456789", true, 9, big.ToNearestEven},
 	// addx225 add '123456789' 0.49          -> '123456789' Inexact Rounded
-	{"addx225", "123456789", "0.49", "123456789", 9, big.ToNearestEven},
+	{"addx225", "123456789", "0.49", "123456789", true, 9, big.ToNearestEven},
 	// addx226 add '123456789' 0.499999      -> '123456789' Inexact Rounded
-	{"addx226", "123456789", "0.499999", "123456789", 9, big.ToNearestEven},
+	{"addx226", "123456789", "0.499999", "123456789", true, 9, big.ToNearestEven},
 	// addx227 add '123456789' 0.499999999   -> '123456789' Inexact Rounded
-	{"addx227", "123456789", "0.499999999", "123456789", 9, big.ToNearestEven},
+	{"addx227", "123456789", "0.499999999", "123456789", true, 9, big.ToNearestEven},
 	// addx228 add '123456789' 0.5           -> '123456790' Inexact Rounded
-	{"addx228", "123456789", "0.5", "123456790", 9, big.ToNearestEven},
+	{"addx228", "123456789", "0.5", "123456790", true, 9, big.ToNearestEven},
 	// addx229 add '123456789' 0.500000001   -> '123456790' Inexact Rounded
-	{"addx229", "123456789", "0.500000001", "123456790", 9, big.ToNearestEven},
+	{"addx229", "123456789", "0.500000001", "123456790", true, 9, big.ToNearestEven},
 	// addx230 add '123456789' 0.500001      -> '123456790' Inexact Rounded
-	{"addx230", "123456789", "0.500001", "123456790", 9, big.ToNearestEven},
+	{"addx230", "123456789", "0.500001", "123456790", true, 9, big.ToNearestEven},
 	// addx231 add '123456789' 0.51          -> '123456790' Inexact Rounded
-	{"addx231", "123456789", "0.51", "123456790", 9, big.ToNearestEven},
+	{"addx231", "123456789", "0.51", "123456790", true, 9, big.ToNearestEven},
 	// addx232 add '123456789' 0.6           -> '123456790' Inexact Rounded
-	{"addx232", "123456789", "0.6", "123456790", 9, big.ToNearestEven},
+	{"addx232", "123456789", "0.6", "123456790", true, 9, big.ToNearestEven},
 	// addx233 add '123456789' 0.9           -> '123456790' Inexact Rounded
-	{"addx233", "123456789", "0.9", "123456790", 9, big.ToNearestEven},
+	{"addx233", "123456789", "0.9", "123456790", true, 9, big.ToNearestEven},
 	// addx234 add '123456789' 0.99999       -> '123456790' Inexact Rounded
-	{"addx234", "123456789", "0.99999", "123456790", 9, big.ToNearestEven},
+	{"addx234", "123456789", "0.99999", "123456790", true, 9, big.ToNearestEven},
 	// addx235 add '123456789' 0.999999999   -> '123456790' Inexact Rounded
-	{"addx235", "123456789", "0.999999999", "123456790", 9, big.ToNearestEven},
+	{"addx235", "123456789", "0.999999999", "123456790", true, 9, big.ToNearestEven},
 	// addx236 add '123456789' 1             -> '123456790'
-	{"addx236", "123456789", "1", "123456790", 9, big.ToNearestEven},
+	{"addx236", "123456789", "1", "123456790", false, 9, big.ToNearestEven},
 	// addx237 add '123456789' 1.00000001    -> '123456790' Inexact Rounded
-	{"addx237", "123456789", "1.00000001", "123456790", 9, big.ToNearestEven},
+	{"addx237", "123456789", "1.00000001", "123456790", true, 9, big.ToNearestEven},
 	// addx238 add '123456789' 1.00001       -> '123456790' Inexact Rounded
-	{"addx238", "123456789", "1.00001", "123456790", 9, big.ToNearestEven},
+	{"addx238", "123456789", "1.00001", "123456790", true, 9, big.ToNearestEven},
 	// addx239 add '123456789' 1.1           -> '123456790' Inexact Rounded
-	{"addx239", "123456789", "1.1", "123456790", 9, big.ToNearestEven},
+	{"addx239", "123456789", "1.1", "123456790", true, 9, big.ToNearestEven},
 	// critical few with even bottom digit...
 	// addx240 add '123456788' 0.499999999   -> '123456788' Inexact Rounded
-	{"addx240", "123456788", "0.499999999", "123456788", 9, big.ToNearestEven},
+	{"addx240", "123456788", "0.499999999", "123456788", true, 9, big.ToNearestEven},
 	// addx241 add '123456788' 0.5           -> '123456788' Inexact Rounded
-	{"addx241", "123456788", "0.5", "123456788", 9, big.ToNearestEven},
+	{"addx241", "123456788", "0.5", "123456788", true, 9, big.ToNearestEven},
 	// addx242 add '123456788' 0.500000001   -> '123456789' Inexact Rounded
-	{"addx242", "123456788", "0.500000001", "123456789", 9, big.ToNearestEven},
+	{"addx242", "123456788", "0.500000001", "123456789", true, 9, big.ToNearestEven},
 	// rounding: down
 	// addx250 add '123456789' 0             -> '123456789'
-	{"addx250", "123456789", "0", "123456789", 9, big.ToZero},
+	{"addx250", "123456789", "0", "123456789", false, 9, big.ToZero},
 	// addx251 add '123456789' 0.000000001   -> '123456789' Inexact Rounded
-	{"addx251", "123456789", "0.000000001", "123456789", 9, big.ToZero},
+	{"addx251", "123456789", "0.000000001", "123456789", true, 9, big.ToZero},
 	// addx252 add '123456789' 0.000001      -> '123456789' Inexact Rounded
-	{"addx252", "123456789", "0.000001", "123456789", 9, big.ToZero},
+	{"addx252", "123456789", "0.000001", "123456789", true, 9, big.ToZero},
 	// addx253 add '123456789' 0.1           -> '123456789' Inexact Rounded
-	{"addx253", "123456789", "0.1", "123456789", 9, big.ToZero},
+	{"addx253", "123456789", "0.1", "123456789", true, 9, big.ToZero},
 	// addx254 add '123456789' 0.4           -> '123456789' Inexact Rounded
-	{"addx254", "123456789", "0.4", "123456789", 9, big.ToZero},
+	{"addx254", "123456789", "0.4", "123456789", true, 9, big.ToZero},
 	// addx255 add '123456789' 0.49          -> '123456789' Inexact Rounded
-	{"addx255", "123456789", "0.49", "123456789", 9, big.ToZero},
+	{"addx255", "123456789", "0.49", "123456789", true, 9, big.ToZero},
 	// addx256 add '123456789' 0.499999      -> '123456789' Inexact Rounded
-	{"addx256", "123456789", "0.499999", "123456789", 9, big.ToZero},
+	{"addx256", "123456789", "0.499999", "123456789", true, 9, big.ToZero},
 	// addx257 add '123456789' 0.499999999   -> '123456789' Inexact Rounded
-	{"addx257", "123456789", "0.499999999", "123456789", 9, big.ToZero},
+	{"addx257", "123456789", "0.499999999", "123456789", true, 9, big.ToZero},
 	// addx258 add '123456789' 0.5           -> '123456789' Inexact Rounded
-	{"addx258", "123456789", "0.5", "123456789", 9, big.ToZero},
+	{"addx258", "123456789", "0.5", "123456789", true, 9, big.ToZero},
 	// addx259 add '123456789' 0.500000001   -> '123456789' Inexact Rounded
-	{"addx259", "123456789", "0.500000001", "123456789", 9, big.ToZero},
+	{"addx259", "123456789", "0.500000001", "123456789", true, 9, big.ToZero},
 	// addx260 add '123456789' 0.500001      -> '123456789' Inexact Rounded
-	{"addx260", "123456789", "0.500001", "123456789", 9, big.ToZero},
+	{"addx260", "123456789", "0.500001", "123456789", true, 9, big.ToZero},
 	// addx261 add '123456789' 0.51          -> '123456789' Inexact Rounded
-	{"addx261", "123456789", "0.51", "123456789", 9, big.ToZero},
+	{"addx261", "123456789", "0.51", "123456789", true, 9, big.ToZero},
 	// addx262 add '123456789' 0.6           -> '123456789' Inexact Rounded
-	{"addx262", "123456789", "0.6", "123456789", 9, big.ToZero},
+	{"addx262", "123456789", "0.6", "123456789", true, 9, big.ToZero},
 	// addx263 add '123456789' 0.9           -> '123456789' Inexact Rounded
-	{"addx263", "123456789", "0.9", "123456789", 9, big.ToZero},
+	{"addx263", "123456789", "0.9", "123456789", true, 9, big.ToZero},
 	// addx264 add '123456789' 0.99999       -> '123456789' Inexact Rounded
-	{"addx264", "123456789", "0.99999", "123456789", 9, big.ToZero},
+	{"addx264", "123456789", "0.99999", "123456789", true, 9, big.ToZero},
 	// addx265 add '123456789' 0.999999999   -> '123456789' Inexact Rounded
-	{"addx265", "123456789", "0.999999999", "123456789", 9, big.ToZero},
+	{"addx265", "123456789", "0.999999999", "123456789", true, 9, big.ToZero},
 	// addx266 add '123456789' 1             -> '123456790'
-	{"addx266", "123456789", "1", "123456790", 9, big.ToZero},
+	{"addx266", "123456789", "1", "123456790", false, 9, big.ToZero},
 	// addx267 add '123456789' 1.00000001    -> '123456790' Inexact Rounded
-	{"addx267", "123456789", "1.00000001", "123456790", 9, big.ToZero},
+	{"addx267", "123456789", "1.00000001", "123456790", true, 9, big.ToZero},
 	// addx268 add '123456789' 1.00001       -> '123456790' Inexact Rounded
-	{"addx268", "123456789", "1.00001", "123456790", 9, big.ToZero},
+	{"addx268", "123456789", "1.00001", "123456790", true, 9, big.ToZero},
 	// addx269 add '123456789' 1.1           -> '123456790' Inexact Rounded
-	{"addx269", "123456789", "1.1", "123456790", 9, big.ToZero},
+	{"addx269", "123456789", "1.1", "123456790", true, 9, big.ToZero},
 	// input preparation tests (operands should not be rounded)
 	// precision: 3
 	// rounding: half_up
 	// addx270 add '12345678900000'  9999999999999 ->  '2.23E+13' Inexact Rounded
-	{"addx270", "12345678900000", "9999999999999", "2.23E+13", 3, big.ToNearestAway},
+	{"addx270", "12345678900000", "9999999999999", "2.23E+13", true, 3, big.ToNearestAway},
 	// addx271 add  '9999999999999' 12345678900000 ->  '2.23E+13' Inexact Rounded
-	{"addx271", "9999999999999", "12345678900000", "2.23E+13", 3, big.ToNearestAway},
+	{"addx271", "9999999999999", "12345678900000", "2.23E+13", true, 3, big.ToNearestAway},
 	// addx272 add '12E+3'  '3444'   ->  '1.54E+4' Inexact Rounded
-	{"addx272", "12E+3", "3444", "1.54E+4", 3, big.ToNearestAway},
+	{"addx272", "12E+3", "3444", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx273 add '12E+3'  '3446'   ->  '1.54E+4' Inexact Rounded
-	{"addx273", "12E+3", "3446", "1.54E+4", 3, big.ToNearestAway},
+	{"addx273", "12E+3", "3446", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx274 add '12E+3'  '3449.9' ->  '1.54E+4' Inexact Rounded
-	{"addx274", "12E+3", "3449.9", "1.54E+4", 3, big.ToNearestAway},
+	{"addx274", "12E+3", "3449.9", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx275 add '12E+3'  '3450.0' ->  '1.55E+4' Inexact Rounded
-	{"addx275", "12E+3", "3450.0", "1.55E+4", 3, big.ToNearestAway},
+	{"addx275", "12E+3", "3450.0", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx276 add '12E+3'  '3450.1' ->  '1.55E+4' Inexact Rounded
-	{"addx276", "12E+3", "3450.1", "1.55E+4", 3, big.ToNearestAway},
+	{"addx276", "12E+3", "3450.1", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx277 add '12E+3'  '3454'   ->  '1.55E+4' Inexact Rounded
-	{"addx277", "12E+3", "3454", "1.55E+4", 3, big.ToNearestAway},
+	{"addx277", "12E+3", "3454", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx278 add '12E+3'  '3456'   ->  '1.55E+4' Inexact Rounded
-	{"addx278", "12E+3", "3456", "1.55E+4", 3, big.ToNearestAway},
+	{"addx278", "12E+3", "3456", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx281 add '3444'   '12E+3'  ->  '1.54E+4' Inexact Rounded
-	{"addx281", "3444", "12E+3", "1.54E+4", 3, big.ToNearestAway},
+	{"addx281", "3444", "12E+3", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx282 add '3446'   '12E+3'  ->  '1.54E+4' Inexact Rounded
-	{"addx282", "3446", "12E+3", "1.54E+4", 3, big.ToNearestAway},
+	{"addx282", "3446", "12E+3", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx283 add '3449.9' '12E+3'  ->  '1.54E+4' Inexact Rounded
-	{"addx283", "3449.9", "12E+3", "1.54E+4", 3, big.ToNearestAway},
+	{"addx283", "3449.9", "12E+3", "1.54E+4", true, 3, big.ToNearestAway},
 	// addx284 add '3450.0' '12E+3'  ->  '1.55E+4' Inexact Rounded
-	{"addx284", "3450.0", "12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"addx284", "3450.0", "12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx285 add '3450.1' '12E+3'  ->  '1.55E+4' Inexact Rounded
-	{"addx285", "3450.1", "12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"addx285", "3450.1", "12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx286 add '3454'   '12E+3'  ->  '1.55E+4' Inexact Rounded
-	{"addx286", "3454", "12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"addx286", "3454", "12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// addx287 add '3456'   '12E+3'  ->  '1.55E+4' Inexact Rounded
-	{"addx287", "3456", "12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"addx287", "3456", "12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// rounding: half_down
-	// SKIP: addx291 add '3444'   '12E+3'  ->  '1.54E+4' Inexact Rounded
-	// SKIP: addx292 add '3446'   '12E+3'  ->  '1.54E+4' Inexact Rounded
-	// SKIP: addx293 add '3449.9' '12E+3'  ->  '1.54E+4' Inexact Rounded
-	// SKIP: addx294 add '3450.0' '12E+3'  ->  '1.54E+4' Inexact Rounded
-	// SKIP: addx295 add '3450.1' '12E+3'  ->  '1.55E+4' Inexact Rounded
-	// SKIP: addx296 add '3454'   '12E+3'  ->  '1.55E+4' Inexact Rounded
-	// SKIP: addx297 add '3456'   '12E+3'  ->  '1.55E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx291 add '3444'   '12E+3'  ->  '1.54E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx292 add '3446'   '12E+3'  ->  '1.54E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx293 add '3449.9' '12E+3'  ->  '1.54E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx294 add '3450.0' '12E+3'  ->  '1.54E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx295 add '3450.1' '12E+3'  ->  '1.55E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx296 add '3454'   '12E+3'  ->  '1.55E+4' Inexact Rounded
+	// SKIP (unsupported rounding): addx297 add '3456'   '12E+3'  ->  '1.55E+4' Inexact Rounded
 	// 1 in last place tests
 	// rounding: half_up
 	// addx301 add  -1   1      ->   0
-	{"addx301", "-1", "1", "0", 3, big.ToNearestAway},
+	{"addx301", "-1", "1", "0", false, 3, big.ToNearestAway},
 	// addx302 add   0   1      ->   1
-	{"addx302", "0", "1", "1", 3, big.ToNearestAway},
+	{"addx302", "0", "1", "1", false, 3, big.ToNearestAway},
 	// addx303 add   1   1      ->   2
-	{"addx303", "1", "1", "2", 3, big.ToNearestAway},
+	{"addx303", "1", "1", "2", false, 3, big.ToNearestAway},
 	// addx304 add  12   1      ->  13
-	{"addx304", "12", "1", "13", 3, big.ToNearestAway},
+	{"addx304", "12", "1", "13", false, 3, big.ToNearestAway},
 	// addx305 add  98   1      ->  99
-	{"addx305", "98", "1", "99", 3, big.ToNearestAway},
+	{"addx305", "98", "1", "99", false, 3, big.ToNearestAway},
 	// addx306 add  99   1      -> 100
-	{"addx306", "99", "1", "100", 3, big.ToNearestAway},
+	{"addx306", "99", "1", "100", false, 3, big.ToNearestAway},
 	// addx307 add 100   1      -> 101
-	{"addx307", "100", "1", "101", 3, big.ToNearestAway},
+	{"addx307", "100", "1", "101", false, 3, big.ToNearestAway},
 	// addx308 add 101   1      -> 102
-	{"addx308", "101", "1", "102", 3, big.ToNearestAway},
+	{"addx308", "101", "1", "102", false, 3, big.ToNearestAway},
 	// addx309 add  -1  -1      ->  -2
-	{"addx309", "-1", "-1", "-2", 3, big.ToNearestAway},
+	{"addx309", "-1", "-1", "-2", false, 3, big.ToNearestAway},
 	// addx310 add   0  -1      ->  -1
-	{"addx310", "0", "-1", "-1", 3, big.ToNearestAway},
+	{"addx310", "0", "-1", "-1", false, 3, big.ToNearestAway},
 	// addx311 add   1  -1      ->   0
-	{"addx311", "1", "-1", "0", 3, big.ToNearestAway},
+	{"addx311", "1", "-1", "0", false, 3, big.ToNearestAway},
 	// addx312 add  12  -1      ->  11
-	{"addx312", "12", "-1", "11", 3, big.ToNearestAway},
+	{"addx312", "12", "-1", "11", false, 3, big.ToNearestAway},
 	// addx313 add  98  -1      ->  97
-	{"addx313", "98", "-1", "97", 3, big.ToNearestAway},
+	{"addx313", "98", "-1", "97", false, 3, big.ToNearestAway},
 	// addx314 add  99  -1      ->  98
-	{"addx314", "99", "-1", "98", 3, big.ToNearestAway},
+	{"addx314", "99", "-1", "98", false, 3, big.ToNearestAway},
 	// addx315 add 100  -1      ->  99
-	{"addx315", "100", "-1", "99", 3, big.ToNearestAway},
+	{"addx315", "100", "-1", "99", false, 3, big.ToNearestAway},
 	// addx316 add 101  -1      -> 100
-	{"addx316", "101", "-1", "100", 3, big.ToNearestAway},
+	{"addx316", "101", "-1", "100", false, 3, big.ToNearestAway},
 	// addx321 add -0.01  0.01    ->  0.00
-	{"addx321", "-0.01", "0.01", "0.00", 3, big.ToNearestAway},
+	{"addx321", "-0.01", "0.01", "0.00", false, 3, big.ToNearestAway},
 	// addx322 add  0.00  0.01    ->  0.01
-	{"addx322", "0.00", "0.01", "0.01", 3, big.ToNearestAway},
+	{"addx322", "0.00", "0.01", "0.01", false, 3, big.ToNearestAway},
 	// addx323 add  0.01  0.01    ->  0.02
-	{"addx323", "0.01", "0.01", "0.02", 3, big.ToNearestAway},
+	{"addx323", "0.01", "0.01", "0.02", false, 3, big.ToNearestAway},
 	// addx324 add  0.12  0.01    ->  0.13
-	{"addx324", "0.12", "0.01", "0.13", 3, big.ToNearestAway},
+	{"addx324", "0.12", "0.01", "0.13", false, 3, big.ToNearestAway},
 	// addx325 add  0.98  0.01    ->  0.99
-	{"addx325", "0.98", "0.01", "0.99", 3, big.ToNearestAway},
+	{"addx325", "0.98", "0.01", "0.99", false, 3, big.ToNearestAway},
 	// addx326 add  0.99  0.01    ->  1.00
-	{"addx326", "0.99", "0.01", "1.00", 3, big.ToNearestAway},
+	{"addx326", "0.99", "0.01", "1.00", false, 3, big.ToNearestAway},
 	// addx327 add  1.00  0.01    ->  1.01
-	{"addx327", "1.00", "0.01", "1.01", 3, big.ToNearestAway},
+	{"addx327", "1.00", "0.01", "1.01", false, 3, big.ToNearestAway},
 	// addx328 add  1.01  0.01    ->  1.02
-	{"addx328", "1.01", "0.01", "1.02", 3, big.ToNearestAway},
+	{"addx328", "1.01", "0.01", "1.02", false, 3, big.ToNearestAway},
 	// addx329 add -0.01 -0.01    -> -0.02
-	{"addx329", "-0.01", "-0.01", "-0.02", 3, big.ToNearestAway},
+	{"addx329", "-0.01", "-0.01", "-0.02", false, 3, big.ToNearestAway},
 	// addx330 add  0.00 -0.01    -> -0.01
-	{"addx330", "0.00", "-0.01", "-0.01", 3, big.ToNearestAway},
+	{"addx330", "0.00", "-0.01", "-0.01", false, 3, big.ToNearestAway},
 	// addx331 add  0.01 -0.01    ->  0.00
-	{"addx331", "0.01", "-0.01", "0.00", 3, big.ToNearestAway},
+	{"addx331", "0.01", "-0.01", "0.00", false, 3, big.ToNearestAway},
 	// addx332 add  0.12 -0.01    ->  0.11
-	{"addx332", "0.12", "-0.01", "0.11", 3, big.ToNearestAway},
+	{"addx332", "0.12", "-0.01", "0.11", false, 3, big.ToNearestAway},
 	// addx333 add  0.98 -0.01    ->  0.97
-	{"addx333", "0.98", "-0.01", "0.97", 3, big.ToNearestAway},
+	{"addx333", "0.98", "-0.01", "0.97", false, 3, big.ToNearestAway},
 	// addx334 add  0.99 -0.01    ->  0.98
-	{"addx334", "0.99", "-0.01", "0.98", 3, big.ToNearestAway},
+	{"addx334", "0.99", "-0.01", "0.98", false, 3, big.ToNearestAway},
 	// addx335 add  1.00 -0.01    ->  0.99
-	{"addx335", "1.00", "-0.01", "0.99", 3, big.ToNearestAway},
+	{"addx335", "1.00", "-0.01", "0.99", false, 3, big.ToNearestAway},
 	// addx336 add  1.01 -0.01    ->  1.00
-	{"addx336", "1.01", "-0.01", "1.00", 3, big.ToNearestAway},
+	{"addx336", "1.01", "-0.01", "1.00", false, 3, big.ToNearestAway},
 	// some more cases where adding 0 affects the coefficient
 	// precision: 9
 	// addx340 add 1E+3    0    ->         1000
-	{"addx340", "1E+3", "0", "1000", 9, big.ToNearestAway},
+	{"addx340", "1E+3", "0", "1000", false, 9, big.ToNearestAway},
 	// addx341 add 1E+8    0    ->    100000000
-	{"addx341", "1E+8", "0", "100000000", 9, big.ToNearestAway},
+	{"addx341", "1E+8", "0", "100000000", false, 9, big.ToNearestAway},
 	// addx342 add 1E+9    0    ->   1.00000000E+9   Rounded
-	{"addx342", "1E+9", "0", "1.00000000E+9", 9, big.ToNearestAway},
+	{"addx342", "1E+9", "0", "1.00000000E+9", false, 9, big.ToNearestAway},
 	// addx343 add 1E+10   0    ->   1.00000000E+10  Rounded
-	{"addx343", "1E+10", "0", "1.00000000E+10", 9, big.ToNearestAway},
+	{"addx343", "1E+10", "0", "1.00000000E+10", false, 9, big.ToNearestAway},
 	// which simply follow from these cases ...
 	// addx344 add 1E+3    1    ->         1001
-	{"addx344", "1E+3", "1", "1001", 9, big.ToNearestAway},
+	{"addx344", "1E+3", "1", "1001", false, 9, big.ToNearestAway},
 	// addx345 add 1E+8    1    ->    100000001
-	{"addx345", "1E+8", "1", "100000001", 9, big.ToNearestAway},
+	{"addx345", "1E+8", "1", "100000001", false, 9, big.ToNearestAway},
 	// addx346 add 1E+9    1    ->   1.00000000E+9   Inexact Rounded
-	{"addx346", "1E+9", "1", "1.00000000E+9", 9, big.ToNearestAway},
+	{"addx346", "1E+9", "1", "1.00000000E+9", true, 9, big.ToNearestAway},
 	// addx347 add 1E+10   1    ->   1.00000000E+10  Inexact Rounded
-	{"addx347", "1E+10", "1", "1.00000000E+10", 9, big.ToNearestAway},
+	{"addx347", "1E+10", "1", "1.00000000E+10", true, 9, big.ToNearestAway},
 	// addx348 add 1E+3    7    ->         1007
-	{"addx348", "1E+3", "7", "1007", 9, big.ToNearestAway},
+	{"addx348", "1E+3", "7", "1007", false, 9, big.ToNearestAway},
 	// addx349 add 1E+8    7    ->    100000007
-	{"addx349", "1E+8", "7", "100000007", 9, big.ToNearestAway},
+	{"addx349", "1E+8", "7", "100000007", false, 9, big.ToNearestAway},
 	// addx350 add 1E+9    7    ->   1.00000001E+9   Inexact Rounded
-	{"addx350", "1E+9", "7", "1.00000001E+9", 9, big.ToNearestAway},
+	{"addx350", "1E+9", "7", "1.00000001E+9", true, 9, big.ToNearestAway},
 	// addx351 add 1E+10   7    ->   1.00000000E+10  Inexact Rounded
-	{"addx351", "1E+10", "7", "1.00000000E+10", 9, big.ToNearestAway},
+	{"addx351", "1E+10", "7", "1.00000000E+10", true, 9, big.ToNearestAway},
 	// tryzeros cases
 	// precision: 7
 	// rounding: half_up
 	// maxexponent: 92
 	// minexponent: -92
 	// addx361  add 0E+50 10000E+1  -> 1.0000E+5
-	{"addx361", "0E+50", "10000E+1", "1.0000E+5", 7, big.ToNearestAway},
+	{"addx361", "0E+50", "10000E+1", "1.0000E+5", false, 7, big.ToNearestAway},
 	// addx362  add 10000E+1 0E-50  -> 100000.0  Rounded
-	{"addx362", "10000E+1", "0E-50", "100000.0", 7, big.ToNearestAway},
+	{"addx362", "10000E+1", "0E-50", "100000.0", false, 7, big.ToNearestAway},
 	// addx363  add 10000E+1 10000E-50  -> 100000.0  Rounded Inexact
-	{"addx363", "10000E+1", "10000E-50", "100000.0", 7, big.ToNearestAway},
+	{"addx363", "10000E+1", "10000E-50", "100000.0", true, 7, big.ToNearestAway},
 	// addx364  add 9.999999E+92 -9.999999E+92 -> 0E+86
-	{"addx364", "9.999999E+92", "-9.999999E+92", "0E+86", 7, big.ToNearestAway},
+	{"addx364", "9.999999E+92", "-9.999999E+92", "0E+86", false, 7, big.ToNearestAway},
 	// a curiosity from JSR 13 testing
 	// rounding: half_down
 	// precision: 10
-	// SKIP: addx370 add 99999999 81512 -> 100081511
+	// SKIP (unsupported rounding): addx370 add 99999999 81512 -> 100081511
 	// precision: 6
-	// SKIP: addx371 add 99999999 81512 -> 1.00082E+8 Rounded Inexact
+	// SKIP (unsupported rounding): addx371 add 99999999 81512 -> 1.00082E+8 Rounded Inexact
 	// rounding: half_up
 	// precision: 10
 	// addx372 add 99999999 81512 -> 100081511
-	{"addx372", "99999999", "81512", "100081511", 10, big.ToNearestAway},
+	{"addx372", "99999999", "81512", "100081511", false, 10, big.ToNearestAway},
 	// precision: 6
 	// addx373 add 99999999 81512 -> 1.00082E+8 Rounded Inexact
-	{"addx373", "99999999", "81512", "1.00082E+8", 6, big.ToNearestAway},
+	{"addx373", "99999999", "81512", "1.00082E+8", true, 6, big.ToNearestAway},
 	// rounding: half_even
 	// precision: 10
 	// addx374 add 99999999 81512 -> 100081511
-	{"addx374", "99999999", "81512", "100081511", 10, big.ToNearestEven},
+	{"addx374", "99999999", "81512", "100081511", false, 10, big.ToNearestEven},
 	// precision: 6
 	// addx375 add 99999999 81512 -> 1.00082E+8 Rounded Inexact
-	{"addx375", "99999999", "81512", "1.00082E+8", 6, big.ToNearestEven},
+	{"addx375", "99999999", "81512", "1.00082E+8", true, 6, big.ToNearestEven},
 	// ulp replacement tests
 	// precision: 9
 	// maxexponent: 999999999
 	// minexponent: -999999999
 	// addx400 add   1   77e-7       ->  1.0000077
-	{"addx400", "1", "77e-7", "1.0000077", 9, big.ToNearestEven},
+	{"addx400", "1", "77e-7", "1.0000077", false, 9, big.ToNearestEven},
 	// addx401 add   1   77e-8       ->  1.00000077
-	{"addx401", "1", "77e-8", "1.00000077", 9, big.ToNearestEven},
+	{"addx401", "1", "77e-8", "1.00000077", false, 9, big.ToNearestEven},
 	// addx402 add   1   77e-9       ->  1.00000008 Inexact Rounded
-	{"addx402", "1", "77e-9", "1.00000008", 9, big.ToNearestEven},
+	{"addx402", "1", "77e-9", "1.00000008", true, 9, big.ToNearestEven},
 	// addx403 add   1   77e-10      ->  1.00000001 Inexact Rounded
-	{"addx403", "1", "77e-10", "1.00000001", 9, big.ToNearestEven},
+	{"addx403", "1", "77e-10", "1.00000001", true, 9, big.ToNearestEven},
 	// addx404 add   1   77e-11      ->  1.00000000 Inexact Rounded
-	{"addx404", "1", "77e-11", "1.00000000", 9, big.ToNearestEven},
+	{"addx404", "1", "77e-11", "1.00000000", true, 9, big.ToNearestEven},
 	// addx405 add   1   77e-12      ->  1.00000000 Inexact Rounded
-	{"addx405", "1", "77e-12", "1.00000000", 9, big.ToNearestEven},
+	{"addx405", "1", "77e-12", "1.00000000", true, 9, big.ToNearestEven},
 	// addx406 add   1   77e-999     ->  1.00000000 Inexact Rounded
-	{"addx406", "1", "77e-999", "1.00000000", 9, big.ToNearestEven},
+	{"addx406", "1", "77e-999", "1.00000000", true, 9, big.ToNearestEven},
 	// addx407 add   1   77e-9999999 ->  1.00000000 Inexact Rounded
-	{"addx407", "1", "77e-9999999", "1.00000000", 9, big.ToNearestEven},
+	{"addx407", "1", "77e-9999999", "1.00000000", true, 9, big.ToNearestEven},
 	// addx410 add  10   77e-7       ->  10.0000077
-	{"addx410", "10", "77e-7", "10.0000077", 9, big.ToNearestEven},
+	{"addx410", "10", "77e-7", "10.0000077", false, 9, big.ToNearestEven},
 	// addx411 add  10   77e-8       ->  10.0000008 Inexact Rounded
-	{"addx411", "10", "77e-8", "10.0000008", 9, big.ToNearestEven},
+	{"addx411", "10", "77e-8", "10.0000008", true, 9, big.ToNearestEven},
 	// addx412 add  10   77e-9       ->  10.0000001 Inexact Rounded
-	{"addx412", "10", "77e-9", "10.0000001", 9, big.ToNearestEven},
+	{"addx412", "10", "77e-9", "10.0000001", true, 9, big.ToNearestEven},
 	// addx413 add  10   77e-10      ->  10.0000000 Inexact Rounded
-	{"addx413", "10", "77e-10", "10.0000000", 9, big.ToNearestEven},
+	{"addx413", "10", "77e-10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx414 add  10   77e-11      ->  10.0000000 Inexact Rounded
-	{"addx414", "10", "77e-11", "10.0000000", 9, big.ToNearestEven},
+	{"addx414", "10", "77e-11", "10.0000000", true, 9, big.ToNearestEven},
 	// addx415 add  10   77e-12      ->  10.0000000 Inexact Rounded
-	{"addx415", "10", "77e-12", "10.0000000", 9, big.ToNearestEven},
+	{"addx415", "10", "77e-12", "10.0000000", true, 9, big.ToNearestEven},
 	// addx416 add  10   77e-999     ->  10.0000000 Inexact Rounded
-	{"addx416", "10", "77e-999", "10.0000000", 9, big.ToNearestEven},
+	{"addx416", "10", "77e-999", "10.0000000", true, 9, big.ToNearestEven},
 	// addx417 add  10   77e-9999999 ->  10.0000000 Inexact Rounded
-	{"addx417", "10", "77e-9999999", "10.0000000", 9, big.ToNearestEven},
+	{"addx417", "10", "77e-9999999", "10.0000000", true, 9, big.ToNearestEven},
 	// addx420 add  77e-7        1   ->  1.0000077
-	{"addx420", "77e-7", "1", "1.0000077", 9, big.ToNearestEven},
+	{"addx420", "77e-7", "1", "1.0000077", false, 9, big.ToNearestEven},
 	// addx421 add  77e-8        1   ->  1.00000077
-	{"addx421", "77e-8", "1", "1.00000077", 9, big.ToNearestEven},
+	{"addx421", "77e-8", "1", "1.00000077", false, 9, big.ToNearestEven},
 	// addx422 add  77e-9        1   ->  1.00000008 Inexact Rounded
-	{"addx422", "77e-9", "1", "1.00000008", 9, big.ToNearestEven},
+	{"addx422", "77e-9", "1", "1.00000008", true, 9, big.ToNearestEven},
 	// addx423 add  77e-10       1   ->  1.00000001 Inexact Rounded
-	{"addx423", "77e-10", "1", "1.00000001", 9, big.ToNearestEven},
+	{"addx423", "77e-10", "1", "1.00000001", true, 9, big.ToNearestEven},
 	// addx424 add  77e-11       1   ->  1.00000000 Inexact Rounded
-	{"addx424", "77e-11", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx424", "77e-11", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx425 add  77e-12       1   ->  1.00000000 Inexact Rounded
-	{"addx425", "77e-12", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx425", "77e-12", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx426 add  77e-999      1   ->  1.00000000 Inexact Rounded
-	{"addx426", "77e-999", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx426", "77e-999", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx427 add  77e-9999999  1   ->  1.00000000 Inexact Rounded
-	{"addx427", "77e-9999999", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx427", "77e-9999999", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx430 add  77e-7       10   ->  10.0000077
-	{"addx430", "77e-7", "10", "10.0000077", 9, big.ToNearestEven},
+	{"addx430", "77e-7", "10", "10.0000077", false, 9, big.ToNearestEven},
 	// addx431 add  77e-8       10   ->  10.0000008 Inexact Rounded
-	{"addx431", "77e-8", "10", "10.0000008", 9, big.ToNearestEven},
+	{"addx431", "77e-8", "10", "10.0000008", true, 9, big.ToNearestEven},
 	// addx432 add  77e-9       10   ->  10.0000001 Inexact Rounded
-	{"addx432", "77e-9", "10", "10.0000001", 9, big.ToNearestEven},
+	{"addx432", "77e-9", "10", "10.0000001", true, 9, big.ToNearestEven},
 	// addx433 add  77e-10      10   ->  10.0000000 Inexact Rounded
-	{"addx433", "77e-10", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx433", "77e-10", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx434 add  77e-11      10   ->  10.0000000 Inexact Rounded
-	{"addx434", "77e-11", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx434", "77e-11", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx435 add  77e-12      10   ->  10.0000000 Inexact Rounded
-	{"addx435", "77e-12", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx435", "77e-12", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx436 add  77e-999     10   ->  10.0000000 Inexact Rounded
-	{"addx436", "77e-999", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx436", "77e-999", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx437 add  77e-9999999 10   ->  10.0000000 Inexact Rounded
-	{"addx437", "77e-9999999", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx437", "77e-9999999", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// negative ulps
 	// addx440 add   1   -77e-7       ->  0.9999923
-	{"addx440", "1", "-77e-7", "0.9999923", 9, big.ToNearestEven},
+	{"addx440", "1", "-77e-7", "0.9999923", false, 9, big.ToNearestEven},
 	// addx441 add   1   -77e-8       ->  0.99999923
-	{"addx441", "1", "-77e-8", "0.99999923", 9, big.ToNearestEven},
+	{"addx441", "1", "-77e-8", "0.99999923", false, 9, big.ToNearestEven},
 	// addx442 add   1   -77e-9       ->  0.999999923
-	{"addx442", "1", "-77e-9", "0.999999923", 9, big.ToNearestEven},
+	{"addx442", "1", "-77e-9", "0.999999923", false, 9, big.ToNearestEven},
 	// addx443 add   1   -77e-10      ->  0.999999992 Inexact Rounded
-	{"addx443", "1", "-77e-10", "0.999999992", 9, big.ToNearestEven},
+	{"addx443", "1", "-77e-10", "0.999999992", true, 9, big.ToNearestEven},
 	// addx444 add   1   -77e-11      ->  0.999999999 Inexact Rounded
-	{"addx444", "1", "-77e-11", "0.999999999", 9, big.ToNearestEven},
+	{"addx444", "1", "-77e-11", "0.999999999", true, 9, big.ToNearestEven},
 	// addx445 add   1   -77e-12      ->  1.00000000 Inexact Rounded
-	{"addx445", "1", "-77e-12", "1.00000000", 9, big.ToNearestEven},
+	{"addx445", "1", "-77e-12", "1.00000000", true, 9, big.ToNearestEven},
 	// addx446 add   1   -77e-999     ->  1.00000000 Inexact Rounded
-	{"addx446", "1", "-77e-999", "1.00000000", 9, big.ToNearestEven},
+	{"addx446", "1", "-77e-999", "1.00000000", true, 9, big.ToNearestEven},
 	// addx447 add   1   -77e-9999999 ->  1.00000000 Inexact Rounded
-	{"addx447", "1", "-77e-9999999", "1.00000000", 9, big.ToNearestEven},
+	{"addx447", "1", "-77e-9999999", "1.00000000", true, 9, big.ToNearestEven},
 	// addx450 add  10   -77e-7       ->   9.9999923
-	{"addx450", "10", "-77e-7", "9.9999923", 9, big.ToNearestEven},
+	{"addx450", "10", "-77e-7", "9.9999923", false, 9, big.ToNearestEven},
 	// addx451 add  10   -77e-8       ->   9.99999923
-	{"addx451", "10", "-77e-8", "9.99999923", 9, big.ToNearestEven},
+	{"addx451", "10", "-77e-8", "9.99999923", false, 9, big.ToNearestEven},
 	// addx452 add  10   -77e-9       ->   9.99999992 Inexact Rounded
-	{"addx452", "10", "-77e-9", "9.99999992", 9, big.ToNearestEven},
+	{"addx452", "10", "-77e-9", "9.99999992", true, 9, big.ToNearestEven},
 	// addx453 add  10   -77e-10      ->   9.99999999 Inexact Rounded
-	{"addx453", "10", "-77e-10", "9.99999999", 9, big.ToNearestEven},
+	{"addx453", "10", "-77e-10", "9.99999999", true, 9, big.ToNearestEven},
 	// addx454 add  10   -77e-11      ->  10.0000000 Inexact Rounded
-	{"addx454", "10", "-77e-11", "10.0000000", 9, big.ToNearestEven},
+	{"addx454", "10", "-77e-11", "10.0000000", true, 9, big.ToNearestEven},
 	// addx455 add  10   -77e-12      ->  10.0000000 Inexact Rounded
-	{"addx455", "10", "-77e-12", "10.0000000", 9, big.ToNearestEven},
+	{"addx455", "10", "-77e-12", "10.0000000", true, 9, big.ToNearestEven},
 	// addx456 add  10   -77e-999     ->  10.0000000 Inexact Rounded
-	{"addx456", "10", "-77e-999", "10.0000000", 9, big.ToNearestEven},
+	{"addx456", "10", "-77e-999", "10.0000000", true, 9, big.ToNearestEven},
 	// addx457 add  10   -77e-9999999 ->  10.0000000 Inexact Rounded
-	{"addx457", "10", "-77e-9999999", "10.0000000", 9, big.ToNearestEven},
+	{"addx457", "10", "-77e-9999999", "10.0000000", true, 9, big.ToNearestEven},
 	// addx460 add  -77e-7        1   ->  0.9999923
-	{"addx460", "-77e-7", "1", "0.9999923", 9, big.ToNearestEven},
+	{"addx460", "-77e-7", "1", "0.9999923", false, 9, big.ToNearestEven},
 	// addx461 add  -77e-8        1   ->  0.99999923
-	{"addx461", "-77e-8", "1", "0.99999923", 9, big.ToNearestEven},
+	{"addx461", "-77e-8", "1", "0.99999923", false, 9, big.ToNearestEven},
 	// addx462 add  -77e-9        1   ->  0.999999923
-	{"addx462", "-77e-9", "1", "0.999999923", 9, big.ToNearestEven},
+	{"addx462", "-77e-9", "1", "0.999999923", false, 9, big.ToNearestEven},
 	// addx463 add  -77e-10       1   ->  0.999999992 Inexact Rounded
-	{"addx463", "-77e-10", "1", "0.999999992", 9, big.ToNearestEven},
+	{"addx463", "-77e-10", "1", "0.999999992", true, 9, big.ToNearestEven},
 	// addx464 add  -77e-11       1   ->  0.999999999 Inexact Rounded
-	{"addx464", "-77e-11", "1", "0.999999999", 9, big.ToNearestEven},
+	{"addx464", "-77e-11", "1", "0.999999999", true, 9, big.ToNearestEven},
 	// addx465 add  -77e-12       1   ->  1.00000000 Inexact Rounded
-	{"addx465", "-77e-12", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx465", "-77e-12", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx466 add  -77e-999      1   ->  1.00000000 Inexact Rounded
-	{"addx466", "-77e-999", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx466", "-77e-999", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx467 add  -77e-9999999  1   ->  1.00000000 Inexact Rounded
-	{"addx467", "-77e-9999999", "1", "1.00000000", 9, big.ToNearestEven},
+	{"addx467", "-77e-9999999", "1", "1.00000000", true, 9, big.ToNearestEven},
 	// addx470 add  -77e-7       10   ->   9.9999923
-	{"addx470", "-77e-7", "10", "9.9999923", 9, big.ToNearestEven},
+	{"addx470", "-77e-7", "10", "9.9999923", false, 9, big.ToNearestEven},
 	// addx471 add  -77e-8       10   ->   9.99999923
-	{"addx471", "-77e-8", "10", "9.99999923", 9, big.ToNearestEven},
+	{"addx471", "-77e-8", "10", "9.99999923", false, 9, big.ToNearestEven},
 	// addx472 add  -77e-9       10   ->   9.99999992 Inexact Rounded
-	{"addx472", "-77e-9", "10", "9.99999992", 9, big.ToNearestEven},
+	{"addx472", "-77e-9", "10", "9.99999992", true, 9, big.ToNearestEven},
 	// addx473 add  -77e-10      10   ->   9.99999999 Inexact Rounded
-	{"addx473", "-77e-10", "10", "9.99999999", 9, big.ToNearestEven},
+	{"addx473", "-77e-10", "10", "9.99999999", true, 9, big.ToNearestEven},
 	// addx474 add  -77e-11      10   ->  10.0000000 Inexact Rounded
-	{"addx474", "-77e-11", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx474", "-77e-11", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx475 add  -77e-12      10   ->  10.0000000 Inexact Rounded
-	{"addx475", "-77e-12", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx475", "-77e-12", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx476 add  -77e-999     10   ->  10.0000000 Inexact Rounded
-	{"addx476", "-77e-999", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx476", "-77e-999", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// addx477 add  -77e-9999999 10   ->  10.0000000 Inexact Rounded
-	{"addx477", "-77e-9999999", "10", "10.0000000", 9, big.ToNearestEven},
+	{"addx477", "-77e-9999999", "10", "10.0000000", true, 9, big.ToNearestEven},
 	// negative ulps
 	// addx480 add  -1    77e-7       ->  -0.9999923
-	{"addx480", "-1", "77e-7", "-0.9999923", 9, big.ToNearestEven},
+	{"addx480", "-1", "77e-7", "-0.9999923", false, 9, big.ToNearestEven},
 	// addx481 add  -1    77e-8       ->  -0.99999923
-	{"addx481", "-1", "77e-8", "-0.99999923", 9, big.ToNearestEven},
+	{"addx481", "-1", "77e-8", "-0.99999923", false, 9, big.ToNearestEven},
 	// addx482 add  -1    77e-9       ->  -0.999999923
-	{"addx482", "-1", "77e-9", "-0.999999923", 9, big.ToNearestEven},
+	{"addx482", "-1", "77e-9", "-0.999999923", false, 9, big.ToNearestEven},
 	// addx483 add  -1    77e-10      ->  -0.999999992 Inexact Rounded
-	{"addx483", "-1", "77e-10", "-0.999999992", 9, big.ToNearestEven},
+	{"addx483", "-1", "77e-10", "-0.999999992", true, 9, big.ToNearestEven},
 	// addx484 add  -1    77e-11      ->  -0.999999999 Inexact Rounded
-	{"addx484", "-1", "77e-11", "-0.999999999", 9, big.ToNearestEven},
+	{"addx484", "-1", "77e-11", "-0.999999999", true, 9, big.ToNearestEven},
 	// addx485 add  -1    77e-12      ->  -1.00000000 Inexact Rounded
-	{"addx485", "-1", "77e-12", "-1.00000000", 9, big.ToNearestEven},
+	{"addx485", "-1", "77e-12", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx486 add  -1    77e-999     ->  -1.00000000 Inexact Rounded
-	{"addx486", "-1", "77e-999", "-1.00000000", 9, big.ToNearestEven},
+	{"addx486", "-1", "77e-999", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx487 add  -1    77e-9999999 ->  -1.00000000 Inexact Rounded
-	{"addx487", "-1", "77e-9999999", "-1.00000000", 9, big.ToNearestEven},
+	{"addx487", "-1", "77e-9999999", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx490 add -10    77e-7       ->   -9.9999923
-	{"addx490", "-10", "77e-7", "-9.9999923", 9, big.ToNearestEven},
+	{"addx490", "-10", "77e-7", "-9.9999923", false, 9, big.ToNearestEven},
 	// addx491 add -10    77e-8       ->   -9.99999923
-	{"addx491", "-10", "77e-8", "-9.99999923", 9, big.ToNearestEven},
+	{"addx491", "-10", "77e-8", "-9.99999923", false, 9, big.ToNearestEven},
 	// addx492 add -10    77e-9       ->   -9.99999992 Inexact Rounded
-	{"addx492", "-10", "77e-9", "-9.99999992", 9, big.ToNearestEven},
+	{"addx492", "-10", "77e-9", "-9.99999992", true, 9, big.ToNearestEven},
 	// addx493 add -10    77e-10      ->   -9.99999999 Inexact Rounded
-	{"addx493", "-10", "77e-10", "-9.99999999", 9, big.ToNearestEven},
+	{"addx493", "-10", "77e-10", "-9.99999999", true, 9, big.ToNearestEven},
 	// addx494 add -10    77e-11      ->  -10.0000000 Inexact Rounded
-	{"addx494", "-10", "77e-11", "-10.0000000", 9, big.ToNearestEven},
+	{"addx494", "-10", "77e-11", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx495 add -10    77e-12      ->  -10.0000000 Inexact Rounded
-	{"addx495", "-10", "77e-12", "-10.0000000", 9, big.ToNearestEven},
+	{"addx495", "-10", "77e-12", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx496 add -10    77e-999     ->  -10.0000000 Inexact Rounded
-	{"addx496", "-10", "77e-999", "-10.0000000", 9, big.ToNearestEven},
+	{"addx496", "-10", "77e-999", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx497 add -10    77e-9999999 ->  -10.0000000 Inexact Rounded
-	{"addx497", "-10", "77e-9999999", "-10.0000000", 9, big.ToNearestEven},
+	{"addx497", "-10", "77e-9999999", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx500 add   77e-7       -1   ->  -0.9999923
-	{"addx500", "77e-7", "-1", "-0.9999923", 9, big.ToNearestEven},
+	{"addx500", "77e-7", "-1", "-0.9999923", false, 9, big.ToNearestEven},
 	// addx501 add   77e-8       -1   ->  -0.99999923
-	{"addx501", "77e-8", "-1", "-0.99999923", 9, big.ToNearestEven},
+	{"addx501", "77e-8", "-1", "-0.99999923", false, 9, big.ToNearestEven},
 	// addx502 add   77e-9       -1   ->  -0.999999923
-	{"addx502", "77e-9", "-1", "-0.999999923", 9, big.ToNearestEven},
+	{"addx502", "77e-9", "-1", "-0.999999923", false, 9, big.ToNearestEven},
 	// addx503 add   77e-10      -1   ->  -0.999999992 Inexact Rounded
-	{"addx503", "77e-10", "-1", "-0.999999992", 9, big.ToNearestEven},
+	{"addx503", "77e-10", "-1", "-0.999999992", true, 9, big.ToNearestEven},
 	// addx504 add   77e-11      -1   ->  -0.999999999 Inexact Rounded
-	{"addx504", "77e-11", "-1", "-0.999999999", 9, big.ToNearestEven},
+	{"addx504", "77e-11", "-1", "-0.999999999", true, 9, big.ToNearestEven},
 	// addx505 add   77e-12      -1   ->  -1.00000000 Inexact Rounded
-	{"addx505", "77e-12", "-1", "-1.00000000", 9, big.ToNearestEven},
+	{"addx505", "77e-12", "-1", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx506 add   77e-999     -1   ->  -1.00000000 Inexact Rounded
-	{"addx506", "77e-999", "-1", "-1.00000000", 9, big.ToNearestEven},
+	{"addx506", "77e-999", "-1", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx507 add   77e-9999999 -1   ->  -1.00000000 Inexact Rounded
-	{"addx507", "77e-9999999", "-1", "-1.00000000", 9, big.ToNearestEven},
+	{"addx507", "77e-9999999", "-1", "-1.00000000", true, 9, big.ToNearestEven},
 	// addx510 add   77e-7       -10  ->   -9.9999923
-	{"addx510", "77e-7", "-10", "-9.9999923", 9, big.ToNearestEven},
+	{"addx510", "77e-7", "-10", "-9.9999923", false, 9, big.ToNearestEven},
 	// addx511 add   77e-8       -10  ->   -9.99999923
-	{"addx511", "77e-8", "-10", "-9.99999923", 9, big.ToNearestEven},
+	{"addx511", "77e-8", "-10", "-9.99999923", false, 9, big.ToNearestEven},
 	// addx512 add   77e-9       -10  ->   -9.99999992 Inexact Rounded
-	{"addx512", "77e-9", "-10", "-9.99999992", 9, big.ToNearestEven},
+	{"addx512", "77e-9", "-10", "-9.99999992", true, 9, big.ToNearestEven},
 	// addx513 add   77e-10      -10  ->   -9.99999999 Inexact Rounded
-	{"addx513", "77e-10", "-10", "-9.99999999", 9, big.ToNearestEven},
+	{"addx513", "77e-10", "-10", "-9.99999999", true, 9, big.ToNearestEven},
 	// addx514 add   77e-11      -10  ->  -10.0000000 Inexact Rounded
-	{"addx514", "77e-11", "-10", "-10.0000000", 9, big.ToNearestEven},
+	{"addx514", "77e-11", "-10", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx515 add   77e-12      -10  ->  -10.0000000 Inexact Rounded
-	{"addx515", "77e-12", "-10", "-10.0000000", 9, big.ToNearestEven},
+	{"addx515", "77e-12", "-10", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx516 add   77e-999     -10  ->  -10.0000000 Inexact Rounded
-	{"addx516", "77e-999", "-10", "-10.0000000", 9, big.ToNearestEven},
+	{"addx516", "77e-999", "-10", "-10.0000000", true, 9, big.ToNearestEven},
 	// addx517 add   77e-9999999 -10  ->  -10.0000000 Inexact Rounded
-	{"addx517", "77e-9999999", "-10", "-10.0000000", 9, big.ToNearestEven},
+	{"addx517", "77e-9999999", "-10", "-10.0000000", true, 9, big.ToNearestEven},
 	// long operands
 	// maxexponent: 999
 	// minexponent: -999
 	// precision: 9
 	// addx521 add 12345678000 0 -> 1.23456780E+10 Rounded
-	{"addx521", "12345678000", "0", "1.23456780E+10", 9, big.ToNearestEven},
+	{"addx521", "12345678000", "0", "1.23456780E+10", false, 9, big.ToNearestEven},
 	// addx522 add 0 12345678000 -> 1.23456780E+10 Rounded
-	{"addx522", "0", "12345678000", "1.23456780E+10", 9, big.ToNearestEven},
+	{"addx522", "0", "12345678000", "1.23456780E+10", false, 9, big.ToNearestEven},
 	// addx523 add 1234567800  0 -> 1.23456780E+9 Rounded
-	{"addx523", "1234567800", "0", "1.23456780E+9", 9, big.ToNearestEven},
+	{"addx523", "1234567800", "0", "1.23456780E+9", false, 9, big.ToNearestEven},
 	// addx524 add 0 1234567800  -> 1.23456780E+9 Rounded
-	{"addx524", "0", "1234567800", "1.23456780E+9", 9, big.ToNearestEven},
+	{"addx524", "0", "1234567800", "1.23456780E+9", false, 9, big.ToNearestEven},
 	// addx525 add 1234567890  0 -> 1.23456789E+9 Rounded
-	{"addx525", "1234567890", "0", "1.23456789E+9", 9, big.ToNearestEven},
+	{"addx525", "1234567890", "0", "1.23456789E+9", false, 9, big.ToNearestEven},
 	// addx526 add 0 1234567890  -> 1.23456789E+9 Rounded
-	{"addx526", "0", "1234567890", "1.23456789E+9", 9, big.ToNearestEven},
+	{"addx526", "0", "1234567890", "1.23456789E+9", false, 9, big.ToNearestEven},
 	// addx527 add 1234567891  0 -> 1.23456789E+9 Inexact Rounded
-	{"addx527", "1234567891", "0", "1.23456789E+9", 9, big.ToNearestEven},
+	{"addx527", "1234567891", "0", "1.23456789E+9", true, 9, big.ToNearestEven},
 	// addx528 add 0 1234567891  -> 1.23456789E+9 Inexact Rounded
-	{"addx528", "0", "1234567891", "1.23456789E+9", 9, big.ToNearestEven},
+	{"addx528", "0", "1234567891", "1.23456789E+9", true, 9, big.ToNearestEven},
 	// addx529 add 12345678901 0 -> 1.23456789E+10 Inexact Rounded
-	{"addx529", "12345678901", "0", "1.23456789E+10", 9, big.ToNearestEven},
+	{"addx529", "12345678901", "0", "1.23456789E+10", true, 9, big.ToNearestEven},
 	// addx530 add 0 12345678901 -> 1.23456789E+10 Inexact Rounded
-	{"addx530", "0", "12345678901", "1.23456789E+10", 9, big.ToNearestEven},
+	{"addx530", "0", "12345678901", "1.23456789E+10", true, 9, big.ToNearestEven},
 	// addx531 add 1234567896  0 -> 1.23456790E+9 Inexact Rounded
-	{"addx531", "1234567896", "0", "1.23456790E+9", 9, big.ToNearestEven},
+	{"addx531", "1234567896", "0", "1.23456790E+9", true, 9, big.ToNearestEven},
 	// addx532 add 0 1234567896  -> 1.23456790E+9 Inexact Rounded
-	{"addx532", "0", "1234567896", "1.23456790E+9", 9, big.ToNearestEven},
+	{"addx532", "0", "1234567896", "1.23456790E+9", true, 9, big.ToNearestEven},
 	// precision: 15
 	// still checking
 	// addx541 add 12345678000 0 -> 12345678000
-	{"addx541", "12345678000", "0", "12345678000", 15, big.ToNearestEven},
+	{"addx541", "12345678000", "0", "12345678000", false, 15, big.ToNearestEven},
 	// addx542 add 0 12345678000 -> 12345678000
-	{"addx542", "0", "12345678000", "12345678000", 15, big.ToNearestEven},
+	{"addx542", "0", "12345678000", "12345678000", false, 15, big.ToNearestEven},
 	// addx543 add 1234567800  0 -> 1234567800
-	{"addx543", "1234567800", "0", "1234567800", 15, big.ToNearestEven},
+	{"addx543", "1234567800", "0", "1234567800", false, 15, big.ToNearestEven},
 	// addx544 add 0 1234567800  -> 1234567800
-	{"addx544", "0", "1234567800", "1234567800", 15, big.ToNearestEven},
+	{"addx544", "0", "1234567800", "1234567800", false, 15, big.ToNearestEven},
 	// addx545 add 1234567890  0 -> 1234567890
-	{"addx545", "1234567890", "0", "1234567890", 15, big.ToNearestEven},
+	{"addx545", "1234567890", "0", "1234567890", false, 15, big.ToNearestEven},
 	// addx546 add 0 1234567890  -> 1234567890
-	{"addx546", "0", "1234567890", "1234567890", 15, big.ToNearestEven},
+	{"addx546", "0", "1234567890", "1234567890", false, 15, big.ToNearestEven},
 	// addx547 add 1234567891  0 -> 1234567891
-	{"addx547", "1234567891", "0", "1234567891", 15, big.ToNearestEven},
+	{"addx547", "1234567891", "0", "1234567891", false, 15, big.ToNearestEven},
 	// addx548 add 0 1234567891  -> 1234567891
-	{"addx548", "0", "1234567891", "1234567891", 15, big.ToNearestEven},
+	{"addx548", "0", "1234567891", "1234567891", false, 15, big.ToNearestEven},
 	// addx549 add 12345678901 0 -> 12345678901
-	{"addx549", "12345678901", "0", "12345678901", 15, big.ToNearestEven},
+	{"addx549", "12345678901", "0", "12345678901", false, 15, big.ToNearestEven},
 	// addx550 add 0 12345678901 -> 12345678901
-	{"addx550", "0", "12345678901", "12345678901", 15, big.ToNearestEven},
+	{"addx550", "0", "12345678901", "12345678901", false, 15, big.ToNearestEven},
 	// addx551 add 1234567896  0 -> 1234567896
-	{"addx551", "1234567896", "0", "1234567896", 15, big.ToNearestEven},
+	{"addx551", "1234567896", "0", "1234567896", false, 15, big.ToNearestEven},
 	// addx552 add 0 1234567896  -> 1234567896
-	{"addx552", "0", "1234567896", "1234567896", 15, big.ToNearestEven},
+	{"addx552", "0", "1234567896", "1234567896", false, 15, big.ToNearestEven},
 	// verify a query
 	// precision: 16
 	// maxexponent: +394
 	// minexponent: -393
 	// rounding: down
 	// addx561 add 1e-398 9.000000000000000E+384 -> 9.000000000000000E+384 Inexact Rounded
-	{"addx561", "1e-398", "9.000000000000000E+384", "9.000000000000000E+384", 16, big.ToZero},
+	{"addx561", "1e-398", "9.000000000000000E+384", "9.000000000000000E+384", true, 16, big.ToZero},
 	// addx562 add      0 9.000000000000000E+384 -> 9.000000000000000E+384 Rounded
-	{"addx562", "0", "9.000000000000000E+384", "9.000000000000000E+384", 16, big.ToZero},
+	{"addx562", "0", "9.000000000000000E+384", "9.000000000000000E+384", false, 16, big.ToZero},
 	// and using decimal64 bounds (see also ddadd.decTest)
 	// precision: 16
 	// maxexponent: +384
 	// minexponent: -383
 	// rounding: down
 	// addx563 add 1e-388 9.000000000000000E+374 -> 9.000000000000000E+374 Inexact Rounded
-	{"addx563", "1e-388", "9.000000000000000E+374", "9.000000000000000E+374", 16, big.ToZero},
+	{"addx563", "1e-388", "9.000000000000000E+374", "9.000000000000000E+374", true, 16, big.ToZero},
 	// addx564 add      0 9.000000000000000E+374 -> 9.000000000000000E+374 Rounded
-	{"addx564", "0", "9.000000000000000E+374", "9.000000000000000E+374", 16, big.ToZero},
+	{"addx564", "0", "9.000000000000000E+374", "9.000000000000000E+374", false, 16, big.ToZero},
 	// some more residue effects with extreme rounding
 	// precision: 9
 	// rounding: half_up
 	// addx601 add 123456789  0.000001 -> 123456789 Inexact Rounded
-	{"addx601", "123456789", "0.000001", "123456789", 9, big.ToNearestAway},
+	{"addx601", "123456789", "0.000001", "123456789", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx602 add 123456789  0.000001 -> 123456789 Inexact Rounded
-	{"addx602", "123456789", "0.000001", "123456789", 9, big.ToNearestEven},
+	{"addx602", "123456789", "0.000001", "123456789", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx603 add 123456789  0.000001 -> 123456789 Inexact Rounded
+	// SKIP (unsupported rounding): addx603 add 123456789  0.000001 -> 123456789 Inexact Rounded
 	// rounding: floor
 	// addx604 add 123456789  0.000001 -> 123456789 Inexact Rounded
-	{"addx604", "123456789", "0.000001", "123456789", 9, big.ToNegativeInf},
+	{"addx604", "123456789", "0.000001", "123456789", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx605 add 123456789  0.000001 -> 123456790 Inexact Rounded
-	{"addx605", "123456789", "0.000001", "123456790", 9, big.ToPositiveInf},
+	{"addx605", "123456789", "0.000001", "123456790", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx606 add 123456789  0.000001 -> 123456790 Inexact Rounded
-	{"addx606", "123456789", "0.000001", "123456790", 9, big.AwayFromZero},
+	{"addx606", "123456789", "0.000001", "123456790", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx607 add 123456789  0.000001 -> 123456789 Inexact Rounded
-	{"addx607", "123456789", "0.000001", "123456789", 9, big.ToZero},
+	{"addx607", "123456789", "0.000001", "123456789", true, 9, big.ToZero},
 	// rounding: half_up
 	// addx611 add 123456789 -0.000001 -> 123456789 Inexact Rounded
-	{"addx611", "123456789", "-0.000001", "123456789", 9, big.ToNearestAway},
+	{"addx611", "123456789", "-0.000001", "123456789", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx612 add 123456789 -0.000001 -> 123456789 Inexact Rounded
-	{"addx612", "123456789", "-0.000001", "123456789", 9, big.ToNearestEven},
+	{"addx612", "123456789", "-0.000001", "123456789", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx613 add 123456789 -0.000001 -> 123456789 Inexact Rounded
+	// SKIP (unsupported rounding): addx613 add 123456789 -0.000001 -> 123456789 Inexact Rounded
 	// rounding: floor
 	// addx614 add 123456789 -0.000001 -> 123456788 Inexact Rounded
-	{"addx614", "123456789", "-0.000001", "123456788", 9, big.ToNegativeInf},
+	{"addx614", "123456789", "-0.000001", "123456788", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx615 add 123456789 -0.000001 -> 123456789 Inexact Rounded
-	{"addx615", "123456789", "-0.000001", "123456789", 9, big.ToPositiveInf},
+	{"addx615", "123456789", "-0.000001", "123456789", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx616 add 123456789 -0.000001 -> 123456789 Inexact Rounded
-	{"addx616", "123456789", "-0.000001", "123456789", 9, big.AwayFromZero},
+	{"addx616", "123456789", "-0.000001", "123456789", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx617 add 123456789 -0.000001 -> 123456788 Inexact Rounded
-	{"addx617", "123456789", "-0.000001", "123456788", 9, big.ToZero},
+	{"addx617", "123456789", "-0.000001", "123456788", true, 9, big.ToZero},
 	// rounding: half_up
 	// addx621 add 123456789  0.499999 -> 123456789 Inexact Rounded
-	{"addx621", "123456789", "0.499999", "123456789", 9, big.ToNearestAway},
+	{"addx621", "123456789", "0.499999", "123456789", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx622 add 123456789  0.499999 -> 123456789 Inexact Rounded
-	{"addx622", "123456789", "0.499999", "123456789", 9, big.ToNearestEven},
+	{"addx622", "123456789", "0.499999", "123456789", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx623 add 123456789  0.499999 -> 123456789 Inexact Rounded
+	// SKIP (unsupported rounding): addx623 add 123456789  0.499999 -> 123456789 Inexact Rounded
 	// rounding: floor
 	// addx624 add 123456789  0.499999 -> 123456789 Inexact Rounded
-	{"addx624", "123456789", "0.499999", "123456789", 9, big.ToNegativeInf},
+	{"addx624", "123456789", "0.499999", "123456789", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx625 add 123456789  0.499999 -> 123456790 Inexact Rounded
-	{"addx625", "123456789", "0.499999", "123456790", 9, big.ToPositiveInf},
+	{"addx625", "123456789", "0.499999", "123456790", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx626 add 123456789  0.499999 -> 123456790 Inexact Rounded
-	{"addx626", "123456789", "0.499999", "123456790", 9, big.AwayFromZero},
+	{"addx626", "123456789", "0.499999", "123456790", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx627 add 123456789  0.499999 -> 123456789 Inexact Rounded
-	{"addx627", "123456789", "0.499999", "123456789", 9, big.ToZero},
+	{"addx627", "123456789", "0.499999", "123456789", true, 9, big.ToZero},
 	// rounding: half_up
 	// addx631 add 123456789 -0.499999 -> 123456789 Inexact Rounded
-	{"addx631", "123456789", "-0.499999", "123456789", 9, big.ToNearestAway},
+	{"addx631", "123456789", "-0.499999", "123456789", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx632 add 123456789 -0.499999 -> 123456789 Inexact Rounded
-	{"addx632", "123456789", "-0.499999", "123456789", 9, big.ToNearestEven},
+	{"addx632", "123456789", "-0.499999", "123456789", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx633 add 123456789 -0.499999 -> 123456789 Inexact Rounded
+	// SKIP (unsupported rounding): addx633 add 123456789 -0.499999 -> 123456789 Inexact Rounded
 	// rounding: floor
 	// addx634 add 123456789 -0.499999 -> 123456788 Inexact Rounded
-	{"addx634", "123456789", "-0.499999", "123456788", 9, big.ToNegativeInf},
+	{"addx634", "123456789", "-0.499999", "123456788", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx635 add 123456789 -0.499999 -> 123456789 Inexact Rounded
-	{"addx635", "123456789", "-0.499999", "123456789", 9, big.ToPositiveInf},
+	{"addx635", "123456789", "-0.499999", "123456789", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx636 add 123456789 -0.499999 -> 123456789 Inexact Rounded
-	{"addx636", "123456789", "-0.499999", "123456789", 9, big.AwayFromZero},
+	{"addx636", "123456789", "-0.499999", "123456789", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx637 add 123456789 -0.499999 -> 123456788 Inexact Rounded
-	{"addx637", "123456789", "-0.499999", "123456788", 9, big.ToZero},
+	{"addx637", "123456789", "-0.499999", "123456788", true, 9, big.ToZero},
 	// rounding: half_up
 	// addx641 add 123456789  0.500001 -> 123456790 Inexact Rounded
-	{"addx641", "123456789", "0.500001", "123456790", 9, big.ToNearestAway},
+	{"addx641", "123456789", "0.500001", "123456790", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx642 add 123456789  0.500001 -> 123456790 Inexact Rounded
-	{"addx642", "123456789", "0.500001", "123456790", 9, big.ToNearestEven},
+	{"addx642", "123456789", "0.500001", "123456790", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx643 add 123456789  0.500001 -> 123456790 Inexact Rounded
+	// SKIP (unsupported rounding): addx643 add 123456789  0.500001 -> 123456790 Inexact Rounded
 	// rounding: floor
 	// addx644 add 123456789  0.500001 -> 123456789 Inexact Rounded
-	{"addx644", "123456789", "0.500001", "123456789", 9, big.ToNegativeInf},
+	{"addx644", "123456789", "0.500001", "123456789", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx645 add 123456789  0.500001 -> 123456790 Inexact Rounded
-	{"addx645", "123456789", "0.500001", "123456790", 9, big.ToPositiveInf},
+	{"addx645", "123456789", "0.500001", "123456790", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx646 add 123456789  0.500001 -> 123456790 Inexact Rounded
-	{"addx646", "123456789", "0.500001", "123456790", 9, big.AwayFromZero},
+	{"addx646", "123456789", "0.500001", "123456790", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx647 add 123456789  0.500001 -> 123456789 Inexact Rounded
-	{"addx647", "123456789", "0.500001", "123456789", 9, big.ToZero},
+	{"addx647", "123456789", "0.500001", "123456789", true, 9, big.ToZero},
 	// rounding: half_up
 	// addx651 add 123456789 -0.500001 -> 123456788 Inexact Rounded
-	{"addx651", "123456789", "-0.500001", "123456788", 9, big.ToNearestAway},
+	{"addx651", "123456789", "-0.500001", "123456788", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// addx652 add 123456789 -0.500001 -> 123456788 Inexact Rounded
-	{"addx652", "123456789", "-0.500001", "123456788", 9, big.ToNearestEven},
+	{"addx652", "123456789", "-0.500001", "123456788", true, 9, big.ToNearestEven},
 	// rounding: half_down
-	// SKIP: addx653 add 123456789 -0.500001 -> 123456788 Inexact Rounded
+	// SKIP (unsupported rounding): addx653 add 123456789 -0.500001 -> 123456788 Inexact Rounded
 	// rounding: floor
 	// addx654 add 123456789 -0.500001 -> 123456788 Inexact Rounded
-	{"addx654", "123456789", "-0.500001", "123456788", 9, big.ToNegativeInf},
+	{"addx654", "123456789", "-0.500001", "123456788", true, 9, big.ToNegativeInf},
 	// rounding: ceiling
 	// addx655 add 123456789 -0.500001 -> 123456789 Inexact Rounded
-	{"addx655", "123456789", "-0.500001", "123456789", 9, big.ToPositiveInf},
+	{"addx655", "123456789", "-0.500001", "123456789", true, 9, big.ToPositiveInf},
 	// rounding: up
 	// addx656 add 123456789 -0.500001 -> 123456789 Inexact Rounded
-	{"addx656", "123456789", "-0.500001", "123456789", 9, big.AwayFromZero},
+	{"addx656", "123456789", "-0.500001", "123456789", true, 9, big.AwayFromZero},
 	// rounding: down
 	// addx657 add 123456789 -0.500001 -> 123456788 Inexact Rounded
-	{"addx657", "123456789", "-0.500001", "123456788", 9, big.ToZero},
+	{"addx657", "123456789", "-0.500001", "123456788", true, 9, big.ToZero},
 	// long operand triangle
 	// rounding: half_up
 	// precision: 37
 	// addx660 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023638922337114834538
-	{"addx660", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337114834538", 37, big.ToNearestAway},
+	{"addx660", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337114834538", false, 37, big.ToNearestAway},
 	// precision: 36
 	// addx661 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102363892233711483454  Inexact Rounded
-	{"addx661", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711483454", 36, big.ToNearestAway},
+	{"addx661", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711483454", true, 36, big.ToNearestAway},
 	// precision: 35
 	// addx662 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236389223371148345   Inexact Rounded
-	{"addx662", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371148345", 35, big.ToNearestAway},
+	{"addx662", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371148345", true, 35, big.ToNearestAway},
 	// precision: 34
 	// addx663 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023638922337114835    Inexact Rounded
-	{"addx663", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337114835", 34, big.ToNearestAway},
+	{"addx663", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337114835", true, 34, big.ToNearestAway},
 	// precision: 33
 	// addx664 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102363892233711483     Inexact Rounded
-	{"addx664", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711483", 33, big.ToNearestAway},
+	{"addx664", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711483", true, 33, big.ToNearestAway},
 	// precision: 32
 	// addx665 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236389223371148      Inexact Rounded
-	{"addx665", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371148", 32, big.ToNearestAway},
+	{"addx665", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371148", true, 32, big.ToNearestAway},
 	// precision: 31
 	// addx666 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023638922337115       Inexact Rounded
-	{"addx666", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337115", 31, big.ToNearestAway},
+	{"addx666", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337115", true, 31, big.ToNearestAway},
 	// precision: 30
 	// addx667 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102363892233711        Inexact Rounded
-	{"addx667", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711", 30, big.ToNearestAway},
+	{"addx667", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892233711", true, 30, big.ToNearestAway},
 	// precision: 29
 	// addx668 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236389223371         Inexact Rounded
-	{"addx668", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371", 29, big.ToNearestAway},
+	{"addx668", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223371", true, 29, big.ToNearestAway},
 	// precision: 28
 	// addx669 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023638922337          Inexact Rounded
-	{"addx669", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337", 28, big.ToNearestAway},
+	{"addx669", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922337", true, 28, big.ToNearestAway},
 	// precision: 27
 	// addx670 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102363892234           Inexact Rounded
-	{"addx670", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892234", 27, big.ToNearestAway},
+	{"addx670", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892234", true, 27, big.ToNearestAway},
 	// precision: 26
 	// addx671 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236389223            Inexact Rounded
-	{"addx671", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223", 26, big.ToNearestAway},
+	{"addx671", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389223", true, 26, big.ToNearestAway},
 	// precision: 25
 	// addx672 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023638922             Inexact Rounded
-	{"addx672", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922", 25, big.ToNearestAway},
+	{"addx672", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023638922", true, 25, big.ToNearestAway},
 	// precision: 24
 	// addx673 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102363892              Inexact Rounded
-	{"addx673", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892", 24, big.ToNearestAway},
+	{"addx673", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102363892", true, 24, big.ToNearestAway},
 	// precision: 23
 	// addx674 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236389               Inexact Rounded
-	{"addx674", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389", 23, big.ToNearestAway},
+	{"addx674", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236389", true, 23, big.ToNearestAway},
 	// precision: 22
 	// addx675 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211023639                Inexact Rounded
-	{"addx675", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023639", 22, big.ToNearestAway},
+	{"addx675", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211023639", true, 22, big.ToNearestAway},
 	// precision: 21
 	// addx676 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102364                 Inexact Rounded
-	{"addx676", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102364", 21, big.ToNearestAway},
+	{"addx676", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102364", true, 21, big.ToNearestAway},
 	// precision: 20
 	// addx677 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110236                  Inexact Rounded
-	{"addx677", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236", 20, big.ToNearestAway},
+	{"addx677", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110236", true, 20, big.ToNearestAway},
 	// precision: 19
 	// addx678 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211024                   Inexact Rounded
-	{"addx678", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211024", 19, big.ToNearestAway},
+	{"addx678", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211024", true, 19, big.ToNearestAway},
 	// precision: 18
 	// addx679 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221102                    Inexact Rounded
-	{"addx679", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102", 18, big.ToNearestAway},
+	{"addx679", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221102", true, 18, big.ToNearestAway},
 	// precision: 17
 	// addx680 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422110                     Inexact Rounded
-	{"addx680", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110", 17, big.ToNearestAway},
+	{"addx680", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422110", true, 17, big.ToNearestAway},
 	// precision: 16
 	// addx681 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42211                      Inexact Rounded
-	{"addx681", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211", 16, big.ToNearestAway},
+	{"addx681", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42211", true, 16, big.ToNearestAway},
 	// precision: 15
 	// addx682 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4221                       Inexact Rounded
-	{"addx682", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221", 15, big.ToNearestAway},
+	{"addx682", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4221", true, 15, big.ToNearestAway},
 	// precision: 14
 	// addx683 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.422                        Inexact Rounded
-	{"addx683", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422", 14, big.ToNearestAway},
+	{"addx683", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.422", true, 14, big.ToNearestAway},
 	// precision: 13
 	// addx684 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.42                         Inexact Rounded
-	{"addx684", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42", 13, big.ToNearestAway},
+	{"addx684", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.42", true, 13, big.ToNearestAway},
 	// precision: 12
 	// addx685 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166.4                          Inexact Rounded
-	{"addx685", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4", 12, big.ToNearestAway},
+	{"addx685", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166.4", true, 12, big.ToNearestAway},
 	// precision: 11
 	// addx686 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 98471174166                            Inexact Rounded
-	{"addx686", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166", 11, big.ToNearestAway},
+	{"addx686", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "98471174166", true, 11, big.ToNearestAway},
 	// precision: 10
 	// addx687 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.847117417E+10                        Inexact Rounded
-	{"addx687", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847117417E+10", 10, big.ToNearestAway},
+	{"addx687", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847117417E+10", true, 10, big.ToNearestAway},
 	// precision: 9
 	// addx688 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.84711742E+10                         Inexact Rounded
-	{"addx688", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.84711742E+10", 9, big.ToNearestAway},
+	{"addx688", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.84711742E+10", true, 9, big.ToNearestAway},
 	// precision: 8
 	// addx689 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.8471174E+10                          Inexact Rounded
-	{"addx689", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8471174E+10", 8, big.ToNearestAway},
+	{"addx689", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8471174E+10", true, 8, big.ToNearestAway},
 	// precision: 7
 	// addx690 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.847117E+10                          Inexact Rounded
-	{"addx690", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847117E+10", 7, big.ToNearestAway},
+	{"addx690", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847117E+10", true, 7, big.ToNearestAway},
 	// precision: 6
 	// addx691 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.84712E+10                          Inexact Rounded
-	{"addx691", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.84712E+10", 6, big.ToNearestAway},
+	{"addx691", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.84712E+10", true, 6, big.ToNearestAway},
 	// precision: 5
 	// addx692 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.8471E+10                          Inexact Rounded
-	{"addx692", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8471E+10", 5, big.ToNearestAway},
+	{"addx692", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8471E+10", true, 5, big.ToNearestAway},
 	// precision: 4
 	// addx693 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.847E+10                          Inexact Rounded
-	{"addx693", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847E+10", 4, big.ToNearestAway},
+	{"addx693", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.847E+10", true, 4, big.ToNearestAway},
 	// precision: 3
 	// addx694 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.85E+10                          Inexact Rounded
-	{"addx694", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.85E+10", 3, big.ToNearestAway},
+	{"addx694", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.85E+10", true, 3, big.ToNearestAway},
 	// precision: 2
 	// addx695 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 9.8E+10                          Inexact Rounded
-	{"addx695", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8E+10", 2, big.ToNearestAway},
+	{"addx695", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "9.8E+10", true, 2, big.ToNearestAway},
 	// precision: 1
 	// addx696 add 98471198160.56524417578665886060 -23994.14313393939743548945165462 -> 1E+11                          Inexact Rounded
-	{"addx696", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "1E+11", 1, big.ToNearestAway},
+	{"addx696", "98471198160.56524417578665886060", "-23994.14313393939743548945165462", "1E+11", true, 1, big.ToNearestAway},
 	// more zeros, etc.
 	// rounding: half_up
 	// precision: 9
 	// addx701 add 5.00 1.00E-3 -> 5.00100
-	{"addx701", "5.00", "1.00E-3", "5.00100", 9, big.ToNearestAway},
+	{"addx701", "5.00", "1.00E-3", "5.00100", false, 9, big.ToNearestAway},
 	// addx702 add 00.00 0.000  -> 0.000
-	{"addx702", "00.00", "0.000", "0.000", 9, big.ToNearestAway},
+	{"addx702", "00.00", "0.000", "0.000", false, 9, big.ToNearestAway},
 	// addx703 add 00.00 0E-3   -> 0.000
-	{"addx703", "00.00", "0E-3", "0.000", 9, big.ToNearestAway},
+	{"addx703", "00.00", "0E-3", "0.000", false, 9, big.ToNearestAway},
 	// addx704 add 0E-3  00.00  -> 0.000
-	{"addx704", "0E-3", "00.00", "0.000", 9, big.ToNearestAway},
+	{"addx704", "0E-3", "00.00", "0.000", false, 9, big.ToNearestAway},
 	// addx710 add 0E+3  00.00  -> 0.00
-	{"addx710", "0E+3", "00.00", "0.00", 9, big.ToNearestAway},
+	{"addx710", "0E+3", "00.00", "0.00", false, 9, big.ToNearestAway},
 	// addx711 add 0E+3  00.0   -> 0.0
-	{"addx711", "0E+3", "00.0", "0.0", 9, big.ToNearestAway},
+	{"addx711", "0E+3", "00.0", "0.0", false, 9, big.ToNearestAway},
 	// addx712 add 0E+3  00.    -> 0
-	{"addx712", "0E+3", "00.", "0", 9, big.ToNearestAway},
+	{"addx712", "0E+3", "00.", "0", false, 9, big.ToNearestAway},
 	// addx713 add 0E+3  00.E+1 -> 0E+1
-	{"addx713", "0E+3", "00.E+1", "0E+1", 9, big.ToNearestAway},
+	{"addx713", "0E+3", "00.E+1", "0E+1", false, 9, big.ToNearestAway},
 	// addx714 add 0E+3  00.E+2 -> 0E+2
-	{"addx714", "0E+3", "00.E+2", "0E+2", 9, big.ToNearestAway},
+	{"addx714", "0E+3", "00.E+2", "0E+2", false, 9, big.ToNearestAway},
 	// addx715 add 0E+3  00.E+3 -> 0E+3
-	{"addx715", "0E+3", "00.E+3", "0E+3", 9, big.ToNearestAway},
+	{"addx715", "0E+3", "00.E+3", "0E+3", false, 9, big.ToNearestAway},
 	// addx716 add 0E+3  00.E+4 -> 0E+3
-	{"addx716", "0E+3", "00.E+4", "0E+3", 9, big.ToNearestAway},
+	{"addx716", "0E+3", "00.E+4", "0E+3", false, 9, big.ToNearestAway},
 	// addx717 add 0E+3  00.E+5 -> 0E+3
-	{"addx717", "0E+3", "00.E+5", "0E+3", 9, big.ToNearestAway},
+	{"addx717", "0E+3", "00.E+5", "0E+3", false, 9, big.ToNearestAway},
 	// addx718 add 0E+3  -00.0   -> 0.0
-	{"addx718", "0E+3", "-00.0", "0.0", 9, big.ToNearestAway},
+	{"addx718", "0E+3", "-00.0", "0.0", false, 9, big.ToNearestAway},
 	// addx719 add 0E+3  -00.    -> 0
-	{"addx719", "0E+3", "-00.", "0", 9, big.ToNearestAway},
+	{"addx719", "0E+3", "-00.", "0", false, 9, big.ToNearestAway},
 	// addx731 add 0E+3  -00.E+1 -> 0E+1
-	{"addx731", "0E+3", "-00.E+1", "0E+1", 9, big.ToNearestAway},
+	{"addx731", "0E+3", "-00.E+1", "0E+1", false, 9, big.ToNearestAway},
 	// addx720 add 00.00  0E+3  -> 0.00
-	{"addx720", "00.00", "0E+3", "0.00", 9, big.ToNearestAway},
+	{"addx720", "00.00", "0E+3", "0.00", false, 9, big.ToNearestAway},
 	// addx721 add 00.0   0E+3  -> 0.0
-	{"addx721", "00.0", "0E+3", "0.0", 9, big.ToNearestAway},
+	{"addx721", "00.0", "0E+3", "0.0", false, 9, big.ToNearestAway},
 	// addx722 add 00.    0E+3  -> 0
-	{"addx722", "00.", "0E+3", "0", 9, big.ToNearestAway},
+	{"addx722", "00.", "0E+3", "0", false, 9, big.ToNearestAway},
 	// addx723 add 00.E+1 0E+3  -> 0E+1
-	{"addx723", "00.E+1", "0E+3", "0E+1", 9, big.ToNearestAway},
+	{"addx723", "00.E+1", "0E+3", "0E+1", false, 9, big.ToNearestAway},
 	// addx724 add 00.E+2 0E+3  -> 0E+2
-	{"addx724", "00.E+2", "0E+3", "0E+2", 9, big.ToNearestAway},
+	{"addx724", "00.E+2", "0E+3", "0E+2", false, 9, big.ToNearestAway},
 	// addx725 add 00.E+3 0E+3  -> 0E+3
-	{"addx725", "00.E+3", "0E+3", "0E+3", 9, big.ToNearestAway},
+	{"addx725", "00.E+3", "0E+3", "0E+3", false, 9, big.ToNearestAway},
 	// addx726 add 00.E+4 0E+3  -> 0E+3
-	{"addx726", "00.E+4", "0E+3", "0E+3", 9, big.ToNearestAway},
+	{"addx726", "00.E+4", "0E+3", "0E+3", false, 9, big.ToNearestAway},
 	// addx727 add 00.E+5 0E+3  -> 0E+3
-	{"addx727", "00.E+5", "0E+3", "0E+3", 9, big.ToNearestAway},
+	{"addx727", "00.E+5", "0E+3", "0E+3", false, 9, big.ToNearestAway},
 	// addx728 add -00.00 0E+3  -> 0.00
-	{"addx728", "-00.00", "0E+3", "0.00", 9, big.ToNearestAway},
+	{"addx728", "-00.00", "0E+3", "0.00", false, 9, big.ToNearestAway},
 	// addx729 add -00.0  0E+3  -> 0.0
-	{"addx729", "-00.0", "0E+3", "0.0", 9, big.ToNearestAway},
+	{"addx729", "-00.0", "0E+3", "0.0", false, 9, big.ToNearestAway},
 	// addx730 add -00.   0E+3  -> 0
-	{"addx730", "-00.", "0E+3", "0", 9, big.ToNearestAway},
+	{"addx730", "-00.", "0E+3", "0", false, 9, big.ToNearestAway},
 	// addx732 add  0     0     ->  0
-	{"addx732", "0", "0", "0", 9, big.ToNearestAway},
+	{"addx732", "0", "0", "0", false, 9, big.ToNearestAway},
 	// addx733 add  0    -0     ->  0
-	{"addx733", "0", "-0", "0", 9, big.ToNearestAway},
+	{"addx733", "0", "-0", "0", false, 9, big.ToNearestAway},
 	// addx734 add -0     0     ->  0
-	{"addx734", "-0", "0", "0", 9, big.ToNearestAway},
+	{"addx734", "-0", "0", "0", false, 9, big.ToNearestAway},
 	// addx735 add -0    -0     -> -0     -- IEEE 854 special case
-	{"addx735", "-0", "-0", "-0", 9, big.ToNearestAway},
+	{"addx735", "-0", "-0", "-0", false, 9, big.ToNearestAway},
 	// addx736 add  1    -1     ->  0
-	{"addx736", "1", "-1", "0", 9, big.ToNearestAway},
+	{"addx736", "1", "-1", "0", false, 9, big.ToNearestAway},
 	// addx737 add -1    -1     -> -2
-	{"addx737", "-1", "-1", "-2", 9, big.ToNearestAway},
+	{"addx737", "-1", "-1", "-2", false, 9, big.ToNearestAway},
 	// addx738 add  1     1     ->  2
-	{"addx738", "1", "1", "2", 9, big.ToNearestAway},
+	{"addx738", "1", "1", "2", false, 9, big.ToNearestAway},
 	// addx739 add -1     1     ->  0
-	{"addx739", "-1", "1", "0", 9, big.ToNearestAway},
+	{"addx739", "-1", "1", "0", false, 9, big.ToNearestAway},
 	// addx741 add  0    -1     -> -1
-	{"addx741", "0", "-1", "-1", 9, big.ToNearestAway},
+	{"addx741", "0", "-1", "-1", false, 9, big.ToNearestAway},
 	// addx742 add -0    -1     -> -1
-	{"addx742", "-0", "-1", "-1", 9, big.ToNearestAway},
+	{"addx742", "-0", "-1", "-1", false, 9, big.ToNearestAway},
 	// addx743 add  0     1     ->  1
-	{"addx743", "0", "1", "1", 9, big.ToNearestAway},
+	{"addx743", "0", "1", "1", false, 9, big.ToNearestAway},
 	// addx744 add -0     1     ->  1
-	{"addx744", "-0", "1", "1", 9, big.ToNearestAway},
+	{"addx744", "-0", "1", "1", false, 9, big.ToNearestAway},
 	// addx745 add -1     0     -> -1
-	{"addx745", "-1", "0", "-1", 9, big.ToNearestAway},
+	{"addx745", "-1", "0", "-1", false, 9, big.ToNearestAway},
 	// addx746 add -1    -0     -> -1
-	{"addx746", "-1", "-0", "-1", 9, big.ToNearestAway},
+	{"addx746", "-1", "-0", "-1", false, 9, big.ToNearestAway},
 	// addx747 add  1     0     ->  1
-	{"addx747", "1", "0", "1", 9, big.ToNearestAway},
+	{"addx747", "1", "0", "1", false, 9, big.ToNearestAway},
 	// addx748 add  1    -0     ->  1
-	{"addx748", "1", "-0", "1", 9, big.ToNearestAway},
+	{"addx748", "1", "-0", "1", false, 9, big.ToNearestAway},
 	// addx751 add  0.0  -1     -> -1.0
-	{"addx751", "0.0", "-1", "-1.0", 9, big.ToNearestAway},
+	{"addx751", "0.0", "-1", "-1.0", false, 9, big.ToNearestAway},
 	// addx752 add -0.0  -1     -> -1.0
-	{"addx752", "-0.0", "-1", "-1.0", 9, big.ToNearestAway},
+	{"addx752", "-0.0", "-1", "-1.0", false, 9, big.ToNearestAway},
 	// addx753 add  0.0   1     ->  1.0
-	{"addx753", "0.0", "1", "1.0", 9, big.ToNearestAway},
+	{"addx753", "0.0", "1", "1.0", false, 9, big.ToNearestAway},
 	// addx754 add -0.0   1     ->  1.0
-	{"addx754", "-0.0", "1", "1.0", 9, big.ToNearestAway},
+	{"addx754", "-0.0", "1", "1.0", false, 9, big.ToNearestAway},
 	// addx755 add -1.0   0     -> -1.0
-	{"addx755", "-1.0", "0", "-1.0", 9, big.ToNearestAway},
+	{"addx755", "-1.0", "0", "-1.0", false, 9, big.ToNearestAway},
 	// addx756 add -1.0  -0     -> -1.0
-	{"addx756", "-1.0", "-0", "-1.0", 9, big.ToNearestAway},
+	{"addx756", "-1.0", "-0", "-1.0", false, 9, big.ToNearestAway},
 	// addx757 add  1.0   0     ->  1.0
-	{"addx757", "1.0", "0", "1.0", 9, big.ToNearestAway},
+	{"addx757", "1.0", "0", "1.0", false, 9, big.ToNearestAway},
 	// addx758 add  1.0  -0     ->  1.0
-	{"addx758", "1.0", "-0", "1.0", 9, big.ToNearestAway},
+	{"addx758", "1.0", "-0", "1.0", false, 9, big.ToNearestAway},
 	// addx761 add  0    -1.0   -> -1.0
-	{"addx761", "0", "-1.0", "-1.0", 9, big.ToNearestAway},
+	{"addx761", "0", "-1.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx762 add -0    -1.0   -> -1.0
-	{"addx762", "-0", "-1.0", "-1.0", 9, big.ToNearestAway},
+	{"addx762", "-0", "-1.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx763 add  0     1.0   ->  1.0
-	{"addx763", "0", "1.0", "1.0", 9, big.ToNearestAway},
+	{"addx763", "0", "1.0", "1.0", false, 9, big.ToNearestAway},
 	// addx764 add -0     1.0   ->  1.0
-	{"addx764", "-0", "1.0", "1.0", 9, big.ToNearestAway},
+	{"addx764", "-0", "1.0", "1.0", false, 9, big.ToNearestAway},
 	// addx765 add -1     0.0   -> -1.0
-	{"addx765", "-1", "0.0", "-1.0", 9, big.ToNearestAway},
+	{"addx765", "-1", "0.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx766 add -1    -0.0   -> -1.0
-	{"addx766", "-1", "-0.0", "-1.0", 9, big.ToNearestAway},
+	{"addx766", "-1", "-0.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx767 add  1     0.0   ->  1.0
-	{"addx767", "1", "0.0", "1.0", 9, big.ToNearestAway},
+	{"addx767", "1", "0.0", "1.0", false, 9, big.ToNearestAway},
 	// addx768 add  1    -0.0   ->  1.0
-	{"addx768", "1", "-0.0", "1.0", 9, big.ToNearestAway},
+	{"addx768", "1", "-0.0", "1.0", false, 9, big.ToNearestAway},
 	// addx771 add  0.0  -1.0   -> -1.0
-	{"addx771", "0.0", "-1.0", "-1.0", 9, big.ToNearestAway},
+	{"addx771", "0.0", "-1.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx772 add -0.0  -1.0   -> -1.0
-	{"addx772", "-0.0", "-1.0", "-1.0", 9, big.ToNearestAway},
+	{"addx772", "-0.0", "-1.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx773 add  0.0   1.0   ->  1.0
-	{"addx773", "0.0", "1.0", "1.0", 9, big.ToNearestAway},
+	{"addx773", "0.0", "1.0", "1.0", false, 9, big.ToNearestAway},
 	// addx774 add -0.0   1.0   ->  1.0
-	{"addx774", "-0.0", "1.0", "1.0", 9, big.ToNearestAway},
+	{"addx774", "-0.0", "1.0", "1.0", false, 9, big.ToNearestAway},
 	// addx775 add -1.0   0.0   -> -1.0
-	{"addx775", "-1.0", "0.0", "-1.0", 9, big.ToNearestAway},
+	{"addx775", "-1.0", "0.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx776 add -1.0  -0.0   -> -1.0
-	{"addx776", "-1.0", "-0.0", "-1.0", 9, big.ToNearestAway},
+	{"addx776", "-1.0", "-0.0", "-1.0", false, 9, big.ToNearestAway},
 	// addx777 add  1.0   0.0   ->  1.0
-	{"addx777", "1.0", "0.0", "1.0", 9, big.ToNearestAway},
+	{"addx777", "1.0", "0.0", "1.0", false, 9, big.ToNearestAway},
 	// addx778 add  1.0  -0.0   ->  1.0
-	{"addx778", "1.0", "-0.0", "1.0", 9, big.ToNearestAway},
+	{"addx778", "1.0", "-0.0", "1.0", false, 9, big.ToNearestAway},
 	// Specials
 	// addx780 add -Inf  -Inf   -> -Infinity
-	{"addx780", "-Inf", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx780", "-Inf", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx781 add -Inf  -1000  -> -Infinity
-	{"addx781", "-Inf", "-1000", "-Inf", 9, big.ToNearestAway},
+	{"addx781", "-Inf", "-1000", "-Inf", false, 9, big.ToNearestAway},
 	// addx782 add -Inf  -1     -> -Infinity
-	{"addx782", "-Inf", "-1", "-Inf", 9, big.ToNearestAway},
+	{"addx782", "-Inf", "-1", "-Inf", false, 9, big.ToNearestAway},
 	// addx783 add -Inf  -0     -> -Infinity
-	{"addx783", "-Inf", "-0", "-Inf", 9, big.ToNearestAway},
+	{"addx783", "-Inf", "-0", "-Inf", false, 9, big.ToNearestAway},
 	// addx784 add -Inf   0     -> -Infinity
-	{"addx784", "-Inf", "0", "-Inf", 9, big.ToNearestAway},
+	{"addx784", "-Inf", "0", "-Inf", false, 9, big.ToNearestAway},
 	// addx785 add -Inf   1     -> -Infinity
-	{"addx785", "-Inf", "1", "-Inf", 9, big.ToNearestAway},
+	{"addx785", "-Inf", "1", "-Inf", false, 9, big.ToNearestAway},
 	// addx786 add -Inf   1000  -> -Infinity
-	{"addx786", "-Inf", "1000", "-Inf", 9, big.ToNearestAway},
+	{"addx786", "-Inf", "1000", "-Inf", false, 9, big.ToNearestAway},
 	// addx787 add -1000 -Inf   -> -Infinity
-	{"addx787", "-1000", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx787", "-1000", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx788 add -Inf  -Inf   -> -Infinity
-	{"addx788", "-Inf", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx788", "-Inf", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx789 add -1    -Inf   -> -Infinity
-	{"addx789", "-1", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx789", "-1", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx790 add -0    -Inf   -> -Infinity
-	{"addx790", "-0", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx790", "-0", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx791 add  0    -Inf   -> -Infinity
-	{"addx791", "0", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx791", "0", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx792 add  1    -Inf   -> -Infinity
-	{"addx792", "1", "-Inf", "-Inf", 9, big.ToNearestAway},
+	{"addx792", "1", "-Inf", "-Inf", false, 9, big.ToNearestAway},
 	// addx793 add  1000 -Inf   -> -Infinity
-	{"addx793", "1000", "-Inf", "-Inf", 9, big.ToNearestAway},
-	// SKIP: addx794 add  Inf  -Inf   ->  NaN  Invalid_operation
-	// SKIP: addx800 add  Inf  -Inf   ->  NaN  Invalid_operation
+	{"addx793", "1000", "-Inf", "-Inf", false, 9, big.ToNearestAway},
+	// SKIP (NaN): addx794 add  Inf  -Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx800 add  Inf  -Inf   ->  NaN  Invalid_operation
 	// addx801 add  Inf  -1000  ->  Infinity
-	{"addx801", "Inf", "-1000", "Inf", 9, big.ToNearestAway},
+	{"addx801", "Inf", "-1000", "Inf", false, 9, big.ToNearestAway},
 	// addx802 add  Inf  -1     ->  Infinity
-	{"addx802", "Inf", "-1", "Inf", 9, big.ToNearestAway},
+	{"addx802", "Inf", "-1", "Inf", false, 9, big.ToNearestAway},
 	// addx803 add  Inf  -0     ->  Infinity
-	{"addx803", "Inf", "-0", "Inf", 9, big.ToNearestAway},
+	{"addx803", "Inf", "-0", "Inf", false, 9, big.ToNearestAway},
 	// addx804 add  Inf   0     ->  Infinity
-	{"addx804", "Inf", "0", "Inf", 9, big.ToNearestAway},
+	{"addx804", "Inf", "0", "Inf", false, 9, big.ToNearestAway},
 	// addx805 add  Inf   1     ->  Infinity
-	{"addx805", "Inf", "1", "Inf", 9, big.ToNearestAway},
+	{"addx805", "Inf", "1", "Inf", false, 9, big.ToNearestAway},
 	// addx806 add  Inf   1000  ->  Infinity
-	{"addx806", "Inf", "1000", "Inf", 9, big.ToNearestAway},
+	{"addx806", "Inf", "1000", "Inf", false, 9, big.ToNearestAway},
 	// addx807 add  Inf   Inf   ->  Infinity
-	{"addx807", "Inf", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx807", "Inf", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx808 add -1000  Inf   ->  Infinity
-	{"addx808", "-1000", "Inf", "Inf", 9, big.ToNearestAway},
-	// SKIP: addx809 add -Inf   Inf   ->  NaN  Invalid_operation
+	{"addx808", "-1000", "Inf", "Inf", false, 9, big.ToNearestAway},
+	// SKIP (NaN): addx809 add -Inf   Inf   ->  NaN  Invalid_operation
 	// addx810 add -1     Inf   ->  Infinity
-	{"addx810", "-1", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx810", "-1", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx811 add -0     Inf   ->  Infinity
-	{"addx811", "-0", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx811", "-0", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx812 add  0     Inf   ->  Infinity
-	{"addx812", "0", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx812", "0", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx813 add  1     Inf   ->  Infinity
-	{"addx813", "1", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx813", "1", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx814 add  1000  Inf   ->  Infinity
-	{"addx814", "1000", "Inf", "Inf", 9, big.ToNearestAway},
+	{"addx814", "1000", "Inf", "Inf", false, 9, big.ToNearestAway},
 	// addx815 add  Inf   Inf   ->  Infinity
-	{"addx815", "Inf", "Inf", "Inf", 9, big.ToNearestAway},
-	// SKIP: addx821 add  NaN -Inf    ->  NaN
-	// SKIP: addx822 add  NaN -1000   ->  NaN
-	// SKIP: addx823 add  NaN -1      ->  NaN
-	// SKIP: addx824 add  NaN -0      ->  NaN
-	// SKIP: addx825 add  NaN  0      ->  NaN
-	// SKIP: addx826 add  NaN  1      ->  NaN
-	// SKIP: addx827 add  NaN  1000   ->  NaN
-	// SKIP: addx828 add  NaN  Inf    ->  NaN
-	// SKIP: addx829 add  NaN  NaN    ->  NaN
-	// SKIP: addx830 add -Inf  NaN    ->  NaN
-	// SKIP: addx831 add -1000 NaN    ->  NaN
-	// SKIP: addx832 add -1    NaN    ->  NaN
-	// SKIP: addx833 add -0    NaN    ->  NaN
-	// SKIP: addx834 add  0    NaN    ->  NaN
-	// SKIP: addx835 add  1    NaN    ->  NaN
-	// SKIP: addx836 add  1000 NaN    ->  NaN
-	// SKIP: addx837 add  Inf  NaN    ->  NaN
-	// SKIP: addx841 add  sNaN -Inf   ->  NaN  Invalid_operation
-	// SKIP: addx842 add  sNaN -1000  ->  NaN  Invalid_operation
-	// SKIP: addx843 add  sNaN -1     ->  NaN  Invalid_operation
-	// SKIP: addx844 add  sNaN -0     ->  NaN  Invalid_operation
-	// SKIP: addx845 add  sNaN  0     ->  NaN  Invalid_operation
-	// SKIP: addx846 add  sNaN  1     ->  NaN  Invalid_operation
-	// SKIP: addx847 add  sNaN  1000  ->  NaN  Invalid_operation
-	// SKIP: addx848 add  sNaN  NaN   ->  NaN  Invalid_operation
-	// SKIP: addx849 add  sNaN sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx850 add  NaN  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx851 add -Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx852 add -1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx853 add -1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx854 add -0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx855 add  0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx856 add  1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx857 add  1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx858 add  Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx859 add  NaN  sNaN   ->  NaN  Invalid_operation
+	{"addx815", "Inf", "Inf", "Inf", false, 9, big.ToNearestAway},
+	// SKIP (NaN): addx821 add  NaN -Inf    ->  NaN
+	// SKIP (NaN): addx822 add  NaN -1000   ->  NaN
+	// SKIP (NaN): addx823 add  NaN -1      ->  NaN
+	// SKIP (NaN): addx824 add  NaN -0      ->  NaN
+	// SKIP (NaN): addx825 add  NaN  0      ->  NaN
+	// SKIP (NaN): addx826 add  NaN  1      ->  NaN
+	// SKIP (NaN): addx827 add  NaN  1000   ->  NaN
+	// SKIP (NaN): addx828 add  NaN  Inf    ->  NaN
+	// SKIP (NaN): addx829 add  NaN  NaN    ->  NaN
+	// SKIP (NaN): addx830 add -Inf  NaN    ->  NaN
+	// SKIP (NaN): addx831 add -1000 NaN    ->  NaN
+	// SKIP (NaN): addx832 add -1    NaN    ->  NaN
+	// SKIP (NaN): addx833 add -0    NaN    ->  NaN
+	// SKIP (NaN): addx834 add  0    NaN    ->  NaN
+	// SKIP (NaN): addx835 add  1    NaN    ->  NaN
+	// SKIP (NaN): addx836 add  1000 NaN    ->  NaN
+	// SKIP (NaN): addx837 add  Inf  NaN    ->  NaN
+	// SKIP (NaN): addx841 add  sNaN -Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx842 add  sNaN -1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): addx843 add  sNaN -1     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx844 add  sNaN -0     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx845 add  sNaN  0     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx846 add  sNaN  1     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx847 add  sNaN  1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): addx848 add  sNaN  NaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx849 add  sNaN sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx850 add  NaN  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx851 add -Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx852 add -1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx853 add -1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx854 add -0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx855 add  0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx856 add  1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx857 add  1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx858 add  Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx859 add  NaN  sNaN   ->  NaN  Invalid_operation
 	// propagating NaNs
-	// SKIP: addx861 add  NaN1   -Inf    ->  NaN1
-	// SKIP: addx862 add +NaN2   -1000   ->  NaN2
-	// SKIP: addx863 add  NaN3    1000   ->  NaN3
-	// SKIP: addx864 add  NaN4    Inf    ->  NaN4
-	// SKIP: addx865 add  NaN5   +NaN6   ->  NaN5
-	// SKIP: addx866 add -Inf     NaN7   ->  NaN7
-	// SKIP: addx867 add -1000    NaN8   ->  NaN8
-	// SKIP: addx868 add  1000    NaN9   ->  NaN9
-	// SKIP: addx869 add  Inf    +NaN10  ->  NaN10
-	// SKIP: addx871 add  sNaN11  -Inf   ->  NaN11  Invalid_operation
-	// SKIP: addx872 add  sNaN12  -1000  ->  NaN12  Invalid_operation
-	// SKIP: addx873 add  sNaN13   1000  ->  NaN13  Invalid_operation
-	// SKIP: addx874 add  sNaN14   NaN17 ->  NaN14  Invalid_operation
-	// SKIP: addx875 add  sNaN15  sNaN18 ->  NaN15  Invalid_operation
-	// SKIP: addx876 add  NaN16   sNaN19 ->  NaN19  Invalid_operation
-	// SKIP: addx877 add -Inf    +sNaN20 ->  NaN20  Invalid_operation
-	// SKIP: addx878 add -1000    sNaN21 ->  NaN21  Invalid_operation
-	// SKIP: addx879 add  1000    sNaN22 ->  NaN22  Invalid_operation
-	// SKIP: addx880 add  Inf     sNaN23 ->  NaN23  Invalid_operation
-	// SKIP: addx881 add +NaN25  +sNaN24 ->  NaN24  Invalid_operation
-	// SKIP: addx882 add -NaN26    NaN28 -> -NaN26
-	// SKIP: addx883 add -sNaN27  sNaN29 -> -NaN27  Invalid_operation
-	// SKIP: addx884 add  1000    -NaN30 -> -NaN30
-	// SKIP: addx885 add  1000   -sNaN31 -> -NaN31  Invalid_operation
+	// SKIP (NaN): addx861 add  NaN1   -Inf    ->  NaN1
+	// SKIP (NaN): addx862 add +NaN2   -1000   ->  NaN2
+	// SKIP (NaN): addx863 add  NaN3    1000   ->  NaN3
+	// SKIP (NaN): addx864 add  NaN4    Inf    ->  NaN4
+	// SKIP (NaN): addx865 add  NaN5   +NaN6   ->  NaN5
+	// SKIP (NaN): addx866 add -Inf     NaN7   ->  NaN7
+	// SKIP (NaN): addx867 add -1000    NaN8   ->  NaN8
+	// SKIP (NaN): addx868 add  1000    NaN9   ->  NaN9
+	// SKIP (NaN): addx869 add  Inf    +NaN10  ->  NaN10
+	// SKIP (NaN): addx871 add  sNaN11  -Inf   ->  NaN11  Invalid_operation
+	// SKIP (NaN): addx872 add  sNaN12  -1000  ->  NaN12  Invalid_operation
+	// SKIP (NaN): addx873 add  sNaN13   1000  ->  NaN13  Invalid_operation
+	// SKIP (NaN): addx874 add  sNaN14   NaN17 ->  NaN14  Invalid_operation
+	// SKIP (NaN): addx875 add  sNaN15  sNaN18 ->  NaN15  Invalid_operation
+	// SKIP (NaN): addx876 add  NaN16   sNaN19 ->  NaN19  Invalid_operation
+	// SKIP (NaN): addx877 add -Inf    +sNaN20 ->  NaN20  Invalid_operation
+	// SKIP (NaN): addx878 add -1000    sNaN21 ->  NaN21  Invalid_operation
+	// SKIP (NaN): addx879 add  1000    sNaN22 ->  NaN22  Invalid_operation
+	// SKIP (NaN): addx880 add  Inf     sNaN23 ->  NaN23  Invalid_operation
+	// SKIP (NaN): addx881 add +NaN25  +sNaN24 ->  NaN24  Invalid_operation
+	// SKIP (NaN): addx882 add -NaN26    NaN28 -> -NaN26
+	// SKIP (NaN): addx883 add -sNaN27  sNaN29 -> -NaN27  Invalid_operation
+	// SKIP (NaN): addx884 add  1000    -NaN30 -> -NaN30
+	// SKIP (NaN): addx885 add  1000   -sNaN31 -> -NaN31  Invalid_operation
 	// overflow, underflow and subnormal tests
 	// maxexponent: 999999999
 	// minexponent: -999999999
 	// precision: 9
 	// addx890 add 1E+999999999     9E+999999999   -> Infinity Overflow Inexact Rounded
-	{"addx890", "1E+999999999", "9E+999999999", "Inf", 9, big.ToNearestAway},
+	{"addx890", "1E+999999999", "9E+999999999", "Inf", true, 9, big.ToNearestAway},
 	// addx891 add 9E+999999999     1E+999999999   -> Infinity Overflow Inexact Rounded
-	{"addx891", "9E+999999999", "1E+999999999", "Inf", 9, big.ToNearestAway},
+	{"addx891", "9E+999999999", "1E+999999999", "Inf", true, 9, big.ToNearestAway},
 	// addx892 add -1.1E-999999999  1E-999999999   -> -1E-1000000000    Subnormal
-	{"addx892", "-1.1E-999999999", "1E-999999999", "-1E-1000000000", 9, big.ToNearestAway},
+	{"addx892", "-1.1E-999999999", "1E-999999999", "-1E-1000000000", false, 9, big.ToNearestAway},
 	// addx893 add 1E-999999999    -1.1e-999999999 -> -1E-1000000000    Subnormal
-	{"addx893", "1E-999999999", "-1.1e-999999999", "-1E-1000000000", 9, big.ToNearestAway},
+	{"addx893", "1E-999999999", "-1.1e-999999999", "-1E-1000000000", false, 9, big.ToNearestAway},
 	// addx894 add -1.0001E-999999999  1E-999999999   -> -1E-1000000003 Subnormal
-	{"addx894", "-1.0001E-999999999", "1E-999999999", "-1E-1000000003", 9, big.ToNearestAway},
+	{"addx894", "-1.0001E-999999999", "1E-999999999", "-1E-1000000003", false, 9, big.ToNearestAway},
 	// addx895 add 1E-999999999    -1.0001e-999999999 -> -1E-1000000003 Subnormal
-	{"addx895", "1E-999999999", "-1.0001e-999999999", "-1E-1000000003", 9, big.ToNearestAway},
+	{"addx895", "1E-999999999", "-1.0001e-999999999", "-1E-1000000003", false, 9, big.ToNearestAway},
 	// addx896 add -1E+999999999   -9E+999999999   -> -Infinity Overflow Inexact Rounded
-	{"addx896", "-1E+999999999", "-9E+999999999", "-Inf", 9, big.ToNearestAway},
+	{"addx896", "-1E+999999999", "-9E+999999999", "-Inf", true, 9, big.ToNearestAway},
 	// addx897 add -9E+999999999   -1E+999999999   -> -Infinity Overflow Inexact Rounded
-	{"addx897", "-9E+999999999", "-1E+999999999", "-Inf", 9, big.ToNearestAway},
+	{"addx897", "-9E+999999999", "-1E+999999999", "-Inf", true, 9, big.ToNearestAway},
 	// addx898 add +1.1E-999999999 -1E-999999999   -> 1E-1000000000    Subnormal
-	{"addx898", "+1.1E-999999999", "-1E-999999999", "1E-1000000000", 9, big.ToNearestAway},
+	{"addx898", "+1.1E-999999999", "-1E-999999999", "1E-1000000000", false, 9, big.ToNearestAway},
 	// addx899 add -1E-999999999   +1.1e-999999999 -> 1E-1000000000    Subnormal
-	{"addx899", "-1E-999999999", "+1.1e-999999999", "1E-1000000000", 9, big.ToNearestAway},
+	{"addx899", "-1E-999999999", "+1.1e-999999999", "1E-1000000000", false, 9, big.ToNearestAway},
 	// addx900 add +1.0001E-999999999 -1E-999999999   -> 1E-1000000003 Subnormal
-	{"addx900", "+1.0001E-999999999", "-1E-999999999", "1E-1000000003", 9, big.ToNearestAway},
+	{"addx900", "+1.0001E-999999999", "-1E-999999999", "1E-1000000003", false, 9, big.ToNearestAway},
 	// addx901 add -1E-999999999   +1.0001e-999999999 -> 1E-1000000003 Subnormal
-	{"addx901", "-1E-999999999", "+1.0001e-999999999", "1E-1000000003", 9, big.ToNearestAway},
+	{"addx901", "-1E-999999999", "+1.0001e-999999999", "1E-1000000003", false, 9, big.ToNearestAway},
 	// addx902 add -1E+999999999   +9E+999999999   ->  8E+999999999
-	{"addx902", "-1E+999999999", "+9E+999999999", "8E+999999999", 9, big.ToNearestAway},
+	{"addx902", "-1E+999999999", "+9E+999999999", "8E+999999999", false, 9, big.ToNearestAway},
 	// addx903 add -9E+999999999   +1E+999999999   -> -8E+999999999
-	{"addx903", "-9E+999999999", "+1E+999999999", "-8E+999999999", 9, big.ToNearestAway},
+	{"addx903", "-9E+999999999", "+1E+999999999", "-8E+999999999", false, 9, big.ToNearestAway},
 	// precision: 3
 	// addx904 add      0 -9.999E+999999999   -> -Infinity Inexact Overflow Rounded
-	{"addx904", "0", "-9.999E+999999999", "-Inf", 3, big.ToNearestAway},
+	{"addx904", "0", "-9.999E+999999999", "-Inf", true, 3, big.ToNearestAway},
 	// addx905 add        -9.999E+999999999 0 -> -Infinity Inexact Overflow Rounded
-	{"addx905", "-9.999E+999999999", "0", "-Inf", 3, big.ToNearestAway},
+	{"addx905", "-9.999E+999999999", "0", "-Inf", true, 3, big.ToNearestAway},
 	// addx906 add      0  9.999E+999999999   ->  Infinity Inexact Overflow Rounded
-	{"addx906", "0", "9.999E+999999999", "Inf", 3, big.ToNearestAway},
+	{"addx906", "0", "9.999E+999999999", "Inf", true, 3, big.ToNearestAway},
 	// addx907 add         9.999E+999999999 0 ->  Infinity Inexact Overflow Rounded
-	{"addx907", "9.999E+999999999", "0", "Inf", 3, big.ToNearestAway},
+	{"addx907", "9.999E+999999999", "0", "Inf", true, 3, big.ToNearestAway},
 	// precision: 3
 	// maxexponent: 999
 	// minexponent: -999
 	// addx910 add  1.00E-999   0    ->   1.00E-999
-	{"addx910", "1.00E-999", "0", "1.00E-999", 3, big.ToNearestAway},
+	{"addx910", "1.00E-999", "0", "1.00E-999", false, 3, big.ToNearestAway},
 	// addx911 add  0.1E-999    0    ->   1E-1000   Subnormal
-	{"addx911", "0.1E-999", "0", "1E-1000", 3, big.ToNearestAway},
+	{"addx911", "0.1E-999", "0", "1E-1000", false, 3, big.ToNearestAway},
 	// addx912 add  0.10E-999   0    ->   1.0E-1000 Subnormal
-	{"addx912", "0.10E-999", "0", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx912", "0.10E-999", "0", "1.0E-1000", false, 3, big.ToNearestAway},
 	// addx913 add  0.100E-999  0    ->   1.0E-1000 Subnormal Rounded
-	{"addx913", "0.100E-999", "0", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx913", "0.100E-999", "0", "1.0E-1000", false, 3, big.ToNearestAway},
 	// addx914 add  0.01E-999   0    ->   1E-1001   Subnormal
-	{"addx914", "0.01E-999", "0", "1E-1001", 3, big.ToNearestAway},
+	{"addx914", "0.01E-999", "0", "1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Nmin
 	// addx915 add  0.999E-999  0    ->   1.00E-999 Inexact Rounded Subnormal Underflow
-	{"addx915", "0.999E-999", "0", "1.00E-999", 3, big.ToNearestAway},
+	{"addx915", "0.999E-999", "0", "1.00E-999", true, 3, big.ToNearestAway},
 	// addx916 add  0.099E-999  0    ->   1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"addx916", "0.099E-999", "0", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx916", "0.099E-999", "0", "1.0E-1000", true, 3, big.ToNearestAway},
 	// addx917 add  0.009E-999  0    ->   1E-1001   Inexact Rounded Subnormal Underflow
-	{"addx917", "0.009E-999", "0", "1E-1001", 3, big.ToNearestAway},
+	{"addx917", "0.009E-999", "0", "1E-1001", true, 3, big.ToNearestAway},
 	// addx918 add  0.001E-999  0    ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx918", "0.001E-999", "0", "0E-1001", 3, big.ToNearestAway},
+	{"addx918", "0.001E-999", "0", "0E-1001", true, 3, big.ToNearestAway},
 	// addx919 add  0.0009E-999 0    ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx919", "0.0009E-999", "0", "0E-1001", 3, big.ToNearestAway},
+	{"addx919", "0.0009E-999", "0", "0E-1001", true, 3, big.ToNearestAway},
 	// addx920 add  0.0001E-999 0    ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx920", "0.0001E-999", "0", "0E-1001", 3, big.ToNearestAway},
+	{"addx920", "0.0001E-999", "0", "0E-1001", true, 3, big.ToNearestAway},
 	// addx930 add -1.00E-999   0    ->  -1.00E-999
-	{"addx930", "-1.00E-999", "0", "-1.00E-999", 3, big.ToNearestAway},
+	{"addx930", "-1.00E-999", "0", "-1.00E-999", false, 3, big.ToNearestAway},
 	// addx931 add -0.1E-999    0    ->  -1E-1000   Subnormal
-	{"addx931", "-0.1E-999", "0", "-1E-1000", 3, big.ToNearestAway},
+	{"addx931", "-0.1E-999", "0", "-1E-1000", false, 3, big.ToNearestAway},
 	// addx932 add -0.10E-999   0    ->  -1.0E-1000 Subnormal
-	{"addx932", "-0.10E-999", "0", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx932", "-0.10E-999", "0", "-1.0E-1000", false, 3, big.ToNearestAway},
 	// addx933 add -0.100E-999  0    ->  -1.0E-1000 Subnormal Rounded
-	{"addx933", "-0.100E-999", "0", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx933", "-0.100E-999", "0", "-1.0E-1000", false, 3, big.ToNearestAway},
 	// addx934 add -0.01E-999   0    ->  -1E-1001   Subnormal
-	{"addx934", "-0.01E-999", "0", "-1E-1001", 3, big.ToNearestAway},
+	{"addx934", "-0.01E-999", "0", "-1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Nmin
 	// addx935 add -0.999E-999  0    ->  -1.00E-999 Inexact Rounded Subnormal Underflow
-	{"addx935", "-0.999E-999", "0", "-1.00E-999", 3, big.ToNearestAway},
+	{"addx935", "-0.999E-999", "0", "-1.00E-999", true, 3, big.ToNearestAway},
 	// addx936 add -0.099E-999  0    ->  -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"addx936", "-0.099E-999", "0", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx936", "-0.099E-999", "0", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// addx937 add -0.009E-999  0    ->  -1E-1001   Inexact Rounded Subnormal Underflow
-	{"addx937", "-0.009E-999", "0", "-1E-1001", 3, big.ToNearestAway},
+	{"addx937", "-0.009E-999", "0", "-1E-1001", true, 3, big.ToNearestAway},
 	// addx938 add -0.001E-999  0    ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx938", "-0.001E-999", "0", "-0E-1001", 3, big.ToNearestAway},
+	{"addx938", "-0.001E-999", "0", "-0E-1001", true, 3, big.ToNearestAway},
 	// addx939 add -0.0009E-999 0    ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx939", "-0.0009E-999", "0", "-0E-1001", 3, big.ToNearestAway},
+	{"addx939", "-0.0009E-999", "0", "-0E-1001", true, 3, big.ToNearestAway},
 	// addx940 add -0.0001E-999 0    ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx940", "-0.0001E-999", "0", "-0E-1001", 3, big.ToNearestAway},
+	{"addx940", "-0.0001E-999", "0", "-0E-1001", true, 3, big.ToNearestAway},
 	// some non-zero subnormal adds
 	// addx950 add  1.00E-999    0.1E-999  ->   1.10E-999
-	{"addx950", "1.00E-999", "0.1E-999", "1.10E-999", 3, big.ToNearestAway},
+	{"addx950", "1.00E-999", "0.1E-999", "1.10E-999", false, 3, big.ToNearestAway},
 	// addx951 add  0.1E-999     0.1E-999  ->   2E-1000    Subnormal
-	{"addx951", "0.1E-999", "0.1E-999", "2E-1000", 3, big.ToNearestAway},
+	{"addx951", "0.1E-999", "0.1E-999", "2E-1000", false, 3, big.ToNearestAway},
 	// addx952 add  0.10E-999    0.1E-999  ->   2.0E-1000  Subnormal
-	{"addx952", "0.10E-999", "0.1E-999", "2.0E-1000", 3, big.ToNearestAway},
+	{"addx952", "0.10E-999", "0.1E-999", "2.0E-1000", false, 3, big.ToNearestAway},
 	// addx953 add  0.100E-999   0.1E-999  ->   2.0E-1000  Subnormal Rounded
-	{"addx953", "0.100E-999", "0.1E-999", "2.0E-1000", 3, big.ToNearestAway},
+	{"addx953", "0.100E-999", "0.1E-999", "2.0E-1000", false, 3, big.ToNearestAway},
 	// addx954 add  0.01E-999    0.1E-999  ->   1.1E-1000  Subnormal
-	{"addx954", "0.01E-999", "0.1E-999", "1.1E-1000", 3, big.ToNearestAway},
+	{"addx954", "0.01E-999", "0.1E-999", "1.1E-1000", false, 3, big.ToNearestAway},
 	// addx955 add  0.999E-999   0.1E-999  ->   1.10E-999  Inexact Rounded
-	{"addx955", "0.999E-999", "0.1E-999", "1.10E-999", 3, big.ToNearestAway},
+	{"addx955", "0.999E-999", "0.1E-999", "1.10E-999", true, 3, big.ToNearestAway},
 	// addx956 add  0.099E-999   0.1E-999  ->   2.0E-1000  Inexact Rounded Subnormal Underflow
-	{"addx956", "0.099E-999", "0.1E-999", "2.0E-1000", 3, big.ToNearestAway},
+	{"addx956", "0.099E-999", "0.1E-999", "2.0E-1000", true, 3, big.ToNearestAway},
 	// addx957 add  0.009E-999   0.1E-999  ->   1.1E-1000  Inexact Rounded Subnormal Underflow
-	{"addx957", "0.009E-999", "0.1E-999", "1.1E-1000", 3, big.ToNearestAway},
+	{"addx957", "0.009E-999", "0.1E-999", "1.1E-1000", true, 3, big.ToNearestAway},
 	// addx958 add  0.001E-999   0.1E-999  ->   1.0E-1000  Inexact Rounded Subnormal Underflow
-	{"addx958", "0.001E-999", "0.1E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx958", "0.001E-999", "0.1E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// addx959 add  0.0009E-999  0.1E-999  ->   1.0E-1000  Inexact Rounded Subnormal Underflow
-	{"addx959", "0.0009E-999", "0.1E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx959", "0.0009E-999", "0.1E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// addx960 add  0.0001E-999  0.1E-999  ->   1.0E-1000  Inexact Rounded Subnormal Underflow
-	{"addx960", "0.0001E-999", "0.1E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"addx960", "0.0001E-999", "0.1E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// negatives...
 	// addx961 add  1.00E-999   -0.1E-999  ->   9.0E-1000  Subnormal
-	{"addx961", "1.00E-999", "-0.1E-999", "9.0E-1000", 3, big.ToNearestAway},
+	{"addx961", "1.00E-999", "-0.1E-999", "9.0E-1000", false, 3, big.ToNearestAway},
 	// addx962 add  0.1E-999    -0.1E-999  ->   0E-1000
-	{"addx962", "0.1E-999", "-0.1E-999", "0E-1000", 3, big.ToNearestAway},
+	{"addx962", "0.1E-999", "-0.1E-999", "0E-1000", false, 3, big.ToNearestAway},
 	// addx963 add  0.10E-999   -0.1E-999  ->   0E-1001
-	{"addx963", "0.10E-999", "-0.1E-999", "0E-1001", 3, big.ToNearestAway},
+	{"addx963", "0.10E-999", "-0.1E-999", "0E-1001", false, 3, big.ToNearestAway},
 	// addx964 add  0.100E-999  -0.1E-999  ->   0E-1001    Clamped
-	{"addx964", "0.100E-999", "-0.1E-999", "0E-1001", 3, big.ToNearestAway},
+	{"addx964", "0.100E-999", "-0.1E-999", "0E-1001", false, 3, big.ToNearestAway},
 	// addx965 add  0.01E-999   -0.1E-999  ->   -9E-1001   Subnormal
-	{"addx965", "0.01E-999", "-0.1E-999", "-9E-1001", 3, big.ToNearestAway},
+	{"addx965", "0.01E-999", "-0.1E-999", "-9E-1001", false, 3, big.ToNearestAway},
 	// addx966 add  0.999E-999  -0.1E-999  ->   9.0E-1000  Inexact Rounded Subnormal Underflow
-	{"addx966", "0.999E-999", "-0.1E-999", "9.0E-1000", 3, big.ToNearestAway},
+	{"addx966", "0.999E-999", "-0.1E-999", "9.0E-1000", true, 3, big.ToNearestAway},
 	// addx967 add  0.099E-999  -0.1E-999  ->   -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"addx967", "0.099E-999", "-0.1E-999", "-0E-1001", 3, big.ToNearestAway},
+	{"addx967", "0.099E-999", "-0.1E-999", "-0E-1001", true, 3, big.ToNearestAway},
 	// addx968 add  0.009E-999  -0.1E-999  ->   -9E-1001   Inexact Rounded Subnormal Underflow
-	{"addx968", "0.009E-999", "-0.1E-999", "-9E-1001", 3, big.ToNearestAway},
+	{"addx968", "0.009E-999", "-0.1E-999", "-9E-1001", true, 3, big.ToNearestAway},
 	// addx969 add  0.001E-999  -0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"addx969", "0.001E-999", "-0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx969", "0.001E-999", "-0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// addx970 add  0.0009E-999 -0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"addx970", "0.0009E-999", "-0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx970", "0.0009E-999", "-0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// addx971 add  0.0001E-999 -0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"addx971", "0.0001E-999", "-0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"addx971", "0.0001E-999", "-0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// some 'real' numbers
 	// maxexponent: 384
 	// minexponent: -383
 	// precision: 8
 	// addx566 add 99999061735E-394  0E-394 -> 9.999906E-384 Inexact Rounded Underflow Subnormal
-	{"addx566", "99999061735E-394", "0E-394", "9.999906E-384", 8, big.ToNearestAway},
+	{"addx566", "99999061735E-394", "0E-394", "9.999906E-384", true, 8, big.ToNearestAway},
 	// precision: 7
 	// addx567 add 99999061735E-394  0E-394 -> 9.99991E-384 Inexact Rounded Underflow Subnormal
-	{"addx567", "99999061735E-394", "0E-394", "9.99991E-384", 7, big.ToNearestAway},
+	{"addx567", "99999061735E-394", "0E-394", "9.99991E-384", true, 7, big.ToNearestAway},
 	// precision: 6
 	// addx568 add 99999061735E-394  0E-394 -> 9.9999E-384 Inexact Rounded Underflow Subnormal
-	{"addx568", "99999061735E-394", "0E-394", "9.9999E-384", 6, big.ToNearestAway},
+	{"addx568", "99999061735E-394", "0E-394", "9.9999E-384", true, 6, big.ToNearestAway},
 	// now the case where we can get underflow but the result is normal
 	// [note this can't happen if the operands are also bounded, as we
 	// cannot represent 1E-399, for example]
@@ -1596,441 +1597,441 @@ var addTests = []struct {
 	// maxexponent: 384
 	// minexponent: -383
 	// addx571 add       1E-383       0  -> 1E-383
-	{"addx571", "1E-383", "0", "1E-383", 16, big.ToNearestAway},
+	{"addx571", "1E-383", "0", "1E-383", false, 16, big.ToNearestAway},
 	// addx572 add       1E-384       0  -> 1E-384   Subnormal
-	{"addx572", "1E-384", "0", "1E-384", 16, big.ToNearestAway},
+	{"addx572", "1E-384", "0", "1E-384", false, 16, big.ToNearestAway},
 	// addx573 add       1E-383  1E-384  -> 1.1E-383
-	{"addx573", "1E-383", "1E-384", "1.1E-383", 16, big.ToNearestAway},
+	{"addx573", "1E-383", "1E-384", "1.1E-383", false, 16, big.ToNearestAway},
 	// addx574 subtract  1E-383  1E-384  ->   9E-384 Subnormal
-	{"addx574", "1E-383", "1E-384", "9E-384", 16, big.ToNearestAway},
+	{"addx574", "1E-383", "1E-384", "9E-384", false, 16, big.ToNearestAway},
 	// Here we explore the boundary of rounding a subnormal to Nmin
 	// addx575 subtract  1E-383  1E-398  ->   9.99999999999999E-384  Subnormal
-	{"addx575", "1E-383", "1E-398", "9.99999999999999E-384", 16, big.ToNearestAway},
+	{"addx575", "1E-383", "1E-398", "9.99999999999999E-384", false, 16, big.ToNearestAway},
 	// addx576 subtract  1E-383  1E-398  ->   9.99999999999999E-384  Subnormal
-	{"addx576", "1E-383", "1E-398", "9.99999999999999E-384", 16, big.ToNearestAway},
+	{"addx576", "1E-383", "1E-398", "9.99999999999999E-384", false, 16, big.ToNearestAway},
 	// addx577 subtract  1E-383  1E-399  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx577", "1E-383", "1E-399", "1.000000000000000E-383", 16, big.ToNearestAway},
+	{"addx577", "1E-383", "1E-399", "1.000000000000000E-383", true, 16, big.ToNearestAway},
 	// addx578 subtract  1E-383  1E-400  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx578", "1E-383", "1E-400", "1.000000000000000E-383", 16, big.ToNearestAway},
+	{"addx578", "1E-383", "1E-400", "1.000000000000000E-383", true, 16, big.ToNearestAway},
 	// addx579 subtract  1E-383  1E-401  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx579", "1E-383", "1E-401", "1.000000000000000E-383", 16, big.ToNearestAway},
+	{"addx579", "1E-383", "1E-401", "1.000000000000000E-383", true, 16, big.ToNearestAway},
 	// addx580 subtract  1E-383  1E-402  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx580", "1E-383", "1E-402", "1.000000000000000E-383", 16, big.ToNearestAway},
+	{"addx580", "1E-383", "1E-402", "1.000000000000000E-383", true, 16, big.ToNearestAway},
 	// check overflow edge case
 	// precision: 7
 	// rounding: half_up
 	// maxexponent: 96
 	// minexponent: -95
-	// SKIP: addx972 apply   9.999999E+96         -> 9.999999E+96
+	// SKIP (ERROR: expected 2 operands): addx972 apply   9.999999E+96         -> 9.999999E+96
 	// addx973 add     9.999999E+96  1      -> 9.999999E+96 Inexact Rounded
-	{"addx973", "9.999999E+96", "1", "9.999999E+96", 7, big.ToNearestAway},
+	{"addx973", "9.999999E+96", "1", "9.999999E+96", true, 7, big.ToNearestAway},
 	// addx974 add      9999999E+90  1      -> 9.999999E+96 Inexact Rounded
-	{"addx974", "9999999E+90", "1", "9.999999E+96", 7, big.ToNearestAway},
+	{"addx974", "9999999E+90", "1", "9.999999E+96", true, 7, big.ToNearestAway},
 	// addx975 add      9999999E+90  1E+90  -> Infinity Overflow Inexact Rounded
-	{"addx975", "9999999E+90", "1E+90", "Inf", 7, big.ToNearestAway},
+	{"addx975", "9999999E+90", "1E+90", "Inf", true, 7, big.ToNearestAway},
 	// addx976 add      9999999E+90  9E+89  -> Infinity Overflow Inexact Rounded
-	{"addx976", "9999999E+90", "9E+89", "Inf", 7, big.ToNearestAway},
+	{"addx976", "9999999E+90", "9E+89", "Inf", true, 7, big.ToNearestAway},
 	// addx977 add      9999999E+90  8E+89  -> Infinity Overflow Inexact Rounded
-	{"addx977", "9999999E+90", "8E+89", "Inf", 7, big.ToNearestAway},
+	{"addx977", "9999999E+90", "8E+89", "Inf", true, 7, big.ToNearestAway},
 	// addx978 add      9999999E+90  7E+89  -> Infinity Overflow Inexact Rounded
-	{"addx978", "9999999E+90", "7E+89", "Inf", 7, big.ToNearestAway},
+	{"addx978", "9999999E+90", "7E+89", "Inf", true, 7, big.ToNearestAway},
 	// addx979 add      9999999E+90  6E+89  -> Infinity Overflow Inexact Rounded
-	{"addx979", "9999999E+90", "6E+89", "Inf", 7, big.ToNearestAway},
+	{"addx979", "9999999E+90", "6E+89", "Inf", true, 7, big.ToNearestAway},
 	// addx980 add      9999999E+90  5E+89  -> Infinity Overflow Inexact Rounded
-	{"addx980", "9999999E+90", "5E+89", "Inf", 7, big.ToNearestAway},
+	{"addx980", "9999999E+90", "5E+89", "Inf", true, 7, big.ToNearestAway},
 	// addx981 add      9999999E+90  4E+89  -> 9.999999E+96 Inexact Rounded
-	{"addx981", "9999999E+90", "4E+89", "9.999999E+96", 7, big.ToNearestAway},
+	{"addx981", "9999999E+90", "4E+89", "9.999999E+96", true, 7, big.ToNearestAway},
 	// addx982 add      9999999E+90  3E+89  -> 9.999999E+96 Inexact Rounded
-	{"addx982", "9999999E+90", "3E+89", "9.999999E+96", 7, big.ToNearestAway},
+	{"addx982", "9999999E+90", "3E+89", "9.999999E+96", true, 7, big.ToNearestAway},
 	// addx983 add      9999999E+90  2E+89  -> 9.999999E+96 Inexact Rounded
-	{"addx983", "9999999E+90", "2E+89", "9.999999E+96", 7, big.ToNearestAway},
+	{"addx983", "9999999E+90", "2E+89", "9.999999E+96", true, 7, big.ToNearestAway},
 	// addx984 add      9999999E+90  1E+89  -> 9.999999E+96 Inexact Rounded
-	{"addx984", "9999999E+90", "1E+89", "9.999999E+96", 7, big.ToNearestAway},
-	// SKIP: addx985 apply  -9.999999E+96         -> -9.999999E+96
+	{"addx984", "9999999E+90", "1E+89", "9.999999E+96", true, 7, big.ToNearestAway},
+	// SKIP (ERROR: expected 2 operands): addx985 apply  -9.999999E+96         -> -9.999999E+96
 	// addx986 add    -9.999999E+96 -1      -> -9.999999E+96 Inexact Rounded
-	{"addx986", "-9.999999E+96", "-1", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx986", "-9.999999E+96", "-1", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// addx987 add     -9999999E+90 -1      -> -9.999999E+96 Inexact Rounded
-	{"addx987", "-9999999E+90", "-1", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx987", "-9999999E+90", "-1", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// addx988 add     -9999999E+90 -1E+90  -> -Infinity Overflow Inexact Rounded
-	{"addx988", "-9999999E+90", "-1E+90", "-Inf", 7, big.ToNearestAway},
+	{"addx988", "-9999999E+90", "-1E+90", "-Inf", true, 7, big.ToNearestAway},
 	// addx989 add     -9999999E+90 -9E+89  -> -Infinity Overflow Inexact Rounded
-	{"addx989", "-9999999E+90", "-9E+89", "-Inf", 7, big.ToNearestAway},
+	{"addx989", "-9999999E+90", "-9E+89", "-Inf", true, 7, big.ToNearestAway},
 	// addx990 add     -9999999E+90 -8E+89  -> -Infinity Overflow Inexact Rounded
-	{"addx990", "-9999999E+90", "-8E+89", "-Inf", 7, big.ToNearestAway},
+	{"addx990", "-9999999E+90", "-8E+89", "-Inf", true, 7, big.ToNearestAway},
 	// addx991 add     -9999999E+90 -7E+89  -> -Infinity Overflow Inexact Rounded
-	{"addx991", "-9999999E+90", "-7E+89", "-Inf", 7, big.ToNearestAway},
+	{"addx991", "-9999999E+90", "-7E+89", "-Inf", true, 7, big.ToNearestAway},
 	// addx992 add     -9999999E+90 -6E+89  -> -Infinity Overflow Inexact Rounded
-	{"addx992", "-9999999E+90", "-6E+89", "-Inf", 7, big.ToNearestAway},
+	{"addx992", "-9999999E+90", "-6E+89", "-Inf", true, 7, big.ToNearestAway},
 	// addx993 add     -9999999E+90 -5E+89  -> -Infinity Overflow Inexact Rounded
-	{"addx993", "-9999999E+90", "-5E+89", "-Inf", 7, big.ToNearestAway},
+	{"addx993", "-9999999E+90", "-5E+89", "-Inf", true, 7, big.ToNearestAway},
 	// addx994 add     -9999999E+90 -4E+89  -> -9.999999E+96 Inexact Rounded
-	{"addx994", "-9999999E+90", "-4E+89", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx994", "-9999999E+90", "-4E+89", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// addx995 add     -9999999E+90 -3E+89  -> -9.999999E+96 Inexact Rounded
-	{"addx995", "-9999999E+90", "-3E+89", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx995", "-9999999E+90", "-3E+89", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// addx996 add     -9999999E+90 -2E+89  -> -9.999999E+96 Inexact Rounded
-	{"addx996", "-9999999E+90", "-2E+89", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx996", "-9999999E+90", "-2E+89", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// addx997 add     -9999999E+90 -1E+89  -> -9.999999E+96 Inexact Rounded
-	{"addx997", "-9999999E+90", "-1E+89", "-9.999999E+96", 7, big.ToNearestAway},
+	{"addx997", "-9999999E+90", "-1E+89", "-9.999999E+96", true, 7, big.ToNearestAway},
 	// check for double-rounded subnormals
 	// precision: 5
 	// maxexponent: 79
 	// minexponent: -79
 	// Add: lhs and rhs 0
 	// addx1001 add       1.52444E-80 0 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1001", "1.52444E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1001", "1.52444E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1002 add       1.52445E-80 0 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1002", "1.52445E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1002", "1.52445E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1003 add       1.52446E-80 0 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1003", "1.52446E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1003", "1.52446E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1004 add       0 1.52444E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1004", "0", "1.52444E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1004", "0", "1.52444E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1005 add       0 1.52445E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1005", "0", "1.52445E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1005", "0", "1.52445E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1006 add       0 1.52446E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1006", "0", "1.52446E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1006", "0", "1.52446E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// Add: lhs >> rhs and vice versa
 	// addx1011 add       1.52444E-80 1E-100 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1011", "1.52444E-80", "1E-100", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1011", "1.52444E-80", "1E-100", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1012 add       1.52445E-80 1E-100 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1012", "1.52445E-80", "1E-100", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1012", "1.52445E-80", "1E-100", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1013 add       1.52446E-80 1E-100 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1013", "1.52446E-80", "1E-100", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1013", "1.52446E-80", "1E-100", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1014 add       1E-100 1.52444E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1014", "1E-100", "1.52444E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1014", "1E-100", "1.52444E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1015 add       1E-100 1.52445E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1015", "1E-100", "1.52445E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1015", "1E-100", "1.52445E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// addx1016 add       1E-100 1.52446E-80 -> 1.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1016", "1E-100", "1.52446E-80", "1.524E-80", 5, big.ToNearestAway},
+	{"addx1016", "1E-100", "1.52446E-80", "1.524E-80", true, 5, big.ToNearestAway},
 	// Add: lhs + rhs addition carried out
 	// addx1021 add       1.52443E-80 1.00001E-80  -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1021", "1.52443E-80", "1.00001E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1021", "1.52443E-80", "1.00001E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// addx1022 add       1.52444E-80 1.00001E-80  -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1022", "1.52444E-80", "1.00001E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1022", "1.52444E-80", "1.00001E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// addx1023 add       1.52445E-80 1.00001E-80  -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1023", "1.52445E-80", "1.00001E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1023", "1.52445E-80", "1.00001E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// addx1024 add       1.00001E-80  1.52443E-80 -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1024", "1.00001E-80", "1.52443E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1024", "1.00001E-80", "1.52443E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// addx1025 add       1.00001E-80  1.52444E-80 -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1025", "1.00001E-80", "1.52444E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1025", "1.00001E-80", "1.52444E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// addx1026 add       1.00001E-80  1.52445E-80 -> 2.524E-80 Inexact Rounded Subnormal Underflow
-	{"addx1026", "1.00001E-80", "1.52445E-80", "2.524E-80", 5, big.ToNearestAway},
+	{"addx1026", "1.00001E-80", "1.52445E-80", "2.524E-80", true, 5, big.ToNearestAway},
 	// And for round down full and subnormal results
 	// precision: 16
 	// maxexponent: +384
 	// minexponent: -383
 	// rounding: down
 	// addx1100 add 1e+2 -1e-383    -> 99.99999999999999 Rounded Inexact
-	{"addx1100", "1e+2", "-1e-383", "99.99999999999999", 16, big.ToZero},
+	{"addx1100", "1e+2", "-1e-383", "99.99999999999999", true, 16, big.ToZero},
 	// addx1101 add 1e+1 -1e-383    -> 9.999999999999999  Rounded Inexact
-	{"addx1101", "1e+1", "-1e-383", "9.999999999999999", 16, big.ToZero},
+	{"addx1101", "1e+1", "-1e-383", "9.999999999999999", true, 16, big.ToZero},
 	// addx1103 add   +1 -1e-383    -> 0.9999999999999999  Rounded Inexact
-	{"addx1103", "+1", "-1e-383", "0.9999999999999999", 16, big.ToZero},
+	{"addx1103", "+1", "-1e-383", "0.9999999999999999", true, 16, big.ToZero},
 	// addx1104 add 1e-1 -1e-383    -> 0.09999999999999999  Rounded Inexact
-	{"addx1104", "1e-1", "-1e-383", "0.09999999999999999", 16, big.ToZero},
+	{"addx1104", "1e-1", "-1e-383", "0.09999999999999999", true, 16, big.ToZero},
 	// addx1105 add 1e-2 -1e-383    -> 0.009999999999999999  Rounded Inexact
-	{"addx1105", "1e-2", "-1e-383", "0.009999999999999999", 16, big.ToZero},
+	{"addx1105", "1e-2", "-1e-383", "0.009999999999999999", true, 16, big.ToZero},
 	// addx1106 add 1e-3 -1e-383    -> 0.0009999999999999999  Rounded Inexact
-	{"addx1106", "1e-3", "-1e-383", "0.0009999999999999999", 16, big.ToZero},
+	{"addx1106", "1e-3", "-1e-383", "0.0009999999999999999", true, 16, big.ToZero},
 	// addx1107 add 1e-4 -1e-383    -> 0.00009999999999999999  Rounded Inexact
-	{"addx1107", "1e-4", "-1e-383", "0.00009999999999999999", 16, big.ToZero},
+	{"addx1107", "1e-4", "-1e-383", "0.00009999999999999999", true, 16, big.ToZero},
 	// addx1108 add 1e-5 -1e-383    -> 0.000009999999999999999  Rounded Inexact
-	{"addx1108", "1e-5", "-1e-383", "0.000009999999999999999", 16, big.ToZero},
+	{"addx1108", "1e-5", "-1e-383", "0.000009999999999999999", true, 16, big.ToZero},
 	// addx1109 add 1e-6 -1e-383    -> 9.999999999999999E-7  Rounded Inexact
-	{"addx1109", "1e-6", "-1e-383", "9.999999999999999E-7", 16, big.ToZero},
+	{"addx1109", "1e-6", "-1e-383", "9.999999999999999E-7", true, 16, big.ToZero},
 	// rounding: ceiling
 	// addx1110 add -1e+2 +1e-383   -> -99.99999999999999 Rounded Inexact
-	{"addx1110", "-1e+2", "+1e-383", "-99.99999999999999", 16, big.ToPositiveInf},
+	{"addx1110", "-1e+2", "+1e-383", "-99.99999999999999", true, 16, big.ToPositiveInf},
 	// addx1111 add -1e+1 +1e-383   -> -9.999999999999999  Rounded Inexact
-	{"addx1111", "-1e+1", "+1e-383", "-9.999999999999999", 16, big.ToPositiveInf},
+	{"addx1111", "-1e+1", "+1e-383", "-9.999999999999999", true, 16, big.ToPositiveInf},
 	// addx1113 add    -1 +1e-383   -> -0.9999999999999999  Rounded Inexact
-	{"addx1113", "-1", "+1e-383", "-0.9999999999999999", 16, big.ToPositiveInf},
+	{"addx1113", "-1", "+1e-383", "-0.9999999999999999", true, 16, big.ToPositiveInf},
 	// addx1114 add -1e-1 +1e-383   -> -0.09999999999999999  Rounded Inexact
-	{"addx1114", "-1e-1", "+1e-383", "-0.09999999999999999", 16, big.ToPositiveInf},
+	{"addx1114", "-1e-1", "+1e-383", "-0.09999999999999999", true, 16, big.ToPositiveInf},
 	// addx1115 add -1e-2 +1e-383   -> -0.009999999999999999  Rounded Inexact
-	{"addx1115", "-1e-2", "+1e-383", "-0.009999999999999999", 16, big.ToPositiveInf},
+	{"addx1115", "-1e-2", "+1e-383", "-0.009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1116 add -1e-3 +1e-383   -> -0.0009999999999999999  Rounded Inexact
-	{"addx1116", "-1e-3", "+1e-383", "-0.0009999999999999999", 16, big.ToPositiveInf},
+	{"addx1116", "-1e-3", "+1e-383", "-0.0009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1117 add -1e-4 +1e-383   -> -0.00009999999999999999  Rounded Inexact
-	{"addx1117", "-1e-4", "+1e-383", "-0.00009999999999999999", 16, big.ToPositiveInf},
+	{"addx1117", "-1e-4", "+1e-383", "-0.00009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1118 add -1e-5 +1e-383   -> -0.000009999999999999999  Rounded Inexact
-	{"addx1118", "-1e-5", "+1e-383", "-0.000009999999999999999", 16, big.ToPositiveInf},
+	{"addx1118", "-1e-5", "+1e-383", "-0.000009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1119 add -1e-6 +1e-383   -> -9.999999999999999E-7  Rounded Inexact
-	{"addx1119", "-1e-6", "+1e-383", "-9.999999999999999E-7", 16, big.ToPositiveInf},
+	{"addx1119", "-1e-6", "+1e-383", "-9.999999999999999E-7", true, 16, big.ToPositiveInf},
 	// addx1120 add +1e-383 -1e+2   -> -99.99999999999999 Rounded Inexact
-	{"addx1120", "+1e-383", "-1e+2", "-99.99999999999999", 16, big.ToPositiveInf},
+	{"addx1120", "+1e-383", "-1e+2", "-99.99999999999999", true, 16, big.ToPositiveInf},
 	// addx1121 add +1e-383 -1e+1   -> -9.999999999999999  Rounded Inexact
-	{"addx1121", "+1e-383", "-1e+1", "-9.999999999999999", 16, big.ToPositiveInf},
+	{"addx1121", "+1e-383", "-1e+1", "-9.999999999999999", true, 16, big.ToPositiveInf},
 	// addx1123 add +1e-383    -1   -> -0.9999999999999999  Rounded Inexact
-	{"addx1123", "+1e-383", "-1", "-0.9999999999999999", 16, big.ToPositiveInf},
+	{"addx1123", "+1e-383", "-1", "-0.9999999999999999", true, 16, big.ToPositiveInf},
 	// addx1124 add +1e-383 -1e-1   -> -0.09999999999999999  Rounded Inexact
-	{"addx1124", "+1e-383", "-1e-1", "-0.09999999999999999", 16, big.ToPositiveInf},
+	{"addx1124", "+1e-383", "-1e-1", "-0.09999999999999999", true, 16, big.ToPositiveInf},
 	// addx1125 add +1e-383 -1e-2   -> -0.009999999999999999  Rounded Inexact
-	{"addx1125", "+1e-383", "-1e-2", "-0.009999999999999999", 16, big.ToPositiveInf},
+	{"addx1125", "+1e-383", "-1e-2", "-0.009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1126 add +1e-383 -1e-3   -> -0.0009999999999999999  Rounded Inexact
-	{"addx1126", "+1e-383", "-1e-3", "-0.0009999999999999999", 16, big.ToPositiveInf},
+	{"addx1126", "+1e-383", "-1e-3", "-0.0009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1127 add +1e-383 -1e-4   -> -0.00009999999999999999  Rounded Inexact
-	{"addx1127", "+1e-383", "-1e-4", "-0.00009999999999999999", 16, big.ToPositiveInf},
+	{"addx1127", "+1e-383", "-1e-4", "-0.00009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1128 add +1e-383 -1e-5   -> -0.000009999999999999999  Rounded Inexact
-	{"addx1128", "+1e-383", "-1e-5", "-0.000009999999999999999", 16, big.ToPositiveInf},
+	{"addx1128", "+1e-383", "-1e-5", "-0.000009999999999999999", true, 16, big.ToPositiveInf},
 	// addx1129 add +1e-383 -1e-6   -> -9.999999999999999E-7  Rounded Inexact
-	{"addx1129", "+1e-383", "-1e-6", "-9.999999999999999E-7", 16, big.ToPositiveInf},
+	{"addx1129", "+1e-383", "-1e-6", "-9.999999999999999E-7", true, 16, big.ToPositiveInf},
 	// rounding: down
 	// precision: 7
 	// maxexponent: +96
 	// minexponent: -95
 	// addx1130 add   1            -1e-200  -> 0.9999999  Rounded Inexact
-	{"addx1130", "1", "-1e-200", "0.9999999", 7, big.ToZero},
+	{"addx1130", "1", "-1e-200", "0.9999999", true, 7, big.ToZero},
 	// subnormal boundary
 	// addx1131 add   1.000000E-94  -1e-200  ->  9.999999E-95  Rounded Inexact
-	{"addx1131", "1.000000E-94", "-1e-200", "9.999999E-95", 7, big.ToZero},
+	{"addx1131", "1.000000E-94", "-1e-200", "9.999999E-95", true, 7, big.ToZero},
 	// addx1132 add   1.000001E-95  -1e-200  ->  1.000000E-95  Rounded Inexact
-	{"addx1132", "1.000001E-95", "-1e-200", "1.000000E-95", 7, big.ToZero},
+	{"addx1132", "1.000001E-95", "-1e-200", "1.000000E-95", true, 7, big.ToZero},
 	// addx1133 add   1.000000E-95  -1e-200  ->  9.99999E-96  Rounded Inexact Subnormal Underflow
-	{"addx1133", "1.000000E-95", "-1e-200", "9.99999E-96", 7, big.ToZero},
+	{"addx1133", "1.000000E-95", "-1e-200", "9.99999E-96", true, 7, big.ToZero},
 	// addx1134 add   0.999999E-95  -1e-200  ->  9.99998E-96  Rounded Inexact Subnormal Underflow
-	{"addx1134", "0.999999E-95", "-1e-200", "9.99998E-96", 7, big.ToZero},
+	{"addx1134", "0.999999E-95", "-1e-200", "9.99998E-96", true, 7, big.ToZero},
 	// addx1135 add   0.001000E-95  -1e-200  ->  9.99E-99  Rounded Inexact Subnormal Underflow
-	{"addx1135", "0.001000E-95", "-1e-200", "9.99E-99", 7, big.ToZero},
+	{"addx1135", "0.001000E-95", "-1e-200", "9.99E-99", true, 7, big.ToZero},
 	// addx1136 add   0.000999E-95  -1e-200  ->  9.98E-99  Rounded Inexact Subnormal Underflow
-	{"addx1136", "0.000999E-95", "-1e-200", "9.98E-99", 7, big.ToZero},
+	{"addx1136", "0.000999E-95", "-1e-200", "9.98E-99", true, 7, big.ToZero},
 	// addx1137 add   1.000000E-95  -1e-101  ->  9.99999E-96  Subnormal
-	{"addx1137", "1.000000E-95", "-1e-101", "9.99999E-96", 7, big.ToZero},
+	{"addx1137", "1.000000E-95", "-1e-101", "9.99999E-96", false, 7, big.ToZero},
 	// addx1138 add      10000E-101 -1e-200  ->  9.999E-98  Subnormal Inexact Rounded Underflow
-	{"addx1138", "10000E-101", "-1e-200", "9.999E-98", 7, big.ToZero},
+	{"addx1138", "10000E-101", "-1e-200", "9.999E-98", true, 7, big.ToZero},
 	// addx1139 add       1000E-101 -1e-200  ->  9.99E-99   Subnormal Inexact Rounded Underflow
-	{"addx1139", "1000E-101", "-1e-200", "9.99E-99", 7, big.ToZero},
+	{"addx1139", "1000E-101", "-1e-200", "9.99E-99", true, 7, big.ToZero},
 	// addx1140 add        100E-101 -1e-200  ->  9.9E-100   Subnormal Inexact Rounded Underflow
-	{"addx1140", "100E-101", "-1e-200", "9.9E-100", 7, big.ToZero},
+	{"addx1140", "100E-101", "-1e-200", "9.9E-100", true, 7, big.ToZero},
 	// addx1141 add         10E-101 -1e-200  ->  9E-101     Subnormal Inexact Rounded Underflow
-	{"addx1141", "10E-101", "-1e-200", "9E-101", 7, big.ToZero},
+	{"addx1141", "10E-101", "-1e-200", "9E-101", true, 7, big.ToZero},
 	// addx1142 add          1E-101 -1e-200  ->  0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1142", "1E-101", "-1e-200", "0E-101", 7, big.ToZero},
+	{"addx1142", "1E-101", "-1e-200", "0E-101", true, 7, big.ToZero},
 	// addx1143 add          0E-101 -1e-200  -> -0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1143", "0E-101", "-1e-200", "-0E-101", 7, big.ToZero},
+	{"addx1143", "0E-101", "-1e-200", "-0E-101", true, 7, big.ToZero},
 	// addx1144 add          1E-102 -1e-200  ->  0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1144", "1E-102", "-1e-200", "0E-101", 7, big.ToZero},
+	{"addx1144", "1E-102", "-1e-200", "0E-101", true, 7, big.ToZero},
 	// addx1151 add      10000E-102 -1e-200  ->  9.99E-99  Subnormal Inexact Rounded Underflow
-	{"addx1151", "10000E-102", "-1e-200", "9.99E-99", 7, big.ToZero},
+	{"addx1151", "10000E-102", "-1e-200", "9.99E-99", true, 7, big.ToZero},
 	// addx1152 add       1000E-102 -1e-200  ->  9.9E-100  Subnormal Inexact Rounded Underflow
-	{"addx1152", "1000E-102", "-1e-200", "9.9E-100", 7, big.ToZero},
+	{"addx1152", "1000E-102", "-1e-200", "9.9E-100", true, 7, big.ToZero},
 	// addx1153 add        100E-102 -1e-200  ->  9E-101   Subnormal Inexact Rounded Underflow
-	{"addx1153", "100E-102", "-1e-200", "9E-101", 7, big.ToZero},
+	{"addx1153", "100E-102", "-1e-200", "9E-101", true, 7, big.ToZero},
 	// addx1154 add         10E-102 -1e-200  ->  0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1154", "10E-102", "-1e-200", "0E-101", 7, big.ToZero},
+	{"addx1154", "10E-102", "-1e-200", "0E-101", true, 7, big.ToZero},
 	// addx1155 add          1E-102 -1e-200  ->  0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1155", "1E-102", "-1e-200", "0E-101", 7, big.ToZero},
+	{"addx1155", "1E-102", "-1e-200", "0E-101", true, 7, big.ToZero},
 	// addx1156 add          0E-102 -1e-200  -> -0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1156", "0E-102", "-1e-200", "-0E-101", 7, big.ToZero},
+	{"addx1156", "0E-102", "-1e-200", "-0E-101", true, 7, big.ToZero},
 	// addx1157 add          1E-103 -1e-200  ->  0E-101     Subnormal Inexact Rounded Underflow Clamped
-	{"addx1157", "1E-103", "-1e-200", "0E-101", 7, big.ToZero},
+	{"addx1157", "1E-103", "-1e-200", "0E-101", true, 7, big.ToZero},
 	// addx1160 add        100E-105 -1e-101  -> -0E-101 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1160", "100E-105", "-1e-101", "-0E-101", 7, big.ToZero},
+	{"addx1160", "100E-105", "-1e-101", "-0E-101", true, 7, big.ToZero},
 	// addx1161 add        100E-105 -1e-201  ->  0E-101 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1161", "100E-105", "-1e-201", "0E-101", 7, big.ToZero},
+	{"addx1161", "100E-105", "-1e-201", "0E-101", true, 7, big.ToZero},
 	// tests based on Gunnar Degnbol's edge case
 	// precision: 15
 	// rounding: half_up
 	// maxexponent: 384
 	// minexponent: -383
 	// addx1200 add 1E15  -0.5                 ->  1.00000000000000E+15 Inexact Rounded
-	{"addx1200", "1E15", "-0.5", "1.00000000000000E+15", 15, big.ToNearestAway},
+	{"addx1200", "1E15", "-0.5", "1.00000000000000E+15", true, 15, big.ToNearestAway},
 	// addx1201 add 1E15  -0.50                ->  1.00000000000000E+15 Inexact Rounded
-	{"addx1201", "1E15", "-0.50", "1.00000000000000E+15", 15, big.ToNearestAway},
+	{"addx1201", "1E15", "-0.50", "1.00000000000000E+15", true, 15, big.ToNearestAway},
 	// addx1210 add 1E15  -0.51                ->  999999999999999      Inexact Rounded
-	{"addx1210", "1E15", "-0.51", "999999999999999", 15, big.ToNearestAway},
+	{"addx1210", "1E15", "-0.51", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1211 add 1E15  -0.501               ->  999999999999999      Inexact Rounded
-	{"addx1211", "1E15", "-0.501", "999999999999999", 15, big.ToNearestAway},
+	{"addx1211", "1E15", "-0.501", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1212 add 1E15  -0.5001              ->  999999999999999      Inexact Rounded
-	{"addx1212", "1E15", "-0.5001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1212", "1E15", "-0.5001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1213 add 1E15  -0.50001             ->  999999999999999      Inexact Rounded
-	{"addx1213", "1E15", "-0.50001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1213", "1E15", "-0.50001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1214 add 1E15  -0.500001            ->  999999999999999      Inexact Rounded
-	{"addx1214", "1E15", "-0.500001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1214", "1E15", "-0.500001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1215 add 1E15  -0.5000001           ->  999999999999999      Inexact Rounded
-	{"addx1215", "1E15", "-0.5000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1215", "1E15", "-0.5000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1216 add 1E15  -0.50000001          ->  999999999999999      Inexact Rounded
-	{"addx1216", "1E15", "-0.50000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1216", "1E15", "-0.50000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1217 add 1E15  -0.500000001         ->  999999999999999      Inexact Rounded
-	{"addx1217", "1E15", "-0.500000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1217", "1E15", "-0.500000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1218 add 1E15  -0.5000000001        ->  999999999999999      Inexact Rounded
-	{"addx1218", "1E15", "-0.5000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1218", "1E15", "-0.5000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1219 add 1E15  -0.50000000001       ->  999999999999999      Inexact Rounded
-	{"addx1219", "1E15", "-0.50000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1219", "1E15", "-0.50000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1220 add 1E15  -0.500000000001      ->  999999999999999      Inexact Rounded
-	{"addx1220", "1E15", "-0.500000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1220", "1E15", "-0.500000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1221 add 1E15  -0.5000000000001     ->  999999999999999      Inexact Rounded
-	{"addx1221", "1E15", "-0.5000000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1221", "1E15", "-0.5000000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1222 add 1E15  -0.50000000000001    ->  999999999999999      Inexact Rounded
-	{"addx1222", "1E15", "-0.50000000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1222", "1E15", "-0.50000000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1223 add 1E15  -0.500000000000001   ->  999999999999999      Inexact Rounded
-	{"addx1223", "1E15", "-0.500000000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1223", "1E15", "-0.500000000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1224 add 1E15  -0.5000000000000001  ->  999999999999999      Inexact Rounded
-	{"addx1224", "1E15", "-0.5000000000000001", "999999999999999", 15, big.ToNearestAway},
+	{"addx1224", "1E15", "-0.5000000000000001", "999999999999999", true, 15, big.ToNearestAway},
 	// addx1225 add 1E15  -0.5000000000000000  ->  1.00000000000000E+15 Inexact Rounded
-	{"addx1225", "1E15", "-0.5000000000000000", "1.00000000000000E+15", 15, big.ToNearestAway},
+	{"addx1225", "1E15", "-0.5000000000000000", "1.00000000000000E+15", true, 15, big.ToNearestAway},
 	// addx1230 add 1E15  -5000000.000000001   ->  999999995000000      Inexact Rounded
-	{"addx1230", "1E15", "-5000000.000000001", "999999995000000", 15, big.ToNearestAway},
+	{"addx1230", "1E15", "-5000000.000000001", "999999995000000", true, 15, big.ToNearestAway},
 	// precision: 16
 	// addx1300 add 1E16  -0.5                 ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1300", "1E16", "-0.5", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1300", "1E16", "-0.5", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1310 add 1E16  -0.51                ->  9999999999999999      Inexact Rounded
-	{"addx1310", "1E16", "-0.51", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1310", "1E16", "-0.51", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1311 add 1E16  -0.501               ->  9999999999999999      Inexact Rounded
-	{"addx1311", "1E16", "-0.501", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1311", "1E16", "-0.501", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1312 add 1E16  -0.5001              ->  9999999999999999      Inexact Rounded
-	{"addx1312", "1E16", "-0.5001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1312", "1E16", "-0.5001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1313 add 1E16  -0.50001             ->  9999999999999999      Inexact Rounded
-	{"addx1313", "1E16", "-0.50001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1313", "1E16", "-0.50001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1314 add 1E16  -0.500001            ->  9999999999999999      Inexact Rounded
-	{"addx1314", "1E16", "-0.500001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1314", "1E16", "-0.500001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1315 add 1E16  -0.5000001           ->  9999999999999999      Inexact Rounded
-	{"addx1315", "1E16", "-0.5000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1315", "1E16", "-0.5000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1316 add 1E16  -0.50000001          ->  9999999999999999      Inexact Rounded
-	{"addx1316", "1E16", "-0.50000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1316", "1E16", "-0.50000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1317 add 1E16  -0.500000001         ->  9999999999999999      Inexact Rounded
-	{"addx1317", "1E16", "-0.500000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1317", "1E16", "-0.500000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1318 add 1E16  -0.5000000001        ->  9999999999999999      Inexact Rounded
-	{"addx1318", "1E16", "-0.5000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1318", "1E16", "-0.5000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1319 add 1E16  -0.50000000001       ->  9999999999999999      Inexact Rounded
-	{"addx1319", "1E16", "-0.50000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1319", "1E16", "-0.50000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1320 add 1E16  -0.500000000001      ->  9999999999999999      Inexact Rounded
-	{"addx1320", "1E16", "-0.500000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1320", "1E16", "-0.500000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1321 add 1E16  -0.5000000000001     ->  9999999999999999      Inexact Rounded
-	{"addx1321", "1E16", "-0.5000000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1321", "1E16", "-0.5000000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1322 add 1E16  -0.50000000000001    ->  9999999999999999      Inexact Rounded
-	{"addx1322", "1E16", "-0.50000000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1322", "1E16", "-0.50000000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1323 add 1E16  -0.500000000000001   ->  9999999999999999      Inexact Rounded
-	{"addx1323", "1E16", "-0.500000000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1323", "1E16", "-0.500000000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1324 add 1E16  -0.5000000000000001  ->  9999999999999999      Inexact Rounded
-	{"addx1324", "1E16", "-0.5000000000000001", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1324", "1E16", "-0.5000000000000001", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1325 add 1E16  -0.5000000000000000  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1325", "1E16", "-0.5000000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1325", "1E16", "-0.5000000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1326 add 1E16  -0.500000000000000   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1326", "1E16", "-0.500000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1326", "1E16", "-0.500000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1327 add 1E16  -0.50000000000000    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1327", "1E16", "-0.50000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1327", "1E16", "-0.50000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1328 add 1E16  -0.5000000000000     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1328", "1E16", "-0.5000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1328", "1E16", "-0.5000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1329 add 1E16  -0.500000000000      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1329", "1E16", "-0.500000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1329", "1E16", "-0.500000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1330 add 1E16  -0.50000000000       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1330", "1E16", "-0.50000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1330", "1E16", "-0.50000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1331 add 1E16  -0.5000000000        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1331", "1E16", "-0.5000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1331", "1E16", "-0.5000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1332 add 1E16  -0.500000000         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1332", "1E16", "-0.500000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1332", "1E16", "-0.500000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1333 add 1E16  -0.50000000          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1333", "1E16", "-0.50000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1333", "1E16", "-0.50000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1334 add 1E16  -0.5000000           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1334", "1E16", "-0.5000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1334", "1E16", "-0.5000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1335 add 1E16  -0.500000            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1335", "1E16", "-0.500000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1335", "1E16", "-0.500000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1336 add 1E16  -0.50000             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1336", "1E16", "-0.50000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1336", "1E16", "-0.50000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1337 add 1E16  -0.5000              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1337", "1E16", "-0.5000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1337", "1E16", "-0.5000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1338 add 1E16  -0.500               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1338", "1E16", "-0.500", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1338", "1E16", "-0.500", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1339 add 1E16  -0.50                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1339", "1E16", "-0.50", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1339", "1E16", "-0.50", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1340 add 1E16  -5000000.000010001   ->  9999999995000000      Inexact Rounded
-	{"addx1340", "1E16", "-5000000.000010001", "9999999995000000", 16, big.ToNearestAway},
+	{"addx1340", "1E16", "-5000000.000010001", "9999999995000000", true, 16, big.ToNearestAway},
 	// addx1341 add 1E16  -5000000.000000001   ->  9999999995000000      Inexact Rounded
-	{"addx1341", "1E16", "-5000000.000000001", "9999999995000000", 16, big.ToNearestAway},
+	{"addx1341", "1E16", "-5000000.000000001", "9999999995000000", true, 16, big.ToNearestAway},
 	// addx1349 add 9999999999999999 0.4                 ->  9999999999999999      Inexact Rounded
-	{"addx1349", "9999999999999999", "0.4", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1349", "9999999999999999", "0.4", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1350 add 9999999999999999 0.49                ->  9999999999999999      Inexact Rounded
-	{"addx1350", "9999999999999999", "0.49", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1350", "9999999999999999", "0.49", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1351 add 9999999999999999 0.499               ->  9999999999999999      Inexact Rounded
-	{"addx1351", "9999999999999999", "0.499", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1351", "9999999999999999", "0.499", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1352 add 9999999999999999 0.4999              ->  9999999999999999      Inexact Rounded
-	{"addx1352", "9999999999999999", "0.4999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1352", "9999999999999999", "0.4999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1353 add 9999999999999999 0.49999             ->  9999999999999999      Inexact Rounded
-	{"addx1353", "9999999999999999", "0.49999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1353", "9999999999999999", "0.49999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1354 add 9999999999999999 0.499999            ->  9999999999999999      Inexact Rounded
-	{"addx1354", "9999999999999999", "0.499999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1354", "9999999999999999", "0.499999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1355 add 9999999999999999 0.4999999           ->  9999999999999999      Inexact Rounded
-	{"addx1355", "9999999999999999", "0.4999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1355", "9999999999999999", "0.4999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1356 add 9999999999999999 0.49999999          ->  9999999999999999      Inexact Rounded
-	{"addx1356", "9999999999999999", "0.49999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1356", "9999999999999999", "0.49999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1357 add 9999999999999999 0.499999999         ->  9999999999999999      Inexact Rounded
-	{"addx1357", "9999999999999999", "0.499999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1357", "9999999999999999", "0.499999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1358 add 9999999999999999 0.4999999999        ->  9999999999999999      Inexact Rounded
-	{"addx1358", "9999999999999999", "0.4999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1358", "9999999999999999", "0.4999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1359 add 9999999999999999 0.49999999999       ->  9999999999999999      Inexact Rounded
-	{"addx1359", "9999999999999999", "0.49999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1359", "9999999999999999", "0.49999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1360 add 9999999999999999 0.499999999999      ->  9999999999999999      Inexact Rounded
-	{"addx1360", "9999999999999999", "0.499999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1360", "9999999999999999", "0.499999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1361 add 9999999999999999 0.4999999999999     ->  9999999999999999      Inexact Rounded
-	{"addx1361", "9999999999999999", "0.4999999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1361", "9999999999999999", "0.4999999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1362 add 9999999999999999 0.49999999999999    ->  9999999999999999      Inexact Rounded
-	{"addx1362", "9999999999999999", "0.49999999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1362", "9999999999999999", "0.49999999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1363 add 9999999999999999 0.499999999999999   ->  9999999999999999      Inexact Rounded
-	{"addx1363", "9999999999999999", "0.499999999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1363", "9999999999999999", "0.499999999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1364 add 9999999999999999 0.4999999999999999  ->  9999999999999999      Inexact Rounded
-	{"addx1364", "9999999999999999", "0.4999999999999999", "9999999999999999", 16, big.ToNearestAway},
+	{"addx1364", "9999999999999999", "0.4999999999999999", "9999999999999999", true, 16, big.ToNearestAway},
 	// addx1365 add 9999999999999999 0.5000000000000000  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1365", "9999999999999999", "0.5000000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1365", "9999999999999999", "0.5000000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1367 add 9999999999999999 0.500000000000000   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1367", "9999999999999999", "0.500000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1367", "9999999999999999", "0.500000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1368 add 9999999999999999 0.50000000000000    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1368", "9999999999999999", "0.50000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1368", "9999999999999999", "0.50000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1369 add 9999999999999999 0.5000000000000     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1369", "9999999999999999", "0.5000000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1369", "9999999999999999", "0.5000000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1370 add 9999999999999999 0.500000000000      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1370", "9999999999999999", "0.500000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1370", "9999999999999999", "0.500000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1371 add 9999999999999999 0.50000000000       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1371", "9999999999999999", "0.50000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1371", "9999999999999999", "0.50000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1372 add 9999999999999999 0.5000000000        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1372", "9999999999999999", "0.5000000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1372", "9999999999999999", "0.5000000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1373 add 9999999999999999 0.500000000         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1373", "9999999999999999", "0.500000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1373", "9999999999999999", "0.500000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1374 add 9999999999999999 0.50000000          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1374", "9999999999999999", "0.50000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1374", "9999999999999999", "0.50000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1375 add 9999999999999999 0.5000000           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1375", "9999999999999999", "0.5000000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1375", "9999999999999999", "0.5000000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1376 add 9999999999999999 0.500000            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1376", "9999999999999999", "0.500000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1376", "9999999999999999", "0.500000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1377 add 9999999999999999 0.50000             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1377", "9999999999999999", "0.50000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1377", "9999999999999999", "0.50000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1378 add 9999999999999999 0.5000              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1378", "9999999999999999", "0.5000", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1378", "9999999999999999", "0.5000", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1379 add 9999999999999999 0.500               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1379", "9999999999999999", "0.500", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1379", "9999999999999999", "0.500", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1380 add 9999999999999999 0.50                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1380", "9999999999999999", "0.50", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1380", "9999999999999999", "0.50", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1381 add 9999999999999999 0.5                 ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1381", "9999999999999999", "0.5", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1381", "9999999999999999", "0.5", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1382 add 9999999999999999 0.5000000000000001  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1382", "9999999999999999", "0.5000000000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1382", "9999999999999999", "0.5000000000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1383 add 9999999999999999 0.500000000000001   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1383", "9999999999999999", "0.500000000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1383", "9999999999999999", "0.500000000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1384 add 9999999999999999 0.50000000000001    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1384", "9999999999999999", "0.50000000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1384", "9999999999999999", "0.50000000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1385 add 9999999999999999 0.5000000000001     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1385", "9999999999999999", "0.5000000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1385", "9999999999999999", "0.5000000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1386 add 9999999999999999 0.500000000001      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1386", "9999999999999999", "0.500000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1386", "9999999999999999", "0.500000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1387 add 9999999999999999 0.50000000001       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1387", "9999999999999999", "0.50000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1387", "9999999999999999", "0.50000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1388 add 9999999999999999 0.5000000001        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1388", "9999999999999999", "0.5000000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1388", "9999999999999999", "0.5000000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1389 add 9999999999999999 0.500000001         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1389", "9999999999999999", "0.500000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1389", "9999999999999999", "0.500000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1390 add 9999999999999999 0.50000001          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1390", "9999999999999999", "0.50000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1390", "9999999999999999", "0.50000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1391 add 9999999999999999 0.5000001           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1391", "9999999999999999", "0.5000001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1391", "9999999999999999", "0.5000001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1392 add 9999999999999999 0.500001            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1392", "9999999999999999", "0.500001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1392", "9999999999999999", "0.500001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1393 add 9999999999999999 0.50001             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1393", "9999999999999999", "0.50001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1393", "9999999999999999", "0.50001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1394 add 9999999999999999 0.5001              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1394", "9999999999999999", "0.5001", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1394", "9999999999999999", "0.5001", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1395 add 9999999999999999 0.501               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1395", "9999999999999999", "0.501", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1395", "9999999999999999", "0.501", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// addx1396 add 9999999999999999 0.51                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx1396", "9999999999999999", "0.51", "1.000000000000000E+16", 16, big.ToNearestAway},
+	{"addx1396", "9999999999999999", "0.51", "1.000000000000000E+16", true, 16, big.ToNearestAway},
 	// More GD edge cases, where difference between the unadjusted
 	// exponents is larger than the maximum precision and one side is 0
 	// precision: 15
@@ -2038,170 +2039,170 @@ var addTests = []struct {
 	// maxexponent: 384
 	// minexponent: -383
 	// addx1400 add  0 1.23456789012345     -> 1.23456789012345
-	{"addx1400", "0", "1.23456789012345", "1.23456789012345", 15, big.ToNearestAway},
+	{"addx1400", "0", "1.23456789012345", "1.23456789012345", false, 15, big.ToNearestAway},
 	// addx1401 add  0 1.23456789012345E-1  -> 0.123456789012345
-	{"addx1401", "0", "1.23456789012345E-1", "0.123456789012345", 15, big.ToNearestAway},
+	{"addx1401", "0", "1.23456789012345E-1", "0.123456789012345", false, 15, big.ToNearestAway},
 	// addx1402 add  0 1.23456789012345E-2  -> 0.0123456789012345
-	{"addx1402", "0", "1.23456789012345E-2", "0.0123456789012345", 15, big.ToNearestAway},
+	{"addx1402", "0", "1.23456789012345E-2", "0.0123456789012345", false, 15, big.ToNearestAway},
 	// addx1403 add  0 1.23456789012345E-3  -> 0.00123456789012345
-	{"addx1403", "0", "1.23456789012345E-3", "0.00123456789012345", 15, big.ToNearestAway},
+	{"addx1403", "0", "1.23456789012345E-3", "0.00123456789012345", false, 15, big.ToNearestAway},
 	// addx1404 add  0 1.23456789012345E-4  -> 0.000123456789012345
-	{"addx1404", "0", "1.23456789012345E-4", "0.000123456789012345", 15, big.ToNearestAway},
+	{"addx1404", "0", "1.23456789012345E-4", "0.000123456789012345", false, 15, big.ToNearestAway},
 	// addx1405 add  0 1.23456789012345E-5  -> 0.0000123456789012345
-	{"addx1405", "0", "1.23456789012345E-5", "0.0000123456789012345", 15, big.ToNearestAway},
+	{"addx1405", "0", "1.23456789012345E-5", "0.0000123456789012345", false, 15, big.ToNearestAway},
 	// addx1406 add  0 1.23456789012345E-6  -> 0.00000123456789012345
-	{"addx1406", "0", "1.23456789012345E-6", "0.00000123456789012345", 15, big.ToNearestAway},
+	{"addx1406", "0", "1.23456789012345E-6", "0.00000123456789012345", false, 15, big.ToNearestAway},
 	// addx1407 add  0 1.23456789012345E-7  -> 1.23456789012345E-7
-	{"addx1407", "0", "1.23456789012345E-7", "1.23456789012345E-7", 15, big.ToNearestAway},
+	{"addx1407", "0", "1.23456789012345E-7", "1.23456789012345E-7", false, 15, big.ToNearestAway},
 	// addx1408 add  0 1.23456789012345E-8  -> 1.23456789012345E-8
-	{"addx1408", "0", "1.23456789012345E-8", "1.23456789012345E-8", 15, big.ToNearestAway},
+	{"addx1408", "0", "1.23456789012345E-8", "1.23456789012345E-8", false, 15, big.ToNearestAway},
 	// addx1409 add  0 1.23456789012345E-9  -> 1.23456789012345E-9
-	{"addx1409", "0", "1.23456789012345E-9", "1.23456789012345E-9", 15, big.ToNearestAway},
+	{"addx1409", "0", "1.23456789012345E-9", "1.23456789012345E-9", false, 15, big.ToNearestAway},
 	// addx1410 add  0 1.23456789012345E-10 -> 1.23456789012345E-10
-	{"addx1410", "0", "1.23456789012345E-10", "1.23456789012345E-10", 15, big.ToNearestAway},
+	{"addx1410", "0", "1.23456789012345E-10", "1.23456789012345E-10", false, 15, big.ToNearestAway},
 	// addx1411 add  0 1.23456789012345E-11 -> 1.23456789012345E-11
-	{"addx1411", "0", "1.23456789012345E-11", "1.23456789012345E-11", 15, big.ToNearestAway},
+	{"addx1411", "0", "1.23456789012345E-11", "1.23456789012345E-11", false, 15, big.ToNearestAway},
 	// addx1412 add  0 1.23456789012345E-12 -> 1.23456789012345E-12
-	{"addx1412", "0", "1.23456789012345E-12", "1.23456789012345E-12", 15, big.ToNearestAway},
+	{"addx1412", "0", "1.23456789012345E-12", "1.23456789012345E-12", false, 15, big.ToNearestAway},
 	// addx1413 add  0 1.23456789012345E-13 -> 1.23456789012345E-13
-	{"addx1413", "0", "1.23456789012345E-13", "1.23456789012345E-13", 15, big.ToNearestAway},
+	{"addx1413", "0", "1.23456789012345E-13", "1.23456789012345E-13", false, 15, big.ToNearestAway},
 	// addx1414 add  0 1.23456789012345E-14 -> 1.23456789012345E-14
-	{"addx1414", "0", "1.23456789012345E-14", "1.23456789012345E-14", 15, big.ToNearestAway},
+	{"addx1414", "0", "1.23456789012345E-14", "1.23456789012345E-14", false, 15, big.ToNearestAway},
 	// addx1415 add  0 1.23456789012345E-15 -> 1.23456789012345E-15
-	{"addx1415", "0", "1.23456789012345E-15", "1.23456789012345E-15", 15, big.ToNearestAway},
+	{"addx1415", "0", "1.23456789012345E-15", "1.23456789012345E-15", false, 15, big.ToNearestAway},
 	// addx1416 add  0 1.23456789012345E-16 -> 1.23456789012345E-16
-	{"addx1416", "0", "1.23456789012345E-16", "1.23456789012345E-16", 15, big.ToNearestAway},
+	{"addx1416", "0", "1.23456789012345E-16", "1.23456789012345E-16", false, 15, big.ToNearestAway},
 	// addx1417 add  0 1.23456789012345E-17 -> 1.23456789012345E-17
-	{"addx1417", "0", "1.23456789012345E-17", "1.23456789012345E-17", 15, big.ToNearestAway},
+	{"addx1417", "0", "1.23456789012345E-17", "1.23456789012345E-17", false, 15, big.ToNearestAway},
 	// addx1418 add  0 1.23456789012345E-18 -> 1.23456789012345E-18
-	{"addx1418", "0", "1.23456789012345E-18", "1.23456789012345E-18", 15, big.ToNearestAway},
+	{"addx1418", "0", "1.23456789012345E-18", "1.23456789012345E-18", false, 15, big.ToNearestAway},
 	// addx1419 add  0 1.23456789012345E-19 -> 1.23456789012345E-19
-	{"addx1419", "0", "1.23456789012345E-19", "1.23456789012345E-19", 15, big.ToNearestAway},
+	{"addx1419", "0", "1.23456789012345E-19", "1.23456789012345E-19", false, 15, big.ToNearestAway},
 	// same, precision 16..
 	// precision: 16
 	// addx1420 add  0 1.123456789012345     -> 1.123456789012345
-	{"addx1420", "0", "1.123456789012345", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1420", "0", "1.123456789012345", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1421 add  0 1.123456789012345E-1  -> 0.1123456789012345
-	{"addx1421", "0", "1.123456789012345E-1", "0.1123456789012345", 16, big.ToNearestAway},
+	{"addx1421", "0", "1.123456789012345E-1", "0.1123456789012345", false, 16, big.ToNearestAway},
 	// addx1422 add  0 1.123456789012345E-2  -> 0.01123456789012345
-	{"addx1422", "0", "1.123456789012345E-2", "0.01123456789012345", 16, big.ToNearestAway},
+	{"addx1422", "0", "1.123456789012345E-2", "0.01123456789012345", false, 16, big.ToNearestAway},
 	// addx1423 add  0 1.123456789012345E-3  -> 0.001123456789012345
-	{"addx1423", "0", "1.123456789012345E-3", "0.001123456789012345", 16, big.ToNearestAway},
+	{"addx1423", "0", "1.123456789012345E-3", "0.001123456789012345", false, 16, big.ToNearestAway},
 	// addx1424 add  0 1.123456789012345E-4  -> 0.0001123456789012345
-	{"addx1424", "0", "1.123456789012345E-4", "0.0001123456789012345", 16, big.ToNearestAway},
+	{"addx1424", "0", "1.123456789012345E-4", "0.0001123456789012345", false, 16, big.ToNearestAway},
 	// addx1425 add  0 1.123456789012345E-5  -> 0.00001123456789012345
-	{"addx1425", "0", "1.123456789012345E-5", "0.00001123456789012345", 16, big.ToNearestAway},
+	{"addx1425", "0", "1.123456789012345E-5", "0.00001123456789012345", false, 16, big.ToNearestAway},
 	// addx1426 add  0 1.123456789012345E-6  -> 0.000001123456789012345
-	{"addx1426", "0", "1.123456789012345E-6", "0.000001123456789012345", 16, big.ToNearestAway},
+	{"addx1426", "0", "1.123456789012345E-6", "0.000001123456789012345", false, 16, big.ToNearestAway},
 	// addx1427 add  0 1.123456789012345E-7  -> 1.123456789012345E-7
-	{"addx1427", "0", "1.123456789012345E-7", "1.123456789012345E-7", 16, big.ToNearestAway},
+	{"addx1427", "0", "1.123456789012345E-7", "1.123456789012345E-7", false, 16, big.ToNearestAway},
 	// addx1428 add  0 1.123456789012345E-8  -> 1.123456789012345E-8
-	{"addx1428", "0", "1.123456789012345E-8", "1.123456789012345E-8", 16, big.ToNearestAway},
+	{"addx1428", "0", "1.123456789012345E-8", "1.123456789012345E-8", false, 16, big.ToNearestAway},
 	// addx1429 add  0 1.123456789012345E-9  -> 1.123456789012345E-9
-	{"addx1429", "0", "1.123456789012345E-9", "1.123456789012345E-9", 16, big.ToNearestAway},
+	{"addx1429", "0", "1.123456789012345E-9", "1.123456789012345E-9", false, 16, big.ToNearestAway},
 	// addx1430 add  0 1.123456789012345E-10 -> 1.123456789012345E-10
-	{"addx1430", "0", "1.123456789012345E-10", "1.123456789012345E-10", 16, big.ToNearestAway},
+	{"addx1430", "0", "1.123456789012345E-10", "1.123456789012345E-10", false, 16, big.ToNearestAway},
 	// addx1431 add  0 1.123456789012345E-11 -> 1.123456789012345E-11
-	{"addx1431", "0", "1.123456789012345E-11", "1.123456789012345E-11", 16, big.ToNearestAway},
+	{"addx1431", "0", "1.123456789012345E-11", "1.123456789012345E-11", false, 16, big.ToNearestAway},
 	// addx1432 add  0 1.123456789012345E-12 -> 1.123456789012345E-12
-	{"addx1432", "0", "1.123456789012345E-12", "1.123456789012345E-12", 16, big.ToNearestAway},
+	{"addx1432", "0", "1.123456789012345E-12", "1.123456789012345E-12", false, 16, big.ToNearestAway},
 	// addx1433 add  0 1.123456789012345E-13 -> 1.123456789012345E-13
-	{"addx1433", "0", "1.123456789012345E-13", "1.123456789012345E-13", 16, big.ToNearestAway},
+	{"addx1433", "0", "1.123456789012345E-13", "1.123456789012345E-13", false, 16, big.ToNearestAway},
 	// addx1434 add  0 1.123456789012345E-14 -> 1.123456789012345E-14
-	{"addx1434", "0", "1.123456789012345E-14", "1.123456789012345E-14", 16, big.ToNearestAway},
+	{"addx1434", "0", "1.123456789012345E-14", "1.123456789012345E-14", false, 16, big.ToNearestAway},
 	// addx1435 add  0 1.123456789012345E-15 -> 1.123456789012345E-15
-	{"addx1435", "0", "1.123456789012345E-15", "1.123456789012345E-15", 16, big.ToNearestAway},
+	{"addx1435", "0", "1.123456789012345E-15", "1.123456789012345E-15", false, 16, big.ToNearestAway},
 	// addx1436 add  0 1.123456789012345E-16 -> 1.123456789012345E-16
-	{"addx1436", "0", "1.123456789012345E-16", "1.123456789012345E-16", 16, big.ToNearestAway},
+	{"addx1436", "0", "1.123456789012345E-16", "1.123456789012345E-16", false, 16, big.ToNearestAway},
 	// addx1437 add  0 1.123456789012345E-17 -> 1.123456789012345E-17
-	{"addx1437", "0", "1.123456789012345E-17", "1.123456789012345E-17", 16, big.ToNearestAway},
+	{"addx1437", "0", "1.123456789012345E-17", "1.123456789012345E-17", false, 16, big.ToNearestAway},
 	// addx1438 add  0 1.123456789012345E-18 -> 1.123456789012345E-18
-	{"addx1438", "0", "1.123456789012345E-18", "1.123456789012345E-18", 16, big.ToNearestAway},
+	{"addx1438", "0", "1.123456789012345E-18", "1.123456789012345E-18", false, 16, big.ToNearestAway},
 	// addx1439 add  0 1.123456789012345E-19 -> 1.123456789012345E-19
-	{"addx1439", "0", "1.123456789012345E-19", "1.123456789012345E-19", 16, big.ToNearestAway},
+	{"addx1439", "0", "1.123456789012345E-19", "1.123456789012345E-19", false, 16, big.ToNearestAway},
 	// same, reversed 0
 	// addx1440 add 1.123456789012345     0 -> 1.123456789012345
-	{"addx1440", "1.123456789012345", "0", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1440", "1.123456789012345", "0", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1441 add 1.123456789012345E-1  0 -> 0.1123456789012345
-	{"addx1441", "1.123456789012345E-1", "0", "0.1123456789012345", 16, big.ToNearestAway},
+	{"addx1441", "1.123456789012345E-1", "0", "0.1123456789012345", false, 16, big.ToNearestAway},
 	// addx1442 add 1.123456789012345E-2  0 -> 0.01123456789012345
-	{"addx1442", "1.123456789012345E-2", "0", "0.01123456789012345", 16, big.ToNearestAway},
+	{"addx1442", "1.123456789012345E-2", "0", "0.01123456789012345", false, 16, big.ToNearestAway},
 	// addx1443 add 1.123456789012345E-3  0 -> 0.001123456789012345
-	{"addx1443", "1.123456789012345E-3", "0", "0.001123456789012345", 16, big.ToNearestAway},
+	{"addx1443", "1.123456789012345E-3", "0", "0.001123456789012345", false, 16, big.ToNearestAway},
 	// addx1444 add 1.123456789012345E-4  0 -> 0.0001123456789012345
-	{"addx1444", "1.123456789012345E-4", "0", "0.0001123456789012345", 16, big.ToNearestAway},
+	{"addx1444", "1.123456789012345E-4", "0", "0.0001123456789012345", false, 16, big.ToNearestAway},
 	// addx1445 add 1.123456789012345E-5  0 -> 0.00001123456789012345
-	{"addx1445", "1.123456789012345E-5", "0", "0.00001123456789012345", 16, big.ToNearestAway},
+	{"addx1445", "1.123456789012345E-5", "0", "0.00001123456789012345", false, 16, big.ToNearestAway},
 	// addx1446 add 1.123456789012345E-6  0 -> 0.000001123456789012345
-	{"addx1446", "1.123456789012345E-6", "0", "0.000001123456789012345", 16, big.ToNearestAway},
+	{"addx1446", "1.123456789012345E-6", "0", "0.000001123456789012345", false, 16, big.ToNearestAway},
 	// addx1447 add 1.123456789012345E-7  0 -> 1.123456789012345E-7
-	{"addx1447", "1.123456789012345E-7", "0", "1.123456789012345E-7", 16, big.ToNearestAway},
+	{"addx1447", "1.123456789012345E-7", "0", "1.123456789012345E-7", false, 16, big.ToNearestAway},
 	// addx1448 add 1.123456789012345E-8  0 -> 1.123456789012345E-8
-	{"addx1448", "1.123456789012345E-8", "0", "1.123456789012345E-8", 16, big.ToNearestAway},
+	{"addx1448", "1.123456789012345E-8", "0", "1.123456789012345E-8", false, 16, big.ToNearestAway},
 	// addx1449 add 1.123456789012345E-9  0 -> 1.123456789012345E-9
-	{"addx1449", "1.123456789012345E-9", "0", "1.123456789012345E-9", 16, big.ToNearestAway},
+	{"addx1449", "1.123456789012345E-9", "0", "1.123456789012345E-9", false, 16, big.ToNearestAway},
 	// addx1450 add 1.123456789012345E-10 0 -> 1.123456789012345E-10
-	{"addx1450", "1.123456789012345E-10", "0", "1.123456789012345E-10", 16, big.ToNearestAway},
+	{"addx1450", "1.123456789012345E-10", "0", "1.123456789012345E-10", false, 16, big.ToNearestAway},
 	// addx1451 add 1.123456789012345E-11 0 -> 1.123456789012345E-11
-	{"addx1451", "1.123456789012345E-11", "0", "1.123456789012345E-11", 16, big.ToNearestAway},
+	{"addx1451", "1.123456789012345E-11", "0", "1.123456789012345E-11", false, 16, big.ToNearestAway},
 	// addx1452 add 1.123456789012345E-12 0 -> 1.123456789012345E-12
-	{"addx1452", "1.123456789012345E-12", "0", "1.123456789012345E-12", 16, big.ToNearestAway},
+	{"addx1452", "1.123456789012345E-12", "0", "1.123456789012345E-12", false, 16, big.ToNearestAway},
 	// addx1453 add 1.123456789012345E-13 0 -> 1.123456789012345E-13
-	{"addx1453", "1.123456789012345E-13", "0", "1.123456789012345E-13", 16, big.ToNearestAway},
+	{"addx1453", "1.123456789012345E-13", "0", "1.123456789012345E-13", false, 16, big.ToNearestAway},
 	// addx1454 add 1.123456789012345E-14 0 -> 1.123456789012345E-14
-	{"addx1454", "1.123456789012345E-14", "0", "1.123456789012345E-14", 16, big.ToNearestAway},
+	{"addx1454", "1.123456789012345E-14", "0", "1.123456789012345E-14", false, 16, big.ToNearestAway},
 	// addx1455 add 1.123456789012345E-15 0 -> 1.123456789012345E-15
-	{"addx1455", "1.123456789012345E-15", "0", "1.123456789012345E-15", 16, big.ToNearestAway},
+	{"addx1455", "1.123456789012345E-15", "0", "1.123456789012345E-15", false, 16, big.ToNearestAway},
 	// addx1456 add 1.123456789012345E-16 0 -> 1.123456789012345E-16
-	{"addx1456", "1.123456789012345E-16", "0", "1.123456789012345E-16", 16, big.ToNearestAway},
+	{"addx1456", "1.123456789012345E-16", "0", "1.123456789012345E-16", false, 16, big.ToNearestAway},
 	// addx1457 add 1.123456789012345E-17 0 -> 1.123456789012345E-17
-	{"addx1457", "1.123456789012345E-17", "0", "1.123456789012345E-17", 16, big.ToNearestAway},
+	{"addx1457", "1.123456789012345E-17", "0", "1.123456789012345E-17", false, 16, big.ToNearestAway},
 	// addx1458 add 1.123456789012345E-18 0 -> 1.123456789012345E-18
-	{"addx1458", "1.123456789012345E-18", "0", "1.123456789012345E-18", 16, big.ToNearestAway},
+	{"addx1458", "1.123456789012345E-18", "0", "1.123456789012345E-18", false, 16, big.ToNearestAway},
 	// addx1459 add 1.123456789012345E-19 0 -> 1.123456789012345E-19
-	{"addx1459", "1.123456789012345E-19", "0", "1.123456789012345E-19", 16, big.ToNearestAway},
+	{"addx1459", "1.123456789012345E-19", "0", "1.123456789012345E-19", false, 16, big.ToNearestAway},
 	// same, Es on the 0
 	// addx1460 add 1.123456789012345  0E-0   -> 1.123456789012345
-	{"addx1460", "1.123456789012345", "0E-0", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1460", "1.123456789012345", "0E-0", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1461 add 1.123456789012345  0E-1   -> 1.123456789012345
-	{"addx1461", "1.123456789012345", "0E-1", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1461", "1.123456789012345", "0E-1", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1462 add 1.123456789012345  0E-2   -> 1.123456789012345
-	{"addx1462", "1.123456789012345", "0E-2", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1462", "1.123456789012345", "0E-2", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1463 add 1.123456789012345  0E-3   -> 1.123456789012345
-	{"addx1463", "1.123456789012345", "0E-3", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1463", "1.123456789012345", "0E-3", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1464 add 1.123456789012345  0E-4   -> 1.123456789012345
-	{"addx1464", "1.123456789012345", "0E-4", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1464", "1.123456789012345", "0E-4", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1465 add 1.123456789012345  0E-5   -> 1.123456789012345
-	{"addx1465", "1.123456789012345", "0E-5", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1465", "1.123456789012345", "0E-5", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1466 add 1.123456789012345  0E-6   -> 1.123456789012345
-	{"addx1466", "1.123456789012345", "0E-6", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1466", "1.123456789012345", "0E-6", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1467 add 1.123456789012345  0E-7   -> 1.123456789012345
-	{"addx1467", "1.123456789012345", "0E-7", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1467", "1.123456789012345", "0E-7", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1468 add 1.123456789012345  0E-8   -> 1.123456789012345
-	{"addx1468", "1.123456789012345", "0E-8", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1468", "1.123456789012345", "0E-8", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1469 add 1.123456789012345  0E-9   -> 1.123456789012345
-	{"addx1469", "1.123456789012345", "0E-9", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1469", "1.123456789012345", "0E-9", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1470 add 1.123456789012345  0E-10  -> 1.123456789012345
-	{"addx1470", "1.123456789012345", "0E-10", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1470", "1.123456789012345", "0E-10", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1471 add 1.123456789012345  0E-11  -> 1.123456789012345
-	{"addx1471", "1.123456789012345", "0E-11", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1471", "1.123456789012345", "0E-11", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1472 add 1.123456789012345  0E-12  -> 1.123456789012345
-	{"addx1472", "1.123456789012345", "0E-12", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1472", "1.123456789012345", "0E-12", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1473 add 1.123456789012345  0E-13  -> 1.123456789012345
-	{"addx1473", "1.123456789012345", "0E-13", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1473", "1.123456789012345", "0E-13", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1474 add 1.123456789012345  0E-14  -> 1.123456789012345
-	{"addx1474", "1.123456789012345", "0E-14", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1474", "1.123456789012345", "0E-14", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1475 add 1.123456789012345  0E-15  -> 1.123456789012345
-	{"addx1475", "1.123456789012345", "0E-15", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1475", "1.123456789012345", "0E-15", "1.123456789012345", false, 16, big.ToNearestAway},
 	// next four flag Rounded because the 0 extends the result
 	// addx1476 add 1.123456789012345  0E-16  -> 1.123456789012345 Rounded
-	{"addx1476", "1.123456789012345", "0E-16", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1476", "1.123456789012345", "0E-16", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1477 add 1.123456789012345  0E-17  -> 1.123456789012345 Rounded
-	{"addx1477", "1.123456789012345", "0E-17", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1477", "1.123456789012345", "0E-17", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1478 add 1.123456789012345  0E-18  -> 1.123456789012345 Rounded
-	{"addx1478", "1.123456789012345", "0E-18", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1478", "1.123456789012345", "0E-18", "1.123456789012345", false, 16, big.ToNearestAway},
 	// addx1479 add 1.123456789012345  0E-19  -> 1.123456789012345 Rounded
-	{"addx1479", "1.123456789012345", "0E-19", "1.123456789012345", 16, big.ToNearestAway},
+	{"addx1479", "1.123456789012345", "0E-19", "1.123456789012345", false, 16, big.ToNearestAway},
 	// sum of two opposite-sign operands is exactly 0 and floor => -0
 	// precision: 16
 	// maxexponent: 384
@@ -2209,240 +2210,240 @@ var addTests = []struct {
 	// rounding: half_up
 	// exact zeros from zeros
 	// addx1500 add  0        0E-19  ->  0E-19
-	{"addx1500", "0", "0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx1500", "0", "0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx1501 add -0        0E-19  ->  0E-19
-	{"addx1501", "-0", "0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx1501", "-0", "0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx1502 add  0       -0E-19  ->  0E-19
-	{"addx1502", "0", "-0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx1502", "0", "-0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx1503 add -0       -0E-19  -> -0E-19
-	{"addx1503", "-0", "-0E-19", "-0E-19", 16, big.ToNearestAway},
+	{"addx1503", "-0", "-0E-19", "-0E-19", false, 16, big.ToNearestAway},
 	// addx1504 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1504", "0E-400", "0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx1504", "0E-400", "0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx1505 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1505", "-0E-400", "0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx1505", "-0E-400", "0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx1506 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx1506", "0E-400", "-0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx1506", "0E-400", "-0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx1507 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1507", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNearestAway},
+	{"addx1507", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNearestAway},
 	// inexact zeros
 	// addx1511 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1511", "1E-401", "1E-400", "0E-398", 16, big.ToNearestAway},
+	{"addx1511", "1E-401", "1E-400", "0E-398", true, 16, big.ToNearestAway},
 	// addx1512 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1512", "-1E-401", "1E-400", "0E-398", 16, big.ToNearestAway},
+	{"addx1512", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNearestAway},
 	// addx1513 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1513", "1E-401", "-1E-400", "-0E-398", 16, big.ToNearestAway},
+	{"addx1513", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestAway},
 	// addx1514 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1514", "-1E-401", "-1E-400", "-0E-398", 16, big.ToNearestAway},
+	{"addx1514", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestAway},
 	// some exact zeros from non-zeros
 	// addx1515 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1515", "1E-401", "1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx1515", "1E-401", "1E-401", "0E-398", true, 16, big.ToNearestAway},
 	// addx1516 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx1516", "-1E-401", "1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx1516", "-1E-401", "1E-401", "0E-398", false, 16, big.ToNearestAway},
 	// addx1517 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx1517", "1E-401", "-1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx1517", "1E-401", "-1E-401", "0E-398", false, 16, big.ToNearestAway},
 	// addx1518 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1518", "-1E-401", "-1E-401", "-0E-398", 16, big.ToNearestAway},
+	{"addx1518", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToNearestAway},
 	// rounding: half_down
 	// exact zeros from zeros
-	// SKIP: addx1520 add  0        0E-19  ->  0E-19
-	// SKIP: addx1521 add -0        0E-19  ->  0E-19
-	// SKIP: addx1522 add  0       -0E-19  ->  0E-19
-	// SKIP: addx1523 add -0       -0E-19  -> -0E-19
-	// SKIP: addx1524 add  0E-400   0E-19  ->  0E-398 Clamped
-	// SKIP: addx1525 add -0E-400   0E-19  ->  0E-398 Clamped
-	// SKIP: addx1526 add  0E-400  -0E-19  ->  0E-398 Clamped
-	// SKIP: addx1527 add -0E-400  -0E-19  -> -0E-398 Clamped
+	// SKIP (unsupported rounding): addx1520 add  0        0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx1521 add -0        0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx1522 add  0       -0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx1523 add -0       -0E-19  -> -0E-19
+	// SKIP (unsupported rounding): addx1524 add  0E-400   0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx1525 add -0E-400   0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx1526 add  0E-400  -0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx1527 add -0E-400  -0E-19  -> -0E-398 Clamped
 	// inexact zeros
-	// SKIP: addx1531 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx1532 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx1533 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx1534 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1531 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1532 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1533 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1534 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
 	// some exact zeros from non-zeros
-	// SKIP: addx1535 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx1536 add -1E-401   1E-401 ->  0E-398 Clamped
-	// SKIP: addx1537 add  1E-401  -1E-401 ->  0E-398 Clamped
-	// SKIP: addx1538 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1535 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx1536 add -1E-401   1E-401 ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx1537 add  1E-401  -1E-401 ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx1538 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
 	// rounding: half_even
 	// exact zeros from zeros
 	// addx1540 add  0        0E-19  ->  0E-19
-	{"addx1540", "0", "0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx1540", "0", "0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx1541 add -0        0E-19  ->  0E-19
-	{"addx1541", "-0", "0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx1541", "-0", "0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx1542 add  0       -0E-19  ->  0E-19
-	{"addx1542", "0", "-0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx1542", "0", "-0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx1543 add -0       -0E-19  -> -0E-19
-	{"addx1543", "-0", "-0E-19", "-0E-19", 16, big.ToNearestEven},
+	{"addx1543", "-0", "-0E-19", "-0E-19", false, 16, big.ToNearestEven},
 	// addx1544 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1544", "0E-400", "0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx1544", "0E-400", "0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx1545 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1545", "-0E-400", "0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx1545", "-0E-400", "0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx1546 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx1546", "0E-400", "-0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx1546", "0E-400", "-0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx1547 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1547", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNearestEven},
+	{"addx1547", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNearestEven},
 	// inexact zeros
 	// addx1551 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1551", "1E-401", "1E-400", "0E-398", 16, big.ToNearestEven},
+	{"addx1551", "1E-401", "1E-400", "0E-398", true, 16, big.ToNearestEven},
 	// addx1552 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1552", "-1E-401", "1E-400", "0E-398", 16, big.ToNearestEven},
+	{"addx1552", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNearestEven},
 	// addx1553 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1553", "1E-401", "-1E-400", "-0E-398", 16, big.ToNearestEven},
+	{"addx1553", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestEven},
 	// addx1554 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1554", "-1E-401", "-1E-400", "-0E-398", 16, big.ToNearestEven},
+	{"addx1554", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestEven},
 	// some exact zeros from non-zeros
 	// addx1555 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1555", "1E-401", "1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx1555", "1E-401", "1E-401", "0E-398", true, 16, big.ToNearestEven},
 	// addx1556 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx1556", "-1E-401", "1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx1556", "-1E-401", "1E-401", "0E-398", false, 16, big.ToNearestEven},
 	// addx1557 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx1557", "1E-401", "-1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx1557", "1E-401", "-1E-401", "0E-398", false, 16, big.ToNearestEven},
 	// addx1558 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1558", "-1E-401", "-1E-401", "-0E-398", 16, big.ToNearestEven},
+	{"addx1558", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToNearestEven},
 	// rounding: up
 	// exact zeros from zeros
 	// addx1560 add  0        0E-19  ->  0E-19
-	{"addx1560", "0", "0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx1560", "0", "0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx1561 add -0        0E-19  ->  0E-19
-	{"addx1561", "-0", "0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx1561", "-0", "0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx1562 add  0       -0E-19  ->  0E-19
-	{"addx1562", "0", "-0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx1562", "0", "-0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx1563 add -0       -0E-19  -> -0E-19
-	{"addx1563", "-0", "-0E-19", "-0E-19", 16, big.AwayFromZero},
+	{"addx1563", "-0", "-0E-19", "-0E-19", false, 16, big.AwayFromZero},
 	// addx1564 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1564", "0E-400", "0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx1564", "0E-400", "0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx1565 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1565", "-0E-400", "0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx1565", "-0E-400", "0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx1566 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx1566", "0E-400", "-0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx1566", "0E-400", "-0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx1567 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1567", "-0E-400", "-0E-19", "-0E-398", 16, big.AwayFromZero},
+	{"addx1567", "-0E-400", "-0E-19", "-0E-398", false, 16, big.AwayFromZero},
 	// inexact zeros
 	// addx1571 add  1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1571", "1E-401", "1E-400", "1E-398", 16, big.AwayFromZero},
+	{"addx1571", "1E-401", "1E-400", "1E-398", true, 16, big.AwayFromZero},
 	// addx1572 add -1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1572", "-1E-401", "1E-400", "1E-398", 16, big.AwayFromZero},
+	{"addx1572", "-1E-401", "1E-400", "1E-398", true, 16, big.AwayFromZero},
 	// addx1573 add  1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1573", "1E-401", "-1E-400", "-1E-398", 16, big.AwayFromZero},
+	{"addx1573", "1E-401", "-1E-400", "-1E-398", true, 16, big.AwayFromZero},
 	// addx1574 add -1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1574", "-1E-401", "-1E-400", "-1E-398", 16, big.AwayFromZero},
+	{"addx1574", "-1E-401", "-1E-400", "-1E-398", true, 16, big.AwayFromZero},
 	// some exact zeros from non-zeros
 	// addx1575 add  1E-401   1E-401 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1575", "1E-401", "1E-401", "1E-398", 16, big.AwayFromZero},
+	{"addx1575", "1E-401", "1E-401", "1E-398", true, 16, big.AwayFromZero},
 	// addx1576 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx1576", "-1E-401", "1E-401", "0E-398", 16, big.AwayFromZero},
+	{"addx1576", "-1E-401", "1E-401", "0E-398", false, 16, big.AwayFromZero},
 	// addx1577 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx1577", "1E-401", "-1E-401", "0E-398", 16, big.AwayFromZero},
+	{"addx1577", "1E-401", "-1E-401", "0E-398", false, 16, big.AwayFromZero},
 	// addx1578 add -1E-401  -1E-401 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1578", "-1E-401", "-1E-401", "-1E-398", 16, big.AwayFromZero},
+	{"addx1578", "-1E-401", "-1E-401", "-1E-398", true, 16, big.AwayFromZero},
 	// rounding: down
 	// exact zeros from zeros
 	// addx1580 add  0        0E-19  ->  0E-19
-	{"addx1580", "0", "0E-19", "0E-19", 16, big.ToZero},
+	{"addx1580", "0", "0E-19", "0E-19", false, 16, big.ToZero},
 	// addx1581 add -0        0E-19  ->  0E-19
-	{"addx1581", "-0", "0E-19", "0E-19", 16, big.ToZero},
+	{"addx1581", "-0", "0E-19", "0E-19", false, 16, big.ToZero},
 	// addx1582 add  0       -0E-19  ->  0E-19
-	{"addx1582", "0", "-0E-19", "0E-19", 16, big.ToZero},
+	{"addx1582", "0", "-0E-19", "0E-19", false, 16, big.ToZero},
 	// addx1583 add -0       -0E-19  -> -0E-19
-	{"addx1583", "-0", "-0E-19", "-0E-19", 16, big.ToZero},
+	{"addx1583", "-0", "-0E-19", "-0E-19", false, 16, big.ToZero},
 	// addx1584 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1584", "0E-400", "0E-19", "0E-398", 16, big.ToZero},
+	{"addx1584", "0E-400", "0E-19", "0E-398", false, 16, big.ToZero},
 	// addx1585 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1585", "-0E-400", "0E-19", "0E-398", 16, big.ToZero},
+	{"addx1585", "-0E-400", "0E-19", "0E-398", false, 16, big.ToZero},
 	// addx1586 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx1586", "0E-400", "-0E-19", "0E-398", 16, big.ToZero},
+	{"addx1586", "0E-400", "-0E-19", "0E-398", false, 16, big.ToZero},
 	// addx1587 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1587", "-0E-400", "-0E-19", "-0E-398", 16, big.ToZero},
+	{"addx1587", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToZero},
 	// inexact zeros
 	// addx1591 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1591", "1E-401", "1E-400", "0E-398", 16, big.ToZero},
+	{"addx1591", "1E-401", "1E-400", "0E-398", true, 16, big.ToZero},
 	// addx1592 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1592", "-1E-401", "1E-400", "0E-398", 16, big.ToZero},
+	{"addx1592", "-1E-401", "1E-400", "0E-398", true, 16, big.ToZero},
 	// addx1593 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1593", "1E-401", "-1E-400", "-0E-398", 16, big.ToZero},
+	{"addx1593", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToZero},
 	// addx1594 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1594", "-1E-401", "-1E-400", "-0E-398", 16, big.ToZero},
+	{"addx1594", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToZero},
 	// some exact zeros from non-zeros
 	// addx1595 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1595", "1E-401", "1E-401", "0E-398", 16, big.ToZero},
+	{"addx1595", "1E-401", "1E-401", "0E-398", true, 16, big.ToZero},
 	// addx1596 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx1596", "-1E-401", "1E-401", "0E-398", 16, big.ToZero},
+	{"addx1596", "-1E-401", "1E-401", "0E-398", false, 16, big.ToZero},
 	// addx1597 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx1597", "1E-401", "-1E-401", "0E-398", 16, big.ToZero},
+	{"addx1597", "1E-401", "-1E-401", "0E-398", false, 16, big.ToZero},
 	// addx1598 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1598", "-1E-401", "-1E-401", "-0E-398", 16, big.ToZero},
+	{"addx1598", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToZero},
 	// rounding: ceiling
 	// exact zeros from zeros
 	// addx1600 add  0        0E-19  ->  0E-19
-	{"addx1600", "0", "0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx1600", "0", "0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx1601 add -0        0E-19  ->  0E-19
-	{"addx1601", "-0", "0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx1601", "-0", "0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx1602 add  0       -0E-19  ->  0E-19
-	{"addx1602", "0", "-0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx1602", "0", "-0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx1603 add -0       -0E-19  -> -0E-19
-	{"addx1603", "-0", "-0E-19", "-0E-19", 16, big.ToPositiveInf},
+	{"addx1603", "-0", "-0E-19", "-0E-19", false, 16, big.ToPositiveInf},
 	// addx1604 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1604", "0E-400", "0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx1604", "0E-400", "0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx1605 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1605", "-0E-400", "0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx1605", "-0E-400", "0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx1606 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx1606", "0E-400", "-0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx1606", "0E-400", "-0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx1607 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1607", "-0E-400", "-0E-19", "-0E-398", 16, big.ToPositiveInf},
+	{"addx1607", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToPositiveInf},
 	// inexact zeros
 	// addx1611 add  1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1611", "1E-401", "1E-400", "1E-398", 16, big.ToPositiveInf},
+	{"addx1611", "1E-401", "1E-400", "1E-398", true, 16, big.ToPositiveInf},
 	// addx1612 add -1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1612", "-1E-401", "1E-400", "1E-398", 16, big.ToPositiveInf},
+	{"addx1612", "-1E-401", "1E-400", "1E-398", true, 16, big.ToPositiveInf},
 	// addx1613 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1613", "1E-401", "-1E-400", "-0E-398", 16, big.ToPositiveInf},
+	{"addx1613", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToPositiveInf},
 	// addx1614 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1614", "-1E-401", "-1E-400", "-0E-398", 16, big.ToPositiveInf},
+	{"addx1614", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToPositiveInf},
 	// some exact zeros from non-zeros
 	// addx1615 add  1E-401   1E-401 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1615", "1E-401", "1E-401", "1E-398", 16, big.ToPositiveInf},
+	{"addx1615", "1E-401", "1E-401", "1E-398", true, 16, big.ToPositiveInf},
 	// addx1616 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx1616", "-1E-401", "1E-401", "0E-398", 16, big.ToPositiveInf},
+	{"addx1616", "-1E-401", "1E-401", "0E-398", false, 16, big.ToPositiveInf},
 	// addx1617 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx1617", "1E-401", "-1E-401", "0E-398", 16, big.ToPositiveInf},
+	{"addx1617", "1E-401", "-1E-401", "0E-398", false, 16, big.ToPositiveInf},
 	// addx1618 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1618", "-1E-401", "-1E-401", "-0E-398", 16, big.ToPositiveInf},
+	{"addx1618", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToPositiveInf},
 	// and the extra-special ugly case; unusual minuses marked by -- *
 	// rounding: floor
 	// exact zeros from zeros
 	// addx1620 add  0        0E-19  ->  0E-19
-	{"addx1620", "0", "0E-19", "0E-19", 16, big.ToNegativeInf},
+	{"addx1620", "0", "0E-19", "0E-19", false, 16, big.ToNegativeInf},
 	// addx1621 add -0        0E-19  -> -0E-19           -- *
-	{"addx1621", "-0", "0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx1621", "-0", "0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx1622 add  0       -0E-19  -> -0E-19           -- *
-	{"addx1622", "0", "-0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx1622", "0", "-0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx1623 add -0       -0E-19  -> -0E-19
-	{"addx1623", "-0", "-0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx1623", "-0", "-0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx1624 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx1624", "0E-400", "0E-19", "0E-398", 16, big.ToNegativeInf},
+	{"addx1624", "0E-400", "0E-19", "0E-398", false, 16, big.ToNegativeInf},
 	// addx1625 add -0E-400   0E-19  -> -0E-398 Clamped  -- *
-	{"addx1625", "-0E-400", "0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx1625", "-0E-400", "0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx1626 add  0E-400  -0E-19  -> -0E-398 Clamped  -- *
-	{"addx1626", "0E-400", "-0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx1626", "0E-400", "-0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx1627 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx1627", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx1627", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// inexact zeros
 	// addx1631 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1631", "1E-401", "1E-400", "0E-398", 16, big.ToNegativeInf},
+	{"addx1631", "1E-401", "1E-400", "0E-398", true, 16, big.ToNegativeInf},
 	// addx1632 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1632", "-1E-401", "1E-400", "0E-398", 16, big.ToNegativeInf},
+	{"addx1632", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNegativeInf},
 	// addx1633 add  1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1633", "1E-401", "-1E-400", "-1E-398", 16, big.ToNegativeInf},
+	{"addx1633", "1E-401", "-1E-400", "-1E-398", true, 16, big.ToNegativeInf},
 	// addx1634 add -1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1634", "-1E-401", "-1E-400", "-1E-398", 16, big.ToNegativeInf},
+	{"addx1634", "-1E-401", "-1E-400", "-1E-398", true, 16, big.ToNegativeInf},
 	// some exact zeros from non-zeros
 	// addx1635 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx1635", "1E-401", "1E-401", "0E-398", 16, big.ToNegativeInf},
+	{"addx1635", "1E-401", "1E-401", "0E-398", true, 16, big.ToNegativeInf},
 	// addx1636 add -1E-401   1E-401 -> -0E-398 Clamped  -- *
-	{"addx1636", "-1E-401", "1E-401", "-0E-398", 16, big.ToNegativeInf},
+	{"addx1636", "-1E-401", "1E-401", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx1637 add  1E-401  -1E-401 -> -0E-398 Clamped  -- *
-	{"addx1637", "1E-401", "-1E-401", "-0E-398", 16, big.ToNegativeInf},
+	{"addx1637", "1E-401", "-1E-401", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx1638 add -1E-401  -1E-401 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx1638", "-1E-401", "-1E-401", "-1E-398", 16, big.ToNegativeInf},
+	{"addx1638", "-1E-401", "-1E-401", "-1E-398", true, 16, big.ToNegativeInf},
 	// BigDecimal problem testcases 2006.01.23
 	// precision: 16
 	// maxexponent: 384
@@ -2450,90 +2451,90 @@ var addTests = []struct {
 	// rounding: down
 	// precision: 7
 	// addx1651 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1651", "10001E+2", "-2E+1", "1.00008E+6", 7, big.ToZero},
+	{"addx1651", "10001E+2", "-2E+1", "1.00008E+6", false, 7, big.ToZero},
 	// precision: 6
 	// addx1652 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1652", "10001E+2", "-2E+1", "1.00008E+6", 6, big.ToZero},
+	{"addx1652", "10001E+2", "-2E+1", "1.00008E+6", false, 6, big.ToZero},
 	// precision: 5
 	// addx1653 add  10001E+2  -2E+1 -> 1.0000E+6   Inexact Rounded
-	{"addx1653", "10001E+2", "-2E+1", "1.0000E+6", 5, big.ToZero},
+	{"addx1653", "10001E+2", "-2E+1", "1.0000E+6", true, 5, big.ToZero},
 	// precision: 4
 	// addx1654 add  10001E+2  -2E+1 -> 1.000E+6    Inexact Rounded
-	{"addx1654", "10001E+2", "-2E+1", "1.000E+6", 4, big.ToZero},
+	{"addx1654", "10001E+2", "-2E+1", "1.000E+6", true, 4, big.ToZero},
 	// precision: 3
 	// addx1655 add  10001E+2  -2E+1 -> 1.00E+6     Inexact Rounded
-	{"addx1655", "10001E+2", "-2E+1", "1.00E+6", 3, big.ToZero},
+	{"addx1655", "10001E+2", "-2E+1", "1.00E+6", true, 3, big.ToZero},
 	// precision: 2
 	// addx1656 add  10001E+2  -2E+1 -> 1.0E+6      Inexact Rounded
-	{"addx1656", "10001E+2", "-2E+1", "1.0E+6", 2, big.ToZero},
+	{"addx1656", "10001E+2", "-2E+1", "1.0E+6", true, 2, big.ToZero},
 	// precision: 1
 	// addx1657 add  10001E+2  -2E+1 -> 1E+6        Inexact Rounded
-	{"addx1657", "10001E+2", "-2E+1", "1E+6", 1, big.ToZero},
+	{"addx1657", "10001E+2", "-2E+1", "1E+6", true, 1, big.ToZero},
 	// rounding: half_even
 	// precision: 7
 	// addx1661 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1661", "10001E+2", "-2E+1", "1.00008E+6", 7, big.ToNearestEven},
+	{"addx1661", "10001E+2", "-2E+1", "1.00008E+6", false, 7, big.ToNearestEven},
 	// precision: 6
 	// addx1662 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1662", "10001E+2", "-2E+1", "1.00008E+6", 6, big.ToNearestEven},
+	{"addx1662", "10001E+2", "-2E+1", "1.00008E+6", false, 6, big.ToNearestEven},
 	// precision: 5
 	// addx1663 add  10001E+2  -2E+1 -> 1.0001E+6   Inexact Rounded
-	{"addx1663", "10001E+2", "-2E+1", "1.0001E+6", 5, big.ToNearestEven},
+	{"addx1663", "10001E+2", "-2E+1", "1.0001E+6", true, 5, big.ToNearestEven},
 	// precision: 4
 	// addx1664 add  10001E+2  -2E+1 -> 1.000E+6    Inexact Rounded
-	{"addx1664", "10001E+2", "-2E+1", "1.000E+6", 4, big.ToNearestEven},
+	{"addx1664", "10001E+2", "-2E+1", "1.000E+6", true, 4, big.ToNearestEven},
 	// precision: 3
 	// addx1665 add  10001E+2  -2E+1 -> 1.00E+6     Inexact Rounded
-	{"addx1665", "10001E+2", "-2E+1", "1.00E+6", 3, big.ToNearestEven},
+	{"addx1665", "10001E+2", "-2E+1", "1.00E+6", true, 3, big.ToNearestEven},
 	// precision: 2
 	// addx1666 add  10001E+2  -2E+1 -> 1.0E+6      Inexact Rounded
-	{"addx1666", "10001E+2", "-2E+1", "1.0E+6", 2, big.ToNearestEven},
+	{"addx1666", "10001E+2", "-2E+1", "1.0E+6", true, 2, big.ToNearestEven},
 	// precision: 1
 	// addx1667 add  10001E+2  -2E+1 -> 1E+6        Inexact Rounded
-	{"addx1667", "10001E+2", "-2E+1", "1E+6", 1, big.ToNearestEven},
+	{"addx1667", "10001E+2", "-2E+1", "1E+6", true, 1, big.ToNearestEven},
 	// rounding: up
 	// precision: 7
 	// addx1671 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1671", "10001E+2", "-2E+1", "1.00008E+6", 7, big.AwayFromZero},
+	{"addx1671", "10001E+2", "-2E+1", "1.00008E+6", false, 7, big.AwayFromZero},
 	// precision: 6
 	// addx1672 add  10001E+2  -2E+1 -> 1.00008E+6
-	{"addx1672", "10001E+2", "-2E+1", "1.00008E+6", 6, big.AwayFromZero},
+	{"addx1672", "10001E+2", "-2E+1", "1.00008E+6", false, 6, big.AwayFromZero},
 	// precision: 5
 	// addx1673 add  10001E+2  -2E+1 -> 1.0001E+6   Inexact Rounded
-	{"addx1673", "10001E+2", "-2E+1", "1.0001E+6", 5, big.AwayFromZero},
+	{"addx1673", "10001E+2", "-2E+1", "1.0001E+6", true, 5, big.AwayFromZero},
 	// precision: 4
 	// addx1674 add  10001E+2  -2E+1 -> 1.001E+6    Inexact Rounded
-	{"addx1674", "10001E+2", "-2E+1", "1.001E+6", 4, big.AwayFromZero},
+	{"addx1674", "10001E+2", "-2E+1", "1.001E+6", true, 4, big.AwayFromZero},
 	// precision: 3
 	// addx1675 add  10001E+2  -2E+1 -> 1.01E+6     Inexact Rounded
-	{"addx1675", "10001E+2", "-2E+1", "1.01E+6", 3, big.AwayFromZero},
+	{"addx1675", "10001E+2", "-2E+1", "1.01E+6", true, 3, big.AwayFromZero},
 	// precision: 2
 	// addx1676 add  10001E+2  -2E+1 -> 1.1E+6      Inexact Rounded
-	{"addx1676", "10001E+2", "-2E+1", "1.1E+6", 2, big.AwayFromZero},
+	{"addx1676", "10001E+2", "-2E+1", "1.1E+6", true, 2, big.AwayFromZero},
 	// precision: 1
 	// addx1677 add  10001E+2  -2E+1 -> 2E+6        Inexact Rounded
-	{"addx1677", "10001E+2", "-2E+1", "2E+6", 1, big.AwayFromZero},
+	{"addx1677", "10001E+2", "-2E+1", "2E+6", true, 1, big.AwayFromZero},
 	// precision: 34
 	// rounding: half_up
 	// maxexponent: 6144
 	// minexponent: -6143
 	// Examples from SQL proposal (Krishna Kulkarni)
 	// addx1701  add 130E-2    120E-2    -> 2.50
-	{"addx1701", "130E-2", "120E-2", "2.50", 34, big.ToNearestAway},
+	{"addx1701", "130E-2", "120E-2", "2.50", false, 34, big.ToNearestAway},
 	// addx1702  add 130E-2    12E-1     -> 2.50
-	{"addx1702", "130E-2", "12E-1", "2.50", 34, big.ToNearestAway},
+	{"addx1702", "130E-2", "12E-1", "2.50", false, 34, big.ToNearestAway},
 	// addx1703  add 130E-2    1E0       -> 2.30
-	{"addx1703", "130E-2", "1E0", "2.30", 34, big.ToNearestAway},
+	{"addx1703", "130E-2", "1E0", "2.30", false, 34, big.ToNearestAway},
 	// addx1704  add 1E2       1E4       -> 1.01E+4
-	{"addx1704", "1E2", "1E4", "1.01E+4", 34, big.ToNearestAway},
+	{"addx1704", "1E2", "1E4", "1.01E+4", false, 34, big.ToNearestAway},
 	// addx1705  subtract 130E-2  120E-2 -> 0.10
-	{"addx1705", "130E-2", "120E-2", "0.10", 34, big.ToNearestAway},
+	{"addx1705", "130E-2", "120E-2", "0.10", false, 34, big.ToNearestAway},
 	// addx1706  subtract 130E-2  12E-1  -> 0.10
-	{"addx1706", "130E-2", "12E-1", "0.10", 34, big.ToNearestAway},
+	{"addx1706", "130E-2", "12E-1", "0.10", false, 34, big.ToNearestAway},
 	// addx1707  subtract 130E-2  1E0    -> 0.30
-	{"addx1707", "130E-2", "1E0", "0.30", 34, big.ToNearestAway},
+	{"addx1707", "130E-2", "1E0", "0.30", false, 34, big.ToNearestAway},
 	// addx1708  subtract 1E2     1E4    -> -9.9E+3
-	{"addx1708", "1E2", "1E4", "-9.9E+3", 34, big.ToNearestAway},
+	{"addx1708", "1E2", "1E4", "-9.9E+3", false, 34, big.ToNearestAway},
 	//----------------------------------------------------------------------
 	// Same as above, using decimal64 default parameters                  --
 	//----------------------------------------------------------------------
@@ -2543,1887 +2544,1887 @@ var addTests = []struct {
 	// minexponent: -383
 	// [first group are 'quick confidence check']
 	// addx6001 add 1       1       ->  2
-	{"addx6001", "1", "1", "2", 16, big.ToNearestEven},
+	{"addx6001", "1", "1", "2", false, 16, big.ToNearestEven},
 	// addx6002 add 2       3       ->  5
-	{"addx6002", "2", "3", "5", 16, big.ToNearestEven},
+	{"addx6002", "2", "3", "5", false, 16, big.ToNearestEven},
 	// addx6003 add '5.75'  '3.3'   ->  9.05
-	{"addx6003", "5.75", "3.3", "9.05", 16, big.ToNearestEven},
+	{"addx6003", "5.75", "3.3", "9.05", false, 16, big.ToNearestEven},
 	// addx6004 add '5'     '-3'    ->  2
-	{"addx6004", "5", "-3", "2", 16, big.ToNearestEven},
+	{"addx6004", "5", "-3", "2", false, 16, big.ToNearestEven},
 	// addx6005 add '-5'    '-3'    ->  -8
-	{"addx6005", "-5", "-3", "-8", 16, big.ToNearestEven},
+	{"addx6005", "-5", "-3", "-8", false, 16, big.ToNearestEven},
 	// addx6006 add '-7'    '2.5'   ->  -4.5
-	{"addx6006", "-7", "2.5", "-4.5", 16, big.ToNearestEven},
+	{"addx6006", "-7", "2.5", "-4.5", false, 16, big.ToNearestEven},
 	// addx6007 add '0.7'   '0.3'   ->  1.0
-	{"addx6007", "0.7", "0.3", "1.0", 16, big.ToNearestEven},
+	{"addx6007", "0.7", "0.3", "1.0", false, 16, big.ToNearestEven},
 	// addx6008 add '1.25'  '1.25'  ->  2.50
-	{"addx6008", "1.25", "1.25", "2.50", 16, big.ToNearestEven},
+	{"addx6008", "1.25", "1.25", "2.50", false, 16, big.ToNearestEven},
 	// addx6009 add '1.23456789'  '1.00000000' -> '2.23456789'
-	{"addx6009", "1.23456789", "1.00000000", "2.23456789", 16, big.ToNearestEven},
+	{"addx6009", "1.23456789", "1.00000000", "2.23456789", false, 16, big.ToNearestEven},
 	// addx6010 add '1.23456789'  '1.00000011' -> '2.23456800'
-	{"addx6010", "1.23456789", "1.00000011", "2.23456800", 16, big.ToNearestEven},
+	{"addx6010", "1.23456789", "1.00000011", "2.23456800", false, 16, big.ToNearestEven},
 	// addx6011 add '0.44444444444444444'  '0.55555555555555555' -> '1.000000000000000' Inexact Rounded
-	{"addx6011", "0.44444444444444444", "0.55555555555555555", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6011", "0.44444444444444444", "0.55555555555555555", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6012 add '0.44444444444444440'  '0.55555555555555555' -> '1.000000000000000' Inexact Rounded
-	{"addx6012", "0.44444444444444440", "0.55555555555555555", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6012", "0.44444444444444440", "0.55555555555555555", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6013 add '0.44444444444444444'  '0.55555555555555550' -> '0.9999999999999999' Inexact Rounded
-	{"addx6013", "0.44444444444444444", "0.55555555555555550", "0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6013", "0.44444444444444444", "0.55555555555555550", "0.9999999999999999", true, 16, big.ToNearestEven},
 	// addx6014 add '0.444444444444444449'    '0' -> '0.4444444444444444' Inexact Rounded
-	{"addx6014", "0.444444444444444449", "0", "0.4444444444444444", 16, big.ToNearestEven},
+	{"addx6014", "0.444444444444444449", "0", "0.4444444444444444", true, 16, big.ToNearestEven},
 	// addx6015 add '0.4444444444444444499'   '0' -> '0.4444444444444444' Inexact Rounded
-	{"addx6015", "0.4444444444444444499", "0", "0.4444444444444444", 16, big.ToNearestEven},
+	{"addx6015", "0.4444444444444444499", "0", "0.4444444444444444", true, 16, big.ToNearestEven},
 	// addx6016 add '0.44444444444444444999'  '0' -> '0.4444444444444444' Inexact Rounded
-	{"addx6016", "0.44444444444444444999", "0", "0.4444444444444444", 16, big.ToNearestEven},
+	{"addx6016", "0.44444444444444444999", "0", "0.4444444444444444", true, 16, big.ToNearestEven},
 	// addx6017 add '0.44444444444444445000'  '0' -> '0.4444444444444444' Inexact Rounded
-	{"addx6017", "0.44444444444444445000", "0", "0.4444444444444444", 16, big.ToNearestEven},
+	{"addx6017", "0.44444444444444445000", "0", "0.4444444444444444", true, 16, big.ToNearestEven},
 	// addx6018 add '0.44444444444444445001'  '0' -> '0.4444444444444445' Inexact Rounded
-	{"addx6018", "0.44444444444444445001", "0", "0.4444444444444445", 16, big.ToNearestEven},
+	{"addx6018", "0.44444444444444445001", "0", "0.4444444444444445", true, 16, big.ToNearestEven},
 	// addx6019 add '0.4444444444444444501'   '0' -> '0.4444444444444445' Inexact Rounded
-	{"addx6019", "0.4444444444444444501", "0", "0.4444444444444445", 16, big.ToNearestEven},
+	{"addx6019", "0.4444444444444444501", "0", "0.4444444444444445", true, 16, big.ToNearestEven},
 	// addx6020 add '0.444444444444444451'    '0' -> '0.4444444444444445' Inexact Rounded
-	{"addx6020", "0.444444444444444451", "0", "0.4444444444444445", 16, big.ToNearestEven},
+	{"addx6020", "0.444444444444444451", "0", "0.4444444444444445", true, 16, big.ToNearestEven},
 	// addx6021 add 0 1 -> 1
-	{"addx6021", "0", "1", "1", 16, big.ToNearestEven},
+	{"addx6021", "0", "1", "1", false, 16, big.ToNearestEven},
 	// addx6022 add 1 1 -> 2
-	{"addx6022", "1", "1", "2", 16, big.ToNearestEven},
+	{"addx6022", "1", "1", "2", false, 16, big.ToNearestEven},
 	// addx6023 add 2 1 -> 3
-	{"addx6023", "2", "1", "3", 16, big.ToNearestEven},
+	{"addx6023", "2", "1", "3", false, 16, big.ToNearestEven},
 	// addx6024 add 3 1 -> 4
-	{"addx6024", "3", "1", "4", 16, big.ToNearestEven},
+	{"addx6024", "3", "1", "4", false, 16, big.ToNearestEven},
 	// addx6025 add 4 1 -> 5
-	{"addx6025", "4", "1", "5", 16, big.ToNearestEven},
+	{"addx6025", "4", "1", "5", false, 16, big.ToNearestEven},
 	// addx6026 add 5 1 -> 6
-	{"addx6026", "5", "1", "6", 16, big.ToNearestEven},
+	{"addx6026", "5", "1", "6", false, 16, big.ToNearestEven},
 	// addx6027 add 6 1 -> 7
-	{"addx6027", "6", "1", "7", 16, big.ToNearestEven},
+	{"addx6027", "6", "1", "7", false, 16, big.ToNearestEven},
 	// addx6028 add 7 1 -> 8
-	{"addx6028", "7", "1", "8", 16, big.ToNearestEven},
+	{"addx6028", "7", "1", "8", false, 16, big.ToNearestEven},
 	// addx6029 add 8 1 -> 9
-	{"addx6029", "8", "1", "9", 16, big.ToNearestEven},
+	{"addx6029", "8", "1", "9", false, 16, big.ToNearestEven},
 	// addx6030 add 9 1 -> 10
-	{"addx6030", "9", "1", "10", 16, big.ToNearestEven},
+	{"addx6030", "9", "1", "10", false, 16, big.ToNearestEven},
 	// some carrying effects
 	// addx6031 add '0.9998'  '0.0000' -> '0.9998'
-	{"addx6031", "0.9998", "0.0000", "0.9998", 16, big.ToNearestEven},
+	{"addx6031", "0.9998", "0.0000", "0.9998", false, 16, big.ToNearestEven},
 	// addx6032 add '0.9998'  '0.0001' -> '0.9999'
-	{"addx6032", "0.9998", "0.0001", "0.9999", 16, big.ToNearestEven},
+	{"addx6032", "0.9998", "0.0001", "0.9999", false, 16, big.ToNearestEven},
 	// addx6033 add '0.9998'  '0.0002' -> '1.0000'
-	{"addx6033", "0.9998", "0.0002", "1.0000", 16, big.ToNearestEven},
+	{"addx6033", "0.9998", "0.0002", "1.0000", false, 16, big.ToNearestEven},
 	// addx6034 add '0.9998'  '0.0003' -> '1.0001'
-	{"addx6034", "0.9998", "0.0003", "1.0001", 16, big.ToNearestEven},
+	{"addx6034", "0.9998", "0.0003", "1.0001", false, 16, big.ToNearestEven},
 	// addx6035 add '70'      '10000e+16' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6035", "70", "10000e+16", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6035", "70", "10000e+16", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6036 add '700'     '10000e+16' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6036", "700", "10000e+16", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6036", "700", "10000e+16", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6037 add '7000'    '10000e+16' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6037", "7000", "10000e+16", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6037", "7000", "10000e+16", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6038 add '70000'   '10000e+16' -> '1.000000000000001E+20' Inexact Rounded
-	{"addx6038", "70000", "10000e+16", "1.000000000000001E+20", 16, big.ToNearestEven},
+	{"addx6038", "70000", "10000e+16", "1.000000000000001E+20", true, 16, big.ToNearestEven},
 	// addx6039 add '700000'  '10000e+16' -> '1.000000000000007E+20' Rounded
-	{"addx6039", "700000", "10000e+16", "1.000000000000007E+20", 16, big.ToNearestEven},
+	{"addx6039", "700000", "10000e+16", "1.000000000000007E+20", false, 16, big.ToNearestEven},
 	// symmetry:
 	// addx6040 add '10000e+16'  '70' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6040", "10000e+16", "70", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6040", "10000e+16", "70", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6041 add '10000e+16'  '700' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6041", "10000e+16", "700", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6041", "10000e+16", "700", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6042 add '10000e+16'  '7000' -> '1.000000000000000E+20' Inexact Rounded
-	{"addx6042", "10000e+16", "7000", "1.000000000000000E+20", 16, big.ToNearestEven},
+	{"addx6042", "10000e+16", "7000", "1.000000000000000E+20", true, 16, big.ToNearestEven},
 	// addx6044 add '10000e+16'  '70000' -> '1.000000000000001E+20' Inexact Rounded
-	{"addx6044", "10000e+16", "70000", "1.000000000000001E+20", 16, big.ToNearestEven},
+	{"addx6044", "10000e+16", "70000", "1.000000000000001E+20", true, 16, big.ToNearestEven},
 	// addx6045 add '10000e+16'  '700000' -> '1.000000000000007E+20' Rounded
-	{"addx6045", "10000e+16", "700000", "1.000000000000007E+20", 16, big.ToNearestEven},
+	{"addx6045", "10000e+16", "700000", "1.000000000000007E+20", false, 16, big.ToNearestEven},
 	// addx6046 add '10000e+9'  '7' -> '10000000000007'
-	{"addx6046", "10000e+9", "7", "10000000000007", 16, big.ToNearestEven},
+	{"addx6046", "10000e+9", "7", "10000000000007", false, 16, big.ToNearestEven},
 	// addx6047 add '10000e+9'  '70' -> '10000000000070'
-	{"addx6047", "10000e+9", "70", "10000000000070", 16, big.ToNearestEven},
+	{"addx6047", "10000e+9", "70", "10000000000070", false, 16, big.ToNearestEven},
 	// addx6048 add '10000e+9'  '700' -> '10000000000700'
-	{"addx6048", "10000e+9", "700", "10000000000700", 16, big.ToNearestEven},
+	{"addx6048", "10000e+9", "700", "10000000000700", false, 16, big.ToNearestEven},
 	// addx6049 add '10000e+9'  '7000' -> '10000000007000'
-	{"addx6049", "10000e+9", "7000", "10000000007000", 16, big.ToNearestEven},
+	{"addx6049", "10000e+9", "7000", "10000000007000", false, 16, big.ToNearestEven},
 	// addx6050 add '10000e+9'  '70000' -> '10000000070000'
-	{"addx6050", "10000e+9", "70000", "10000000070000", 16, big.ToNearestEven},
+	{"addx6050", "10000e+9", "70000", "10000000070000", false, 16, big.ToNearestEven},
 	// addx6051 add '10000e+9'  '700000' -> '10000000700000'
-	{"addx6051", "10000e+9", "700000", "10000000700000", 16, big.ToNearestEven},
+	{"addx6051", "10000e+9", "700000", "10000000700000", false, 16, big.ToNearestEven},
 	// examples from decarith
 	// addx6053 add '12' '7.00' -> '19.00'
-	{"addx6053", "12", "7.00", "19.00", 16, big.ToNearestEven},
+	{"addx6053", "12", "7.00", "19.00", false, 16, big.ToNearestEven},
 	// addx6054 add '1.3' '-1.07' -> '0.23'
-	{"addx6054", "1.3", "-1.07", "0.23", 16, big.ToNearestEven},
+	{"addx6054", "1.3", "-1.07", "0.23", false, 16, big.ToNearestEven},
 	// addx6055 add '1.3' '-1.30' -> '0.00'
-	{"addx6055", "1.3", "-1.30", "0.00", 16, big.ToNearestEven},
+	{"addx6055", "1.3", "-1.30", "0.00", false, 16, big.ToNearestEven},
 	// addx6056 add '1.3' '-2.07' -> '-0.77'
-	{"addx6056", "1.3", "-2.07", "-0.77", 16, big.ToNearestEven},
+	{"addx6056", "1.3", "-2.07", "-0.77", false, 16, big.ToNearestEven},
 	// addx6057 add '1E+2' '1E+4' -> '1.01E+4'
-	{"addx6057", "1E+2", "1E+4", "1.01E+4", 16, big.ToNearestEven},
+	{"addx6057", "1E+2", "1E+4", "1.01E+4", false, 16, big.ToNearestEven},
 	// from above
 	// addx6060 add 1 '0.1' -> '1.1'
-	{"addx6060", "1", "0.1", "1.1", 16, big.ToNearestEven},
+	{"addx6060", "1", "0.1", "1.1", false, 16, big.ToNearestEven},
 	// addx6061 add 1 '0.01' -> '1.01'
-	{"addx6061", "1", "0.01", "1.01", 16, big.ToNearestEven},
+	{"addx6061", "1", "0.01", "1.01", false, 16, big.ToNearestEven},
 	// addx6062 add 1 '0.001' -> '1.001'
-	{"addx6062", "1", "0.001", "1.001", 16, big.ToNearestEven},
+	{"addx6062", "1", "0.001", "1.001", false, 16, big.ToNearestEven},
 	// addx6063 add 1 '0.0001' -> '1.0001'
-	{"addx6063", "1", "0.0001", "1.0001", 16, big.ToNearestEven},
+	{"addx6063", "1", "0.0001", "1.0001", false, 16, big.ToNearestEven},
 	// addx6064 add 1 '0.00001' -> '1.00001'
-	{"addx6064", "1", "0.00001", "1.00001", 16, big.ToNearestEven},
+	{"addx6064", "1", "0.00001", "1.00001", false, 16, big.ToNearestEven},
 	// addx6065 add 1 '0.000001' -> '1.000001'
-	{"addx6065", "1", "0.000001", "1.000001", 16, big.ToNearestEven},
+	{"addx6065", "1", "0.000001", "1.000001", false, 16, big.ToNearestEven},
 	// addx6066 add 1 '0.0000001' -> '1.0000001'
-	{"addx6066", "1", "0.0000001", "1.0000001", 16, big.ToNearestEven},
+	{"addx6066", "1", "0.0000001", "1.0000001", false, 16, big.ToNearestEven},
 	// addx6067 add 1 '0.00000001' -> '1.00000001'
-	{"addx6067", "1", "0.00000001", "1.00000001", 16, big.ToNearestEven},
+	{"addx6067", "1", "0.00000001", "1.00000001", false, 16, big.ToNearestEven},
 	// cancellation to integer
 	// addx6068 add 99999999999999123456789 -99999999999999E+9 -> 123456789
-	{"addx6068", "99999999999999123456789", "-99999999999999E+9", "123456789", 16, big.ToNearestEven},
+	{"addx6068", "99999999999999123456789", "-99999999999999E+9", "123456789", false, 16, big.ToNearestEven},
 	// similar from FMA fun
 	// addx6069 add "-1234567890123455.234567890123454" "1234567890123456" -> 0.765432109876546
-	{"addx6069", "-1234567890123455.234567890123454", "1234567890123456", "0.765432109876546", 16, big.ToNearestEven},
+	{"addx6069", "-1234567890123455.234567890123454", "1234567890123456", "0.765432109876546", false, 16, big.ToNearestEven},
 	// some funny zeros [in case of bad signum]
 	// addx6070 add 1  0    -> 1
-	{"addx6070", "1", "0", "1", 16, big.ToNearestEven},
+	{"addx6070", "1", "0", "1", false, 16, big.ToNearestEven},
 	// addx6071 add 1 0.    -> 1
-	{"addx6071", "1", "0.", "1", 16, big.ToNearestEven},
+	{"addx6071", "1", "0.", "1", false, 16, big.ToNearestEven},
 	// addx6072 add 1  .0   -> 1.0
-	{"addx6072", "1", ".0", "1.0", 16, big.ToNearestEven},
+	{"addx6072", "1", ".0", "1.0", false, 16, big.ToNearestEven},
 	// addx6073 add 1 0.0   -> 1.0
-	{"addx6073", "1", "0.0", "1.0", 16, big.ToNearestEven},
+	{"addx6073", "1", "0.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6074 add 1 0.00  -> 1.00
-	{"addx6074", "1", "0.00", "1.00", 16, big.ToNearestEven},
+	{"addx6074", "1", "0.00", "1.00", false, 16, big.ToNearestEven},
 	// addx6075 add  0  1   -> 1
-	{"addx6075", "0", "1", "1", 16, big.ToNearestEven},
+	{"addx6075", "0", "1", "1", false, 16, big.ToNearestEven},
 	// addx6076 add 0.  1   -> 1
-	{"addx6076", "0.", "1", "1", 16, big.ToNearestEven},
+	{"addx6076", "0.", "1", "1", false, 16, big.ToNearestEven},
 	// addx6077 add  .0 1   -> 1.0
-	{"addx6077", ".0", "1", "1.0", 16, big.ToNearestEven},
+	{"addx6077", ".0", "1", "1.0", false, 16, big.ToNearestEven},
 	// addx6078 add 0.0 1   -> 1.0
-	{"addx6078", "0.0", "1", "1.0", 16, big.ToNearestEven},
+	{"addx6078", "0.0", "1", "1.0", false, 16, big.ToNearestEven},
 	// addx6079 add 0.00 1  -> 1.00
-	{"addx6079", "0.00", "1", "1.00", 16, big.ToNearestEven},
+	{"addx6079", "0.00", "1", "1.00", false, 16, big.ToNearestEven},
 	// some carries
 	// addx6080 add 9999999999999998 1  -> 9999999999999999
-	{"addx6080", "9999999999999998", "1", "9999999999999999", 16, big.ToNearestEven},
+	{"addx6080", "9999999999999998", "1", "9999999999999999", false, 16, big.ToNearestEven},
 	// addx6081 add 9999999999999999 1  -> 1.000000000000000E+16 Rounded
-	{"addx6081", "9999999999999999", "1", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx6081", "9999999999999999", "1", "1.000000000000000E+16", false, 16, big.ToNearestEven},
 	// addx6082 add  999999999999999 1  -> 1000000000000000
-	{"addx6082", "999999999999999", "1", "1000000000000000", 16, big.ToNearestEven},
+	{"addx6082", "999999999999999", "1", "1000000000000000", false, 16, big.ToNearestEven},
 	// addx6083 add    9999999999999 1  -> 10000000000000
-	{"addx6083", "9999999999999", "1", "10000000000000", 16, big.ToNearestEven},
+	{"addx6083", "9999999999999", "1", "10000000000000", false, 16, big.ToNearestEven},
 	// addx6084 add      99999999999 1  -> 100000000000
-	{"addx6084", "99999999999", "1", "100000000000", 16, big.ToNearestEven},
+	{"addx6084", "99999999999", "1", "100000000000", false, 16, big.ToNearestEven},
 	// addx6085 add        999999999 1  -> 1000000000
-	{"addx6085", "999999999", "1", "1000000000", 16, big.ToNearestEven},
+	{"addx6085", "999999999", "1", "1000000000", false, 16, big.ToNearestEven},
 	// addx6086 add          9999999 1  -> 10000000
-	{"addx6086", "9999999", "1", "10000000", 16, big.ToNearestEven},
+	{"addx6086", "9999999", "1", "10000000", false, 16, big.ToNearestEven},
 	// addx6087 add            99999 1  -> 100000
-	{"addx6087", "99999", "1", "100000", 16, big.ToNearestEven},
+	{"addx6087", "99999", "1", "100000", false, 16, big.ToNearestEven},
 	// addx6088 add              999 1  -> 1000
-	{"addx6088", "999", "1", "1000", 16, big.ToNearestEven},
+	{"addx6088", "999", "1", "1000", false, 16, big.ToNearestEven},
 	// addx6089 add                9 1  -> 10
-	{"addx6089", "9", "1", "10", 16, big.ToNearestEven},
+	{"addx6089", "9", "1", "10", false, 16, big.ToNearestEven},
 	// more LHS swaps
 	// addx6090 add '-56267E-10'   0 ->  '-0.0000056267'
-	{"addx6090", "-56267E-10", "0", "-0.0000056267", 16, big.ToNearestEven},
+	{"addx6090", "-56267E-10", "0", "-0.0000056267", false, 16, big.ToNearestEven},
 	// addx6091 add '-56267E-6'    0 ->  '-0.056267'
-	{"addx6091", "-56267E-6", "0", "-0.056267", 16, big.ToNearestEven},
+	{"addx6091", "-56267E-6", "0", "-0.056267", false, 16, big.ToNearestEven},
 	// addx6092 add '-56267E-5'    0 ->  '-0.56267'
-	{"addx6092", "-56267E-5", "0", "-0.56267", 16, big.ToNearestEven},
+	{"addx6092", "-56267E-5", "0", "-0.56267", false, 16, big.ToNearestEven},
 	// addx6093 add '-56267E-4'    0 ->  '-5.6267'
-	{"addx6093", "-56267E-4", "0", "-5.6267", 16, big.ToNearestEven},
+	{"addx6093", "-56267E-4", "0", "-5.6267", false, 16, big.ToNearestEven},
 	// addx6094 add '-56267E-3'    0 ->  '-56.267'
-	{"addx6094", "-56267E-3", "0", "-56.267", 16, big.ToNearestEven},
+	{"addx6094", "-56267E-3", "0", "-56.267", false, 16, big.ToNearestEven},
 	// addx6095 add '-56267E-2'    0 ->  '-562.67'
-	{"addx6095", "-56267E-2", "0", "-562.67", 16, big.ToNearestEven},
+	{"addx6095", "-56267E-2", "0", "-562.67", false, 16, big.ToNearestEven},
 	// addx6096 add '-56267E-1'    0 ->  '-5626.7'
-	{"addx6096", "-56267E-1", "0", "-5626.7", 16, big.ToNearestEven},
+	{"addx6096", "-56267E-1", "0", "-5626.7", false, 16, big.ToNearestEven},
 	// addx6097 add '-56267E-0'    0 ->  '-56267'
-	{"addx6097", "-56267E-0", "0", "-56267", 16, big.ToNearestEven},
+	{"addx6097", "-56267E-0", "0", "-56267", false, 16, big.ToNearestEven},
 	// addx6098 add '-5E-10'       0 ->  '-5E-10'
-	{"addx6098", "-5E-10", "0", "-5E-10", 16, big.ToNearestEven},
+	{"addx6098", "-5E-10", "0", "-5E-10", false, 16, big.ToNearestEven},
 	// addx6099 add '-5E-7'        0 ->  '-5E-7'
-	{"addx6099", "-5E-7", "0", "-5E-7", 16, big.ToNearestEven},
+	{"addx6099", "-5E-7", "0", "-5E-7", false, 16, big.ToNearestEven},
 	// addx6100 add '-5E-6'        0 ->  '-0.000005'
-	{"addx6100", "-5E-6", "0", "-0.000005", 16, big.ToNearestEven},
+	{"addx6100", "-5E-6", "0", "-0.000005", false, 16, big.ToNearestEven},
 	// addx6101 add '-5E-5'        0 ->  '-0.00005'
-	{"addx6101", "-5E-5", "0", "-0.00005", 16, big.ToNearestEven},
+	{"addx6101", "-5E-5", "0", "-0.00005", false, 16, big.ToNearestEven},
 	// addx6102 add '-5E-4'        0 ->  '-0.0005'
-	{"addx6102", "-5E-4", "0", "-0.0005", 16, big.ToNearestEven},
+	{"addx6102", "-5E-4", "0", "-0.0005", false, 16, big.ToNearestEven},
 	// addx6103 add '-5E-1'        0 ->  '-0.5'
-	{"addx6103", "-5E-1", "0", "-0.5", 16, big.ToNearestEven},
+	{"addx6103", "-5E-1", "0", "-0.5", false, 16, big.ToNearestEven},
 	// addx6104 add '-5E0'         0 ->  '-5'
-	{"addx6104", "-5E0", "0", "-5", 16, big.ToNearestEven},
+	{"addx6104", "-5E0", "0", "-5", false, 16, big.ToNearestEven},
 	// addx6105 add '-5E1'         0 ->  '-50'
-	{"addx6105", "-5E1", "0", "-50", 16, big.ToNearestEven},
+	{"addx6105", "-5E1", "0", "-50", false, 16, big.ToNearestEven},
 	// addx6106 add '-5E5'         0 ->  '-500000'
-	{"addx6106", "-5E5", "0", "-500000", 16, big.ToNearestEven},
+	{"addx6106", "-5E5", "0", "-500000", false, 16, big.ToNearestEven},
 	// addx6107 add '-5E15'        0 ->  '-5000000000000000'
-	{"addx6107", "-5E15", "0", "-5000000000000000", 16, big.ToNearestEven},
+	{"addx6107", "-5E15", "0", "-5000000000000000", false, 16, big.ToNearestEven},
 	// addx6108 add '-5E16'        0 ->  '-5.000000000000000E+16'   Rounded
-	{"addx6108", "-5E16", "0", "-5.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx6108", "-5E16", "0", "-5.000000000000000E+16", false, 16, big.ToNearestEven},
 	// addx6109 add '-5E17'        0 ->  '-5.000000000000000E+17'  Rounded
-	{"addx6109", "-5E17", "0", "-5.000000000000000E+17", 16, big.ToNearestEven},
+	{"addx6109", "-5E17", "0", "-5.000000000000000E+17", false, 16, big.ToNearestEven},
 	// addx6110 add '-5E18'        0 ->  '-5.000000000000000E+18'  Rounded
-	{"addx6110", "-5E18", "0", "-5.000000000000000E+18", 16, big.ToNearestEven},
+	{"addx6110", "-5E18", "0", "-5.000000000000000E+18", false, 16, big.ToNearestEven},
 	// addx6111 add '-5E100'       0 ->  '-5.000000000000000E+100' Rounded
-	{"addx6111", "-5E100", "0", "-5.000000000000000E+100", 16, big.ToNearestEven},
+	{"addx6111", "-5E100", "0", "-5.000000000000000E+100", false, 16, big.ToNearestEven},
 	// more RHS swaps
 	// addx6113 add 0  '-56267E-10' ->  '-0.0000056267'
-	{"addx6113", "0", "-56267E-10", "-0.0000056267", 16, big.ToNearestEven},
+	{"addx6113", "0", "-56267E-10", "-0.0000056267", false, 16, big.ToNearestEven},
 	// addx6114 add 0  '-56267E-6'  ->  '-0.056267'
-	{"addx6114", "0", "-56267E-6", "-0.056267", 16, big.ToNearestEven},
+	{"addx6114", "0", "-56267E-6", "-0.056267", false, 16, big.ToNearestEven},
 	// addx6116 add 0  '-56267E-5'  ->  '-0.56267'
-	{"addx6116", "0", "-56267E-5", "-0.56267", 16, big.ToNearestEven},
+	{"addx6116", "0", "-56267E-5", "-0.56267", false, 16, big.ToNearestEven},
 	// addx6117 add 0  '-56267E-4'  ->  '-5.6267'
-	{"addx6117", "0", "-56267E-4", "-5.6267", 16, big.ToNearestEven},
+	{"addx6117", "0", "-56267E-4", "-5.6267", false, 16, big.ToNearestEven},
 	// addx6119 add 0  '-56267E-3'  ->  '-56.267'
-	{"addx6119", "0", "-56267E-3", "-56.267", 16, big.ToNearestEven},
+	{"addx6119", "0", "-56267E-3", "-56.267", false, 16, big.ToNearestEven},
 	// addx6120 add 0  '-56267E-2'  ->  '-562.67'
-	{"addx6120", "0", "-56267E-2", "-562.67", 16, big.ToNearestEven},
+	{"addx6120", "0", "-56267E-2", "-562.67", false, 16, big.ToNearestEven},
 	// addx6121 add 0  '-56267E-1'  ->  '-5626.7'
-	{"addx6121", "0", "-56267E-1", "-5626.7", 16, big.ToNearestEven},
+	{"addx6121", "0", "-56267E-1", "-5626.7", false, 16, big.ToNearestEven},
 	// addx6122 add 0  '-56267E-0'  ->  '-56267'
-	{"addx6122", "0", "-56267E-0", "-56267", 16, big.ToNearestEven},
+	{"addx6122", "0", "-56267E-0", "-56267", false, 16, big.ToNearestEven},
 	// addx6123 add 0  '-5E-10'     ->  '-5E-10'
-	{"addx6123", "0", "-5E-10", "-5E-10", 16, big.ToNearestEven},
+	{"addx6123", "0", "-5E-10", "-5E-10", false, 16, big.ToNearestEven},
 	// addx6124 add 0  '-5E-7'      ->  '-5E-7'
-	{"addx6124", "0", "-5E-7", "-5E-7", 16, big.ToNearestEven},
+	{"addx6124", "0", "-5E-7", "-5E-7", false, 16, big.ToNearestEven},
 	// addx6125 add 0  '-5E-6'      ->  '-0.000005'
-	{"addx6125", "0", "-5E-6", "-0.000005", 16, big.ToNearestEven},
+	{"addx6125", "0", "-5E-6", "-0.000005", false, 16, big.ToNearestEven},
 	// addx6126 add 0  '-5E-5'      ->  '-0.00005'
-	{"addx6126", "0", "-5E-5", "-0.00005", 16, big.ToNearestEven},
+	{"addx6126", "0", "-5E-5", "-0.00005", false, 16, big.ToNearestEven},
 	// addx6127 add 0  '-5E-4'      ->  '-0.0005'
-	{"addx6127", "0", "-5E-4", "-0.0005", 16, big.ToNearestEven},
+	{"addx6127", "0", "-5E-4", "-0.0005", false, 16, big.ToNearestEven},
 	// addx6128 add 0  '-5E-1'      ->  '-0.5'
-	{"addx6128", "0", "-5E-1", "-0.5", 16, big.ToNearestEven},
+	{"addx6128", "0", "-5E-1", "-0.5", false, 16, big.ToNearestEven},
 	// addx6129 add 0  '-5E0'       ->  '-5'
-	{"addx6129", "0", "-5E0", "-5", 16, big.ToNearestEven},
+	{"addx6129", "0", "-5E0", "-5", false, 16, big.ToNearestEven},
 	// addx6130 add 0  '-5E1'       ->  '-50'
-	{"addx6130", "0", "-5E1", "-50", 16, big.ToNearestEven},
+	{"addx6130", "0", "-5E1", "-50", false, 16, big.ToNearestEven},
 	// addx6131 add 0  '-5E5'       ->  '-500000'
-	{"addx6131", "0", "-5E5", "-500000", 16, big.ToNearestEven},
+	{"addx6131", "0", "-5E5", "-500000", false, 16, big.ToNearestEven},
 	// addx6132 add 0  '-5E15'      ->  '-5000000000000000'
-	{"addx6132", "0", "-5E15", "-5000000000000000", 16, big.ToNearestEven},
+	{"addx6132", "0", "-5E15", "-5000000000000000", false, 16, big.ToNearestEven},
 	// addx6133 add 0  '-5E16'      ->  '-5.000000000000000E+16'   Rounded
-	{"addx6133", "0", "-5E16", "-5.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx6133", "0", "-5E16", "-5.000000000000000E+16", false, 16, big.ToNearestEven},
 	// addx6134 add 0  '-5E17'      ->  '-5.000000000000000E+17'   Rounded
-	{"addx6134", "0", "-5E17", "-5.000000000000000E+17", 16, big.ToNearestEven},
+	{"addx6134", "0", "-5E17", "-5.000000000000000E+17", false, 16, big.ToNearestEven},
 	// addx6135 add 0  '-5E18'      ->  '-5.000000000000000E+18'   Rounded
-	{"addx6135", "0", "-5E18", "-5.000000000000000E+18", 16, big.ToNearestEven},
+	{"addx6135", "0", "-5E18", "-5.000000000000000E+18", false, 16, big.ToNearestEven},
 	// addx6136 add 0  '-5E100'     ->  '-5.000000000000000E+100'  Rounded
-	{"addx6136", "0", "-5E100", "-5.000000000000000E+100", 16, big.ToNearestEven},
+	{"addx6136", "0", "-5E100", "-5.000000000000000E+100", false, 16, big.ToNearestEven},
 	// related
 	// addx6137 add  1  '0E-19'      ->  '1.000000000000000'  Rounded
-	{"addx6137", "1", "0E-19", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6137", "1", "0E-19", "1.000000000000000", false, 16, big.ToNearestEven},
 	// addx6138 add -1  '0E-19'      ->  '-1.000000000000000' Rounded
-	{"addx6138", "-1", "0E-19", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6138", "-1", "0E-19", "-1.000000000000000", false, 16, big.ToNearestEven},
 	// addx6139 add '0E-19' 1        ->  '1.000000000000000'  Rounded
-	{"addx6139", "0E-19", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6139", "0E-19", "1", "1.000000000000000", false, 16, big.ToNearestEven},
 	// addx6140 add '0E-19' -1       ->  '-1.000000000000000' Rounded
-	{"addx6140", "0E-19", "-1", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6140", "0E-19", "-1", "-1.000000000000000", false, 16, big.ToNearestEven},
 	// addx6141 add 1E+11   0.0000   ->  '100000000000.0000'
-	{"addx6141", "1E+11", "0.0000", "100000000000.0000", 16, big.ToNearestEven},
+	{"addx6141", "1E+11", "0.0000", "100000000000.0000", false, 16, big.ToNearestEven},
 	// addx6142 add 1E+11   0.00000  ->  '100000000000.0000'  Rounded
-	{"addx6142", "1E+11", "0.00000", "100000000000.0000", 16, big.ToNearestEven},
+	{"addx6142", "1E+11", "0.00000", "100000000000.0000", false, 16, big.ToNearestEven},
 	// addx6143 add 0.000   1E+12    ->  '1000000000000.000'
-	{"addx6143", "0.000", "1E+12", "1000000000000.000", 16, big.ToNearestEven},
+	{"addx6143", "0.000", "1E+12", "1000000000000.000", false, 16, big.ToNearestEven},
 	// addx6144 add 0.0000  1E+12    ->  '1000000000000.000'  Rounded
-	{"addx6144", "0.0000", "1E+12", "1000000000000.000", 16, big.ToNearestEven},
+	{"addx6144", "0.0000", "1E+12", "1000000000000.000", false, 16, big.ToNearestEven},
 	// [some of the next group are really constructor tests]
 	// addx6146 add '00.0'  0       ->  '0.0'
-	{"addx6146", "00.0", "0", "0.0", 16, big.ToNearestEven},
+	{"addx6146", "00.0", "0", "0.0", false, 16, big.ToNearestEven},
 	// addx6147 add '0.00'  0       ->  '0.00'
-	{"addx6147", "0.00", "0", "0.00", 16, big.ToNearestEven},
+	{"addx6147", "0.00", "0", "0.00", false, 16, big.ToNearestEven},
 	// addx6148 add  0      '0.00'  ->  '0.00'
-	{"addx6148", "0", "0.00", "0.00", 16, big.ToNearestEven},
+	{"addx6148", "0", "0.00", "0.00", false, 16, big.ToNearestEven},
 	// addx6149 add  0      '00.0'  ->  '0.0'
-	{"addx6149", "0", "00.0", "0.0", 16, big.ToNearestEven},
+	{"addx6149", "0", "00.0", "0.0", false, 16, big.ToNearestEven},
 	// addx6150 add '00.0'  '0.00'  ->  '0.00'
-	{"addx6150", "00.0", "0.00", "0.00", 16, big.ToNearestEven},
+	{"addx6150", "00.0", "0.00", "0.00", false, 16, big.ToNearestEven},
 	// addx6151 add '0.00'  '00.0'  ->  '0.00'
-	{"addx6151", "0.00", "00.0", "0.00", 16, big.ToNearestEven},
+	{"addx6151", "0.00", "00.0", "0.00", false, 16, big.ToNearestEven},
 	// addx6152 add '3'     '.3'    ->  '3.3'
-	{"addx6152", "3", ".3", "3.3", 16, big.ToNearestEven},
+	{"addx6152", "3", ".3", "3.3", false, 16, big.ToNearestEven},
 	// addx6153 add '3.'    '.3'    ->  '3.3'
-	{"addx6153", "3.", ".3", "3.3", 16, big.ToNearestEven},
+	{"addx6153", "3.", ".3", "3.3", false, 16, big.ToNearestEven},
 	// addx6154 add '3.0'   '.3'    ->  '3.3'
-	{"addx6154", "3.0", ".3", "3.3", 16, big.ToNearestEven},
+	{"addx6154", "3.0", ".3", "3.3", false, 16, big.ToNearestEven},
 	// addx6155 add '3.00'  '.3'    ->  '3.30'
-	{"addx6155", "3.00", ".3", "3.30", 16, big.ToNearestEven},
+	{"addx6155", "3.00", ".3", "3.30", false, 16, big.ToNearestEven},
 	// addx6156 add '3'     '3'     ->  '6'
-	{"addx6156", "3", "3", "6", 16, big.ToNearestEven},
+	{"addx6156", "3", "3", "6", false, 16, big.ToNearestEven},
 	// addx6157 add '3'     '+3'    ->  '6'
-	{"addx6157", "3", "+3", "6", 16, big.ToNearestEven},
+	{"addx6157", "3", "+3", "6", false, 16, big.ToNearestEven},
 	// addx6158 add '3'     '-3'    ->  '0'
-	{"addx6158", "3", "-3", "0", 16, big.ToNearestEven},
+	{"addx6158", "3", "-3", "0", false, 16, big.ToNearestEven},
 	// addx6159 add '0.3'   '-0.3'  ->  '0.0'
-	{"addx6159", "0.3", "-0.3", "0.0", 16, big.ToNearestEven},
+	{"addx6159", "0.3", "-0.3", "0.0", false, 16, big.ToNearestEven},
 	// addx6160 add '0.03'  '-0.03' ->  '0.00'
-	{"addx6160", "0.03", "-0.03", "0.00", 16, big.ToNearestEven},
+	{"addx6160", "0.03", "-0.03", "0.00", false, 16, big.ToNearestEven},
 	// try borderline precision, with carries, etc.
 	// addx6161 add '1E+13' '-1'    -> '9999999999999'
-	{"addx6161", "1E+13", "-1", "9999999999999", 16, big.ToNearestEven},
+	{"addx6161", "1E+13", "-1", "9999999999999", false, 16, big.ToNearestEven},
 	// addx6162 add '1E+13'  '1.11' -> '10000000000001.11'
-	{"addx6162", "1E+13", "1.11", "10000000000001.11", 16, big.ToNearestEven},
+	{"addx6162", "1E+13", "1.11", "10000000000001.11", false, 16, big.ToNearestEven},
 	// addx6163 add '1.11'  '1E+13' -> '10000000000001.11'
-	{"addx6163", "1.11", "1E+13", "10000000000001.11", 16, big.ToNearestEven},
+	{"addx6163", "1.11", "1E+13", "10000000000001.11", false, 16, big.ToNearestEven},
 	// addx6164 add '-1'    '1E+13' -> '9999999999999'
-	{"addx6164", "-1", "1E+13", "9999999999999", 16, big.ToNearestEven},
+	{"addx6164", "-1", "1E+13", "9999999999999", false, 16, big.ToNearestEven},
 	// addx6165 add '7E+13' '-1'    -> '69999999999999'
-	{"addx6165", "7E+13", "-1", "69999999999999", 16, big.ToNearestEven},
+	{"addx6165", "7E+13", "-1", "69999999999999", false, 16, big.ToNearestEven},
 	// addx6166 add '7E+13'  '1.11' -> '70000000000001.11'
-	{"addx6166", "7E+13", "1.11", "70000000000001.11", 16, big.ToNearestEven},
+	{"addx6166", "7E+13", "1.11", "70000000000001.11", false, 16, big.ToNearestEven},
 	// addx6167 add '1.11'  '7E+13' -> '70000000000001.11'
-	{"addx6167", "1.11", "7E+13", "70000000000001.11", 16, big.ToNearestEven},
+	{"addx6167", "1.11", "7E+13", "70000000000001.11", false, 16, big.ToNearestEven},
 	// addx6168 add '-1'    '7E+13' -> '69999999999999'
-	{"addx6168", "-1", "7E+13", "69999999999999", 16, big.ToNearestEven},
+	{"addx6168", "-1", "7E+13", "69999999999999", false, 16, big.ToNearestEven},
 	//             1234567890123456      1234567890123456      1 234567890123456
 	// addx6170 add '0.4444444444444444'  '0.5555555555555563' -> '1.000000000000001' Inexact Rounded
-	{"addx6170", "0.4444444444444444", "0.5555555555555563", "1.000000000000001", 16, big.ToNearestEven},
+	{"addx6170", "0.4444444444444444", "0.5555555555555563", "1.000000000000001", true, 16, big.ToNearestEven},
 	// addx6171 add '0.4444444444444444'  '0.5555555555555562' -> '1.000000000000001' Inexact Rounded
-	{"addx6171", "0.4444444444444444", "0.5555555555555562", "1.000000000000001", 16, big.ToNearestEven},
+	{"addx6171", "0.4444444444444444", "0.5555555555555562", "1.000000000000001", true, 16, big.ToNearestEven},
 	// addx6172 add '0.4444444444444444'  '0.5555555555555561' -> '1.000000000000000' Inexact Rounded
-	{"addx6172", "0.4444444444444444", "0.5555555555555561", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6172", "0.4444444444444444", "0.5555555555555561", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6173 add '0.4444444444444444'  '0.5555555555555560' -> '1.000000000000000' Inexact Rounded
-	{"addx6173", "0.4444444444444444", "0.5555555555555560", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6173", "0.4444444444444444", "0.5555555555555560", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6174 add '0.4444444444444444'  '0.5555555555555559' -> '1.000000000000000' Inexact Rounded
-	{"addx6174", "0.4444444444444444", "0.5555555555555559", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6174", "0.4444444444444444", "0.5555555555555559", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6175 add '0.4444444444444444'  '0.5555555555555558' -> '1.000000000000000' Inexact Rounded
-	{"addx6175", "0.4444444444444444", "0.5555555555555558", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6175", "0.4444444444444444", "0.5555555555555558", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6176 add '0.4444444444444444'  '0.5555555555555557' -> '1.000000000000000' Inexact Rounded
-	{"addx6176", "0.4444444444444444", "0.5555555555555557", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6176", "0.4444444444444444", "0.5555555555555557", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6177 add '0.4444444444444444'  '0.5555555555555556' -> '1.000000000000000' Rounded
-	{"addx6177", "0.4444444444444444", "0.5555555555555556", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6177", "0.4444444444444444", "0.5555555555555556", "1.000000000000000", false, 16, big.ToNearestEven},
 	// addx6178 add '0.4444444444444444'  '0.5555555555555555' -> '0.9999999999999999'
-	{"addx6178", "0.4444444444444444", "0.5555555555555555", "0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6178", "0.4444444444444444", "0.5555555555555555", "0.9999999999999999", false, 16, big.ToNearestEven},
 	// addx6179 add '0.4444444444444444'  '0.5555555555555554' -> '0.9999999999999998'
-	{"addx6179", "0.4444444444444444", "0.5555555555555554", "0.9999999999999998", 16, big.ToNearestEven},
+	{"addx6179", "0.4444444444444444", "0.5555555555555554", "0.9999999999999998", false, 16, big.ToNearestEven},
 	// addx6180 add '0.4444444444444444'  '0.5555555555555553' -> '0.9999999999999997'
-	{"addx6180", "0.4444444444444444", "0.5555555555555553", "0.9999999999999997", 16, big.ToNearestEven},
+	{"addx6180", "0.4444444444444444", "0.5555555555555553", "0.9999999999999997", false, 16, big.ToNearestEven},
 	// addx6181 add '0.4444444444444444'  '0.5555555555555552' -> '0.9999999999999996'
-	{"addx6181", "0.4444444444444444", "0.5555555555555552", "0.9999999999999996", 16, big.ToNearestEven},
+	{"addx6181", "0.4444444444444444", "0.5555555555555552", "0.9999999999999996", false, 16, big.ToNearestEven},
 	// addx6182 add '0.4444444444444444'  '0.5555555555555551' -> '0.9999999999999995'
-	{"addx6182", "0.4444444444444444", "0.5555555555555551", "0.9999999999999995", 16, big.ToNearestEven},
+	{"addx6182", "0.4444444444444444", "0.5555555555555551", "0.9999999999999995", false, 16, big.ToNearestEven},
 	// addx6183 add '0.4444444444444444'  '0.5555555555555550' -> '0.9999999999999994'
-	{"addx6183", "0.4444444444444444", "0.5555555555555550", "0.9999999999999994", 16, big.ToNearestEven},
+	{"addx6183", "0.4444444444444444", "0.5555555555555550", "0.9999999999999994", false, 16, big.ToNearestEven},
 	// and some more, including residue effects and different roundings
 	// rounding: half_up
 	// addx6200 add '6543210123456789' 0             -> '6543210123456789'
-	{"addx6200", "6543210123456789", "0", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6200", "6543210123456789", "0", "6543210123456789", false, 16, big.ToNearestAway},
 	// addx6201 add '6543210123456789' 0.000000001   -> '6543210123456789' Inexact Rounded
-	{"addx6201", "6543210123456789", "0.000000001", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6201", "6543210123456789", "0.000000001", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6202 add '6543210123456789' 0.000001      -> '6543210123456789' Inexact Rounded
-	{"addx6202", "6543210123456789", "0.000001", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6202", "6543210123456789", "0.000001", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6203 add '6543210123456789' 0.1           -> '6543210123456789' Inexact Rounded
-	{"addx6203", "6543210123456789", "0.1", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6203", "6543210123456789", "0.1", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6204 add '6543210123456789' 0.4           -> '6543210123456789' Inexact Rounded
-	{"addx6204", "6543210123456789", "0.4", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6204", "6543210123456789", "0.4", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6205 add '6543210123456789' 0.49          -> '6543210123456789' Inexact Rounded
-	{"addx6205", "6543210123456789", "0.49", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6205", "6543210123456789", "0.49", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6206 add '6543210123456789' 0.499999      -> '6543210123456789' Inexact Rounded
-	{"addx6206", "6543210123456789", "0.499999", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6206", "6543210123456789", "0.499999", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6207 add '6543210123456789' 0.499999999   -> '6543210123456789' Inexact Rounded
-	{"addx6207", "6543210123456789", "0.499999999", "6543210123456789", 16, big.ToNearestAway},
+	{"addx6207", "6543210123456789", "0.499999999", "6543210123456789", true, 16, big.ToNearestAway},
 	// addx6208 add '6543210123456789' 0.5           -> '6543210123456790' Inexact Rounded
-	{"addx6208", "6543210123456789", "0.5", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6208", "6543210123456789", "0.5", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6209 add '6543210123456789' 0.500000001   -> '6543210123456790' Inexact Rounded
-	{"addx6209", "6543210123456789", "0.500000001", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6209", "6543210123456789", "0.500000001", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6210 add '6543210123456789' 0.500001      -> '6543210123456790' Inexact Rounded
-	{"addx6210", "6543210123456789", "0.500001", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6210", "6543210123456789", "0.500001", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6211 add '6543210123456789' 0.51          -> '6543210123456790' Inexact Rounded
-	{"addx6211", "6543210123456789", "0.51", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6211", "6543210123456789", "0.51", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6212 add '6543210123456789' 0.6           -> '6543210123456790' Inexact Rounded
-	{"addx6212", "6543210123456789", "0.6", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6212", "6543210123456789", "0.6", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6213 add '6543210123456789' 0.9           -> '6543210123456790' Inexact Rounded
-	{"addx6213", "6543210123456789", "0.9", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6213", "6543210123456789", "0.9", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6214 add '6543210123456789' 0.99999       -> '6543210123456790' Inexact Rounded
-	{"addx6214", "6543210123456789", "0.99999", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6214", "6543210123456789", "0.99999", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6215 add '6543210123456789' 0.999999999   -> '6543210123456790' Inexact Rounded
-	{"addx6215", "6543210123456789", "0.999999999", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6215", "6543210123456789", "0.999999999", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6216 add '6543210123456789' 1             -> '6543210123456790'
-	{"addx6216", "6543210123456789", "1", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6216", "6543210123456789", "1", "6543210123456790", false, 16, big.ToNearestAway},
 	// addx6217 add '6543210123456789' 1.000000001   -> '6543210123456790' Inexact Rounded
-	{"addx6217", "6543210123456789", "1.000000001", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6217", "6543210123456789", "1.000000001", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6218 add '6543210123456789' 1.00001       -> '6543210123456790' Inexact Rounded
-	{"addx6218", "6543210123456789", "1.00001", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6218", "6543210123456789", "1.00001", "6543210123456790", true, 16, big.ToNearestAway},
 	// addx6219 add '6543210123456789' 1.1           -> '6543210123456790' Inexact Rounded
-	{"addx6219", "6543210123456789", "1.1", "6543210123456790", 16, big.ToNearestAway},
+	{"addx6219", "6543210123456789", "1.1", "6543210123456790", true, 16, big.ToNearestAway},
 	// rounding: half_even
 	// addx6220 add '6543210123456789' 0             -> '6543210123456789'
-	{"addx6220", "6543210123456789", "0", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6220", "6543210123456789", "0", "6543210123456789", false, 16, big.ToNearestEven},
 	// addx6221 add '6543210123456789' 0.000000001   -> '6543210123456789' Inexact Rounded
-	{"addx6221", "6543210123456789", "0.000000001", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6221", "6543210123456789", "0.000000001", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6222 add '6543210123456789' 0.000001      -> '6543210123456789' Inexact Rounded
-	{"addx6222", "6543210123456789", "0.000001", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6222", "6543210123456789", "0.000001", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6223 add '6543210123456789' 0.1           -> '6543210123456789' Inexact Rounded
-	{"addx6223", "6543210123456789", "0.1", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6223", "6543210123456789", "0.1", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6224 add '6543210123456789' 0.4           -> '6543210123456789' Inexact Rounded
-	{"addx6224", "6543210123456789", "0.4", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6224", "6543210123456789", "0.4", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6225 add '6543210123456789' 0.49          -> '6543210123456789' Inexact Rounded
-	{"addx6225", "6543210123456789", "0.49", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6225", "6543210123456789", "0.49", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6226 add '6543210123456789' 0.499999      -> '6543210123456789' Inexact Rounded
-	{"addx6226", "6543210123456789", "0.499999", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6226", "6543210123456789", "0.499999", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6227 add '6543210123456789' 0.499999999   -> '6543210123456789' Inexact Rounded
-	{"addx6227", "6543210123456789", "0.499999999", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6227", "6543210123456789", "0.499999999", "6543210123456789", true, 16, big.ToNearestEven},
 	// addx6228 add '6543210123456789' 0.5           -> '6543210123456790' Inexact Rounded
-	{"addx6228", "6543210123456789", "0.5", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6228", "6543210123456789", "0.5", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6229 add '6543210123456789' 0.500000001   -> '6543210123456790' Inexact Rounded
-	{"addx6229", "6543210123456789", "0.500000001", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6229", "6543210123456789", "0.500000001", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6230 add '6543210123456789' 0.500001      -> '6543210123456790' Inexact Rounded
-	{"addx6230", "6543210123456789", "0.500001", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6230", "6543210123456789", "0.500001", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6231 add '6543210123456789' 0.51          -> '6543210123456790' Inexact Rounded
-	{"addx6231", "6543210123456789", "0.51", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6231", "6543210123456789", "0.51", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6232 add '6543210123456789' 0.6           -> '6543210123456790' Inexact Rounded
-	{"addx6232", "6543210123456789", "0.6", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6232", "6543210123456789", "0.6", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6233 add '6543210123456789' 0.9           -> '6543210123456790' Inexact Rounded
-	{"addx6233", "6543210123456789", "0.9", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6233", "6543210123456789", "0.9", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6234 add '6543210123456789' 0.99999       -> '6543210123456790' Inexact Rounded
-	{"addx6234", "6543210123456789", "0.99999", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6234", "6543210123456789", "0.99999", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6235 add '6543210123456789' 0.999999999   -> '6543210123456790' Inexact Rounded
-	{"addx6235", "6543210123456789", "0.999999999", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6235", "6543210123456789", "0.999999999", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6236 add '6543210123456789' 1             -> '6543210123456790'
-	{"addx6236", "6543210123456789", "1", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6236", "6543210123456789", "1", "6543210123456790", false, 16, big.ToNearestEven},
 	// addx6237 add '6543210123456789' 1.00000001    -> '6543210123456790' Inexact Rounded
-	{"addx6237", "6543210123456789", "1.00000001", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6237", "6543210123456789", "1.00000001", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6238 add '6543210123456789' 1.00001       -> '6543210123456790' Inexact Rounded
-	{"addx6238", "6543210123456789", "1.00001", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6238", "6543210123456789", "1.00001", "6543210123456790", true, 16, big.ToNearestEven},
 	// addx6239 add '6543210123456789' 1.1           -> '6543210123456790' Inexact Rounded
-	{"addx6239", "6543210123456789", "1.1", "6543210123456790", 16, big.ToNearestEven},
+	{"addx6239", "6543210123456789", "1.1", "6543210123456790", true, 16, big.ToNearestEven},
 	// critical few with even bottom digit...
 	// addx6240 add '6543210123456788' 0.499999999   -> '6543210123456788' Inexact Rounded
-	{"addx6240", "6543210123456788", "0.499999999", "6543210123456788", 16, big.ToNearestEven},
+	{"addx6240", "6543210123456788", "0.499999999", "6543210123456788", true, 16, big.ToNearestEven},
 	// addx6241 add '6543210123456788' 0.5           -> '6543210123456788' Inexact Rounded
-	{"addx6241", "6543210123456788", "0.5", "6543210123456788", 16, big.ToNearestEven},
+	{"addx6241", "6543210123456788", "0.5", "6543210123456788", true, 16, big.ToNearestEven},
 	// addx6242 add '6543210123456788' 0.500000001   -> '6543210123456789' Inexact Rounded
-	{"addx6242", "6543210123456788", "0.500000001", "6543210123456789", 16, big.ToNearestEven},
+	{"addx6242", "6543210123456788", "0.500000001", "6543210123456789", true, 16, big.ToNearestEven},
 	// rounding: down
 	// addx6250 add '6543210123456789' 0             -> '6543210123456789'
-	{"addx6250", "6543210123456789", "0", "6543210123456789", 16, big.ToZero},
+	{"addx6250", "6543210123456789", "0", "6543210123456789", false, 16, big.ToZero},
 	// addx6251 add '6543210123456789' 0.000000001   -> '6543210123456789' Inexact Rounded
-	{"addx6251", "6543210123456789", "0.000000001", "6543210123456789", 16, big.ToZero},
+	{"addx6251", "6543210123456789", "0.000000001", "6543210123456789", true, 16, big.ToZero},
 	// addx6252 add '6543210123456789' 0.000001      -> '6543210123456789' Inexact Rounded
-	{"addx6252", "6543210123456789", "0.000001", "6543210123456789", 16, big.ToZero},
+	{"addx6252", "6543210123456789", "0.000001", "6543210123456789", true, 16, big.ToZero},
 	// addx6253 add '6543210123456789' 0.1           -> '6543210123456789' Inexact Rounded
-	{"addx6253", "6543210123456789", "0.1", "6543210123456789", 16, big.ToZero},
+	{"addx6253", "6543210123456789", "0.1", "6543210123456789", true, 16, big.ToZero},
 	// addx6254 add '6543210123456789' 0.4           -> '6543210123456789' Inexact Rounded
-	{"addx6254", "6543210123456789", "0.4", "6543210123456789", 16, big.ToZero},
+	{"addx6254", "6543210123456789", "0.4", "6543210123456789", true, 16, big.ToZero},
 	// addx6255 add '6543210123456789' 0.49          -> '6543210123456789' Inexact Rounded
-	{"addx6255", "6543210123456789", "0.49", "6543210123456789", 16, big.ToZero},
+	{"addx6255", "6543210123456789", "0.49", "6543210123456789", true, 16, big.ToZero},
 	// addx6256 add '6543210123456789' 0.499999      -> '6543210123456789' Inexact Rounded
-	{"addx6256", "6543210123456789", "0.499999", "6543210123456789", 16, big.ToZero},
+	{"addx6256", "6543210123456789", "0.499999", "6543210123456789", true, 16, big.ToZero},
 	// addx6257 add '6543210123456789' 0.499999999   -> '6543210123456789' Inexact Rounded
-	{"addx6257", "6543210123456789", "0.499999999", "6543210123456789", 16, big.ToZero},
+	{"addx6257", "6543210123456789", "0.499999999", "6543210123456789", true, 16, big.ToZero},
 	// addx6258 add '6543210123456789' 0.5           -> '6543210123456789' Inexact Rounded
-	{"addx6258", "6543210123456789", "0.5", "6543210123456789", 16, big.ToZero},
+	{"addx6258", "6543210123456789", "0.5", "6543210123456789", true, 16, big.ToZero},
 	// addx6259 add '6543210123456789' 0.500000001   -> '6543210123456789' Inexact Rounded
-	{"addx6259", "6543210123456789", "0.500000001", "6543210123456789", 16, big.ToZero},
+	{"addx6259", "6543210123456789", "0.500000001", "6543210123456789", true, 16, big.ToZero},
 	// addx6260 add '6543210123456789' 0.500001      -> '6543210123456789' Inexact Rounded
-	{"addx6260", "6543210123456789", "0.500001", "6543210123456789", 16, big.ToZero},
+	{"addx6260", "6543210123456789", "0.500001", "6543210123456789", true, 16, big.ToZero},
 	// addx6261 add '6543210123456789' 0.51          -> '6543210123456789' Inexact Rounded
-	{"addx6261", "6543210123456789", "0.51", "6543210123456789", 16, big.ToZero},
+	{"addx6261", "6543210123456789", "0.51", "6543210123456789", true, 16, big.ToZero},
 	// addx6262 add '6543210123456789' 0.6           -> '6543210123456789' Inexact Rounded
-	{"addx6262", "6543210123456789", "0.6", "6543210123456789", 16, big.ToZero},
+	{"addx6262", "6543210123456789", "0.6", "6543210123456789", true, 16, big.ToZero},
 	// addx6263 add '6543210123456789' 0.9           -> '6543210123456789' Inexact Rounded
-	{"addx6263", "6543210123456789", "0.9", "6543210123456789", 16, big.ToZero},
+	{"addx6263", "6543210123456789", "0.9", "6543210123456789", true, 16, big.ToZero},
 	// addx6264 add '6543210123456789' 0.99999       -> '6543210123456789' Inexact Rounded
-	{"addx6264", "6543210123456789", "0.99999", "6543210123456789", 16, big.ToZero},
+	{"addx6264", "6543210123456789", "0.99999", "6543210123456789", true, 16, big.ToZero},
 	// addx6265 add '6543210123456789' 0.999999999   -> '6543210123456789' Inexact Rounded
-	{"addx6265", "6543210123456789", "0.999999999", "6543210123456789", 16, big.ToZero},
+	{"addx6265", "6543210123456789", "0.999999999", "6543210123456789", true, 16, big.ToZero},
 	// addx6266 add '6543210123456789' 1             -> '6543210123456790'
-	{"addx6266", "6543210123456789", "1", "6543210123456790", 16, big.ToZero},
+	{"addx6266", "6543210123456789", "1", "6543210123456790", false, 16, big.ToZero},
 	// addx6267 add '6543210123456789' 1.00000001    -> '6543210123456790' Inexact Rounded
-	{"addx6267", "6543210123456789", "1.00000001", "6543210123456790", 16, big.ToZero},
+	{"addx6267", "6543210123456789", "1.00000001", "6543210123456790", true, 16, big.ToZero},
 	// addx6268 add '6543210123456789' 1.00001       -> '6543210123456790' Inexact Rounded
-	{"addx6268", "6543210123456789", "1.00001", "6543210123456790", 16, big.ToZero},
+	{"addx6268", "6543210123456789", "1.00001", "6543210123456790", true, 16, big.ToZero},
 	// addx6269 add '6543210123456789' 1.1           -> '6543210123456790' Inexact Rounded
-	{"addx6269", "6543210123456789", "1.1", "6543210123456790", 16, big.ToZero},
+	{"addx6269", "6543210123456789", "1.1", "6543210123456790", true, 16, big.ToZero},
 	// 1 in last place tests
 	// rounding: half_even
 	// addx6301 add  -1   1      ->   0
-	{"addx6301", "-1", "1", "0", 16, big.ToNearestEven},
+	{"addx6301", "-1", "1", "0", false, 16, big.ToNearestEven},
 	// addx6302 add   0   1      ->   1
-	{"addx6302", "0", "1", "1", 16, big.ToNearestEven},
+	{"addx6302", "0", "1", "1", false, 16, big.ToNearestEven},
 	// addx6303 add   1   1      ->   2
-	{"addx6303", "1", "1", "2", 16, big.ToNearestEven},
+	{"addx6303", "1", "1", "2", false, 16, big.ToNearestEven},
 	// addx6304 add  12   1      ->  13
-	{"addx6304", "12", "1", "13", 16, big.ToNearestEven},
+	{"addx6304", "12", "1", "13", false, 16, big.ToNearestEven},
 	// addx6305 add  98   1      ->  99
-	{"addx6305", "98", "1", "99", 16, big.ToNearestEven},
+	{"addx6305", "98", "1", "99", false, 16, big.ToNearestEven},
 	// addx6306 add  99   1      -> 100
-	{"addx6306", "99", "1", "100", 16, big.ToNearestEven},
+	{"addx6306", "99", "1", "100", false, 16, big.ToNearestEven},
 	// addx6307 add 100   1      -> 101
-	{"addx6307", "100", "1", "101", 16, big.ToNearestEven},
+	{"addx6307", "100", "1", "101", false, 16, big.ToNearestEven},
 	// addx6308 add 101   1      -> 102
-	{"addx6308", "101", "1", "102", 16, big.ToNearestEven},
+	{"addx6308", "101", "1", "102", false, 16, big.ToNearestEven},
 	// addx6309 add  -1  -1      ->  -2
-	{"addx6309", "-1", "-1", "-2", 16, big.ToNearestEven},
+	{"addx6309", "-1", "-1", "-2", false, 16, big.ToNearestEven},
 	// addx6310 add   0  -1      ->  -1
-	{"addx6310", "0", "-1", "-1", 16, big.ToNearestEven},
+	{"addx6310", "0", "-1", "-1", false, 16, big.ToNearestEven},
 	// addx6311 add   1  -1      ->   0
-	{"addx6311", "1", "-1", "0", 16, big.ToNearestEven},
+	{"addx6311", "1", "-1", "0", false, 16, big.ToNearestEven},
 	// addx6312 add  12  -1      ->  11
-	{"addx6312", "12", "-1", "11", 16, big.ToNearestEven},
+	{"addx6312", "12", "-1", "11", false, 16, big.ToNearestEven},
 	// addx6313 add  98  -1      ->  97
-	{"addx6313", "98", "-1", "97", 16, big.ToNearestEven},
+	{"addx6313", "98", "-1", "97", false, 16, big.ToNearestEven},
 	// addx6314 add  99  -1      ->  98
-	{"addx6314", "99", "-1", "98", 16, big.ToNearestEven},
+	{"addx6314", "99", "-1", "98", false, 16, big.ToNearestEven},
 	// addx6315 add 100  -1      ->  99
-	{"addx6315", "100", "-1", "99", 16, big.ToNearestEven},
+	{"addx6315", "100", "-1", "99", false, 16, big.ToNearestEven},
 	// addx6316 add 101  -1      -> 100
-	{"addx6316", "101", "-1", "100", 16, big.ToNearestEven},
+	{"addx6316", "101", "-1", "100", false, 16, big.ToNearestEven},
 	// addx6321 add -0.01  0.01    ->  0.00
-	{"addx6321", "-0.01", "0.01", "0.00", 16, big.ToNearestEven},
+	{"addx6321", "-0.01", "0.01", "0.00", false, 16, big.ToNearestEven},
 	// addx6322 add  0.00  0.01    ->  0.01
-	{"addx6322", "0.00", "0.01", "0.01", 16, big.ToNearestEven},
+	{"addx6322", "0.00", "0.01", "0.01", false, 16, big.ToNearestEven},
 	// addx6323 add  0.01  0.01    ->  0.02
-	{"addx6323", "0.01", "0.01", "0.02", 16, big.ToNearestEven},
+	{"addx6323", "0.01", "0.01", "0.02", false, 16, big.ToNearestEven},
 	// addx6324 add  0.12  0.01    ->  0.13
-	{"addx6324", "0.12", "0.01", "0.13", 16, big.ToNearestEven},
+	{"addx6324", "0.12", "0.01", "0.13", false, 16, big.ToNearestEven},
 	// addx6325 add  0.98  0.01    ->  0.99
-	{"addx6325", "0.98", "0.01", "0.99", 16, big.ToNearestEven},
+	{"addx6325", "0.98", "0.01", "0.99", false, 16, big.ToNearestEven},
 	// addx6326 add  0.99  0.01    ->  1.00
-	{"addx6326", "0.99", "0.01", "1.00", 16, big.ToNearestEven},
+	{"addx6326", "0.99", "0.01", "1.00", false, 16, big.ToNearestEven},
 	// addx6327 add  1.00  0.01    ->  1.01
-	{"addx6327", "1.00", "0.01", "1.01", 16, big.ToNearestEven},
+	{"addx6327", "1.00", "0.01", "1.01", false, 16, big.ToNearestEven},
 	// addx6328 add  1.01  0.01    ->  1.02
-	{"addx6328", "1.01", "0.01", "1.02", 16, big.ToNearestEven},
+	{"addx6328", "1.01", "0.01", "1.02", false, 16, big.ToNearestEven},
 	// addx6329 add -0.01 -0.01    -> -0.02
-	{"addx6329", "-0.01", "-0.01", "-0.02", 16, big.ToNearestEven},
+	{"addx6329", "-0.01", "-0.01", "-0.02", false, 16, big.ToNearestEven},
 	// addx6330 add  0.00 -0.01    -> -0.01
-	{"addx6330", "0.00", "-0.01", "-0.01", 16, big.ToNearestEven},
+	{"addx6330", "0.00", "-0.01", "-0.01", false, 16, big.ToNearestEven},
 	// addx6331 add  0.01 -0.01    ->  0.00
-	{"addx6331", "0.01", "-0.01", "0.00", 16, big.ToNearestEven},
+	{"addx6331", "0.01", "-0.01", "0.00", false, 16, big.ToNearestEven},
 	// addx6332 add  0.12 -0.01    ->  0.11
-	{"addx6332", "0.12", "-0.01", "0.11", 16, big.ToNearestEven},
+	{"addx6332", "0.12", "-0.01", "0.11", false, 16, big.ToNearestEven},
 	// addx6333 add  0.98 -0.01    ->  0.97
-	{"addx6333", "0.98", "-0.01", "0.97", 16, big.ToNearestEven},
+	{"addx6333", "0.98", "-0.01", "0.97", false, 16, big.ToNearestEven},
 	// addx6334 add  0.99 -0.01    ->  0.98
-	{"addx6334", "0.99", "-0.01", "0.98", 16, big.ToNearestEven},
+	{"addx6334", "0.99", "-0.01", "0.98", false, 16, big.ToNearestEven},
 	// addx6335 add  1.00 -0.01    ->  0.99
-	{"addx6335", "1.00", "-0.01", "0.99", 16, big.ToNearestEven},
+	{"addx6335", "1.00", "-0.01", "0.99", false, 16, big.ToNearestEven},
 	// addx6336 add  1.01 -0.01    ->  1.00
-	{"addx6336", "1.01", "-0.01", "1.00", 16, big.ToNearestEven},
+	{"addx6336", "1.01", "-0.01", "1.00", false, 16, big.ToNearestEven},
 	// some more cases where adding 0 affects the coefficient
 	// addx6340 add 1E+3    0    ->         1000
-	{"addx6340", "1E+3", "0", "1000", 16, big.ToNearestEven},
+	{"addx6340", "1E+3", "0", "1000", false, 16, big.ToNearestEven},
 	// addx6341 add 1E+15   0    ->    1000000000000000
-	{"addx6341", "1E+15", "0", "1000000000000000", 16, big.ToNearestEven},
+	{"addx6341", "1E+15", "0", "1000000000000000", false, 16, big.ToNearestEven},
 	// addx6342 add 1E+16   0    ->   1.000000000000000E+16  Rounded
-	{"addx6342", "1E+16", "0", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx6342", "1E+16", "0", "1.000000000000000E+16", false, 16, big.ToNearestEven},
 	// addx6343 add 1E+17   0    ->   1.000000000000000E+17  Rounded
-	{"addx6343", "1E+17", "0", "1.000000000000000E+17", 16, big.ToNearestEven},
+	{"addx6343", "1E+17", "0", "1.000000000000000E+17", false, 16, big.ToNearestEven},
 	// which simply follow from these cases ...
 	// addx6344 add 1E+3    1    ->         1001
-	{"addx6344", "1E+3", "1", "1001", 16, big.ToNearestEven},
+	{"addx6344", "1E+3", "1", "1001", false, 16, big.ToNearestEven},
 	// addx6345 add 1E+15   1    ->    1000000000000001
-	{"addx6345", "1E+15", "1", "1000000000000001", 16, big.ToNearestEven},
+	{"addx6345", "1E+15", "1", "1000000000000001", false, 16, big.ToNearestEven},
 	// addx6346 add 1E+16   1    ->   1.000000000000000E+16  Inexact Rounded
-	{"addx6346", "1E+16", "1", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx6346", "1E+16", "1", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx6347 add 1E+17   1    ->   1.000000000000000E+17  Inexact Rounded
-	{"addx6347", "1E+17", "1", "1.000000000000000E+17", 16, big.ToNearestEven},
+	{"addx6347", "1E+17", "1", "1.000000000000000E+17", true, 16, big.ToNearestEven},
 	// addx6348 add 1E+3    7    ->         1007
-	{"addx6348", "1E+3", "7", "1007", 16, big.ToNearestEven},
+	{"addx6348", "1E+3", "7", "1007", false, 16, big.ToNearestEven},
 	// addx6349 add 1E+15   7    ->    1000000000000007
-	{"addx6349", "1E+15", "7", "1000000000000007", 16, big.ToNearestEven},
+	{"addx6349", "1E+15", "7", "1000000000000007", false, 16, big.ToNearestEven},
 	// addx6350 add 1E+16   7    ->   1.000000000000001E+16  Inexact Rounded
-	{"addx6350", "1E+16", "7", "1.000000000000001E+16", 16, big.ToNearestEven},
+	{"addx6350", "1E+16", "7", "1.000000000000001E+16", true, 16, big.ToNearestEven},
 	// addx6351 add 1E+17   7    ->   1.000000000000000E+17  Inexact Rounded
-	{"addx6351", "1E+17", "7", "1.000000000000000E+17", 16, big.ToNearestEven},
+	{"addx6351", "1E+17", "7", "1.000000000000000E+17", true, 16, big.ToNearestEven},
 	// tryzeros cases
 	// addx6361  add 0E+50 10000E+1  -> 1.0000E+5
-	{"addx6361", "0E+50", "10000E+1", "1.0000E+5", 16, big.ToNearestEven},
+	{"addx6361", "0E+50", "10000E+1", "1.0000E+5", false, 16, big.ToNearestEven},
 	// addx6362  add 10000E+1 0E-50  -> 100000.0000000000  Rounded
-	{"addx6362", "10000E+1", "0E-50", "100000.0000000000", 16, big.ToNearestEven},
+	{"addx6362", "10000E+1", "0E-50", "100000.0000000000", false, 16, big.ToNearestEven},
 	// addx6363  add 10000E+1 10000E-50  -> 100000.0000000000  Rounded Inexact
-	{"addx6363", "10000E+1", "10000E-50", "100000.0000000000", 16, big.ToNearestEven},
+	{"addx6363", "10000E+1", "10000E-50", "100000.0000000000", true, 16, big.ToNearestEven},
 	// addx6364  add 12.34    0e-398  -> 12.34000000000000  Rounded
-	{"addx6364", "12.34", "0e-398", "12.34000000000000", 16, big.ToNearestEven},
+	{"addx6364", "12.34", "0e-398", "12.34000000000000", false, 16, big.ToNearestEven},
 	// ulp replacement tests
 	// addx6400 add   1   77e-14      ->  1.00000000000077
-	{"addx6400", "1", "77e-14", "1.00000000000077", 16, big.ToNearestEven},
+	{"addx6400", "1", "77e-14", "1.00000000000077", false, 16, big.ToNearestEven},
 	// addx6401 add   1   77e-15      ->  1.000000000000077
-	{"addx6401", "1", "77e-15", "1.000000000000077", 16, big.ToNearestEven},
+	{"addx6401", "1", "77e-15", "1.000000000000077", false, 16, big.ToNearestEven},
 	// addx6402 add   1   77e-16      ->  1.000000000000008 Inexact Rounded
-	{"addx6402", "1", "77e-16", "1.000000000000008", 16, big.ToNearestEven},
+	{"addx6402", "1", "77e-16", "1.000000000000008", true, 16, big.ToNearestEven},
 	// addx6403 add   1   77e-17      ->  1.000000000000001 Inexact Rounded
-	{"addx6403", "1", "77e-17", "1.000000000000001", 16, big.ToNearestEven},
+	{"addx6403", "1", "77e-17", "1.000000000000001", true, 16, big.ToNearestEven},
 	// addx6404 add   1   77e-18      ->  1.000000000000000 Inexact Rounded
-	{"addx6404", "1", "77e-18", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6404", "1", "77e-18", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6405 add   1   77e-19      ->  1.000000000000000 Inexact Rounded
-	{"addx6405", "1", "77e-19", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6405", "1", "77e-19", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6406 add   1   77e-99      ->  1.000000000000000 Inexact Rounded
-	{"addx6406", "1", "77e-99", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6406", "1", "77e-99", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6410 add  10   77e-14      ->  10.00000000000077
-	{"addx6410", "10", "77e-14", "10.00000000000077", 16, big.ToNearestEven},
+	{"addx6410", "10", "77e-14", "10.00000000000077", false, 16, big.ToNearestEven},
 	// addx6411 add  10   77e-15      ->  10.00000000000008 Inexact Rounded
-	{"addx6411", "10", "77e-15", "10.00000000000008", 16, big.ToNearestEven},
+	{"addx6411", "10", "77e-15", "10.00000000000008", true, 16, big.ToNearestEven},
 	// addx6412 add  10   77e-16      ->  10.00000000000001 Inexact Rounded
-	{"addx6412", "10", "77e-16", "10.00000000000001", 16, big.ToNearestEven},
+	{"addx6412", "10", "77e-16", "10.00000000000001", true, 16, big.ToNearestEven},
 	// addx6413 add  10   77e-17      ->  10.00000000000000 Inexact Rounded
-	{"addx6413", "10", "77e-17", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6413", "10", "77e-17", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6414 add  10   77e-18      ->  10.00000000000000 Inexact Rounded
-	{"addx6414", "10", "77e-18", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6414", "10", "77e-18", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6415 add  10   77e-19      ->  10.00000000000000 Inexact Rounded
-	{"addx6415", "10", "77e-19", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6415", "10", "77e-19", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6416 add  10   77e-99      ->  10.00000000000000 Inexact Rounded
-	{"addx6416", "10", "77e-99", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6416", "10", "77e-99", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6420 add  77e-14       1   ->  1.00000000000077
-	{"addx6420", "77e-14", "1", "1.00000000000077", 16, big.ToNearestEven},
+	{"addx6420", "77e-14", "1", "1.00000000000077", false, 16, big.ToNearestEven},
 	// addx6421 add  77e-15       1   ->  1.000000000000077
-	{"addx6421", "77e-15", "1", "1.000000000000077", 16, big.ToNearestEven},
+	{"addx6421", "77e-15", "1", "1.000000000000077", false, 16, big.ToNearestEven},
 	// addx6422 add  77e-16       1   ->  1.000000000000008 Inexact Rounded
-	{"addx6422", "77e-16", "1", "1.000000000000008", 16, big.ToNearestEven},
+	{"addx6422", "77e-16", "1", "1.000000000000008", true, 16, big.ToNearestEven},
 	// addx6423 add  77e-17       1   ->  1.000000000000001 Inexact Rounded
-	{"addx6423", "77e-17", "1", "1.000000000000001", 16, big.ToNearestEven},
+	{"addx6423", "77e-17", "1", "1.000000000000001", true, 16, big.ToNearestEven},
 	// addx6424 add  77e-18       1   ->  1.000000000000000 Inexact Rounded
-	{"addx6424", "77e-18", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6424", "77e-18", "1", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6425 add  77e-19       1   ->  1.000000000000000 Inexact Rounded
-	{"addx6425", "77e-19", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6425", "77e-19", "1", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6426 add  77e-99       1   ->  1.000000000000000 Inexact Rounded
-	{"addx6426", "77e-99", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6426", "77e-99", "1", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6430 add  77e-14      10   ->  10.00000000000077
-	{"addx6430", "77e-14", "10", "10.00000000000077", 16, big.ToNearestEven},
+	{"addx6430", "77e-14", "10", "10.00000000000077", false, 16, big.ToNearestEven},
 	// addx6431 add  77e-15      10   ->  10.00000000000008 Inexact Rounded
-	{"addx6431", "77e-15", "10", "10.00000000000008", 16, big.ToNearestEven},
+	{"addx6431", "77e-15", "10", "10.00000000000008", true, 16, big.ToNearestEven},
 	// addx6432 add  77e-16      10   ->  10.00000000000001 Inexact Rounded
-	{"addx6432", "77e-16", "10", "10.00000000000001", 16, big.ToNearestEven},
+	{"addx6432", "77e-16", "10", "10.00000000000001", true, 16, big.ToNearestEven},
 	// addx6433 add  77e-17      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6433", "77e-17", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6433", "77e-17", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6434 add  77e-18      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6434", "77e-18", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6434", "77e-18", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6435 add  77e-19      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6435", "77e-19", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6435", "77e-19", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6436 add  77e-99      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6436", "77e-99", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6436", "77e-99", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// negative ulps
 	// addx6440 add   1   -77e-14      ->  0.99999999999923
-	{"addx6440", "1", "-77e-14", "0.99999999999923", 16, big.ToNearestEven},
+	{"addx6440", "1", "-77e-14", "0.99999999999923", false, 16, big.ToNearestEven},
 	// addx6441 add   1   -77e-15      ->  0.999999999999923
-	{"addx6441", "1", "-77e-15", "0.999999999999923", 16, big.ToNearestEven},
+	{"addx6441", "1", "-77e-15", "0.999999999999923", false, 16, big.ToNearestEven},
 	// addx6442 add   1   -77e-16      ->  0.9999999999999923
-	{"addx6442", "1", "-77e-16", "0.9999999999999923", 16, big.ToNearestEven},
+	{"addx6442", "1", "-77e-16", "0.9999999999999923", false, 16, big.ToNearestEven},
 	// addx6443 add   1   -77e-17      ->  0.9999999999999992 Inexact Rounded
-	{"addx6443", "1", "-77e-17", "0.9999999999999992", 16, big.ToNearestEven},
+	{"addx6443", "1", "-77e-17", "0.9999999999999992", true, 16, big.ToNearestEven},
 	// addx6444 add   1   -77e-18      ->  0.9999999999999999 Inexact Rounded
-	{"addx6444", "1", "-77e-18", "0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6444", "1", "-77e-18", "0.9999999999999999", true, 16, big.ToNearestEven},
 	// addx6445 add   1   -77e-19      ->  1.000000000000000 Inexact Rounded
-	{"addx6445", "1", "-77e-19", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6445", "1", "-77e-19", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6446 add   1   -77e-99      ->  1.000000000000000 Inexact Rounded
-	{"addx6446", "1", "-77e-99", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6446", "1", "-77e-99", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6450 add  10   -77e-14      ->   9.99999999999923
-	{"addx6450", "10", "-77e-14", "9.99999999999923", 16, big.ToNearestEven},
+	{"addx6450", "10", "-77e-14", "9.99999999999923", false, 16, big.ToNearestEven},
 	// addx6451 add  10   -77e-15      ->   9.999999999999923
-	{"addx6451", "10", "-77e-15", "9.999999999999923", 16, big.ToNearestEven},
+	{"addx6451", "10", "-77e-15", "9.999999999999923", false, 16, big.ToNearestEven},
 	// addx6452 add  10   -77e-16      ->   9.999999999999992 Inexact Rounded
-	{"addx6452", "10", "-77e-16", "9.999999999999992", 16, big.ToNearestEven},
+	{"addx6452", "10", "-77e-16", "9.999999999999992", true, 16, big.ToNearestEven},
 	// addx6453 add  10   -77e-17      ->   9.999999999999999 Inexact Rounded
-	{"addx6453", "10", "-77e-17", "9.999999999999999", 16, big.ToNearestEven},
+	{"addx6453", "10", "-77e-17", "9.999999999999999", true, 16, big.ToNearestEven},
 	// addx6454 add  10   -77e-18      ->  10.00000000000000 Inexact Rounded
-	{"addx6454", "10", "-77e-18", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6454", "10", "-77e-18", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6455 add  10   -77e-19      ->  10.00000000000000 Inexact Rounded
-	{"addx6455", "10", "-77e-19", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6455", "10", "-77e-19", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6456 add  10   -77e-99      ->  10.00000000000000 Inexact Rounded
-	{"addx6456", "10", "-77e-99", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6456", "10", "-77e-99", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6460 add  -77e-14       1   ->  0.99999999999923
-	{"addx6460", "-77e-14", "1", "0.99999999999923", 16, big.ToNearestEven},
+	{"addx6460", "-77e-14", "1", "0.99999999999923", false, 16, big.ToNearestEven},
 	// addx6461 add  -77e-15       1   ->  0.999999999999923
-	{"addx6461", "-77e-15", "1", "0.999999999999923", 16, big.ToNearestEven},
+	{"addx6461", "-77e-15", "1", "0.999999999999923", false, 16, big.ToNearestEven},
 	// addx6462 add  -77e-16       1   ->  0.9999999999999923
-	{"addx6462", "-77e-16", "1", "0.9999999999999923", 16, big.ToNearestEven},
+	{"addx6462", "-77e-16", "1", "0.9999999999999923", false, 16, big.ToNearestEven},
 	// addx6463 add  -77e-17       1   ->  0.9999999999999992 Inexact Rounded
-	{"addx6463", "-77e-17", "1", "0.9999999999999992", 16, big.ToNearestEven},
+	{"addx6463", "-77e-17", "1", "0.9999999999999992", true, 16, big.ToNearestEven},
 	// addx6464 add  -77e-18       1   ->  0.9999999999999999 Inexact Rounded
-	{"addx6464", "-77e-18", "1", "0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6464", "-77e-18", "1", "0.9999999999999999", true, 16, big.ToNearestEven},
 	// addx6465 add  -77e-19       1   ->  1.000000000000000 Inexact Rounded
-	{"addx6465", "-77e-19", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6465", "-77e-19", "1", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6466 add  -77e-99       1   ->  1.000000000000000 Inexact Rounded
-	{"addx6466", "-77e-99", "1", "1.000000000000000", 16, big.ToNearestEven},
+	{"addx6466", "-77e-99", "1", "1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6470 add  -77e-14      10   ->   9.99999999999923
-	{"addx6470", "-77e-14", "10", "9.99999999999923", 16, big.ToNearestEven},
+	{"addx6470", "-77e-14", "10", "9.99999999999923", false, 16, big.ToNearestEven},
 	// addx6471 add  -77e-15      10   ->   9.999999999999923
-	{"addx6471", "-77e-15", "10", "9.999999999999923", 16, big.ToNearestEven},
+	{"addx6471", "-77e-15", "10", "9.999999999999923", false, 16, big.ToNearestEven},
 	// addx6472 add  -77e-16      10   ->   9.999999999999992 Inexact Rounded
-	{"addx6472", "-77e-16", "10", "9.999999999999992", 16, big.ToNearestEven},
+	{"addx6472", "-77e-16", "10", "9.999999999999992", true, 16, big.ToNearestEven},
 	// addx6473 add  -77e-17      10   ->   9.999999999999999 Inexact Rounded
-	{"addx6473", "-77e-17", "10", "9.999999999999999", 16, big.ToNearestEven},
+	{"addx6473", "-77e-17", "10", "9.999999999999999", true, 16, big.ToNearestEven},
 	// addx6474 add  -77e-18      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6474", "-77e-18", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6474", "-77e-18", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6475 add  -77e-19      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6475", "-77e-19", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6475", "-77e-19", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6476 add  -77e-99      10   ->  10.00000000000000 Inexact Rounded
-	{"addx6476", "-77e-99", "10", "10.00000000000000", 16, big.ToNearestEven},
+	{"addx6476", "-77e-99", "10", "10.00000000000000", true, 16, big.ToNearestEven},
 	// negative ulps
 	// addx6480 add  -1    77e-14      ->  -0.99999999999923
-	{"addx6480", "-1", "77e-14", "-0.99999999999923", 16, big.ToNearestEven},
+	{"addx6480", "-1", "77e-14", "-0.99999999999923", false, 16, big.ToNearestEven},
 	// addx6481 add  -1    77e-15      ->  -0.999999999999923
-	{"addx6481", "-1", "77e-15", "-0.999999999999923", 16, big.ToNearestEven},
+	{"addx6481", "-1", "77e-15", "-0.999999999999923", false, 16, big.ToNearestEven},
 	// addx6482 add  -1    77e-16      ->  -0.9999999999999923
-	{"addx6482", "-1", "77e-16", "-0.9999999999999923", 16, big.ToNearestEven},
+	{"addx6482", "-1", "77e-16", "-0.9999999999999923", false, 16, big.ToNearestEven},
 	// addx6483 add  -1    77e-17      ->  -0.9999999999999992 Inexact Rounded
-	{"addx6483", "-1", "77e-17", "-0.9999999999999992", 16, big.ToNearestEven},
+	{"addx6483", "-1", "77e-17", "-0.9999999999999992", true, 16, big.ToNearestEven},
 	// addx6484 add  -1    77e-18      ->  -0.9999999999999999 Inexact Rounded
-	{"addx6484", "-1", "77e-18", "-0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6484", "-1", "77e-18", "-0.9999999999999999", true, 16, big.ToNearestEven},
 	// addx6485 add  -1    77e-19      ->  -1.000000000000000 Inexact Rounded
-	{"addx6485", "-1", "77e-19", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6485", "-1", "77e-19", "-1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6486 add  -1    77e-99      ->  -1.000000000000000 Inexact Rounded
-	{"addx6486", "-1", "77e-99", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6486", "-1", "77e-99", "-1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6490 add -10    77e-14      ->   -9.99999999999923
-	{"addx6490", "-10", "77e-14", "-9.99999999999923", 16, big.ToNearestEven},
+	{"addx6490", "-10", "77e-14", "-9.99999999999923", false, 16, big.ToNearestEven},
 	// addx6491 add -10    77e-15      ->   -9.999999999999923
-	{"addx6491", "-10", "77e-15", "-9.999999999999923", 16, big.ToNearestEven},
+	{"addx6491", "-10", "77e-15", "-9.999999999999923", false, 16, big.ToNearestEven},
 	// addx6492 add -10    77e-16      ->   -9.999999999999992 Inexact Rounded
-	{"addx6492", "-10", "77e-16", "-9.999999999999992", 16, big.ToNearestEven},
+	{"addx6492", "-10", "77e-16", "-9.999999999999992", true, 16, big.ToNearestEven},
 	// addx6493 add -10    77e-17      ->   -9.999999999999999 Inexact Rounded
-	{"addx6493", "-10", "77e-17", "-9.999999999999999", 16, big.ToNearestEven},
+	{"addx6493", "-10", "77e-17", "-9.999999999999999", true, 16, big.ToNearestEven},
 	// addx6494 add -10    77e-18      ->  -10.00000000000000 Inexact Rounded
-	{"addx6494", "-10", "77e-18", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6494", "-10", "77e-18", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6495 add -10    77e-19      ->  -10.00000000000000 Inexact Rounded
-	{"addx6495", "-10", "77e-19", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6495", "-10", "77e-19", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6496 add -10    77e-99      ->  -10.00000000000000 Inexact Rounded
-	{"addx6496", "-10", "77e-99", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6496", "-10", "77e-99", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6500 add   77e-14      -1   ->  -0.99999999999923
-	{"addx6500", "77e-14", "-1", "-0.99999999999923", 16, big.ToNearestEven},
+	{"addx6500", "77e-14", "-1", "-0.99999999999923", false, 16, big.ToNearestEven},
 	// addx6501 add   77e-15      -1   ->  -0.999999999999923
-	{"addx6501", "77e-15", "-1", "-0.999999999999923", 16, big.ToNearestEven},
+	{"addx6501", "77e-15", "-1", "-0.999999999999923", false, 16, big.ToNearestEven},
 	// addx6502 add   77e-16      -1   ->  -0.9999999999999923
-	{"addx6502", "77e-16", "-1", "-0.9999999999999923", 16, big.ToNearestEven},
+	{"addx6502", "77e-16", "-1", "-0.9999999999999923", false, 16, big.ToNearestEven},
 	// addx6503 add   77e-17      -1   ->  -0.9999999999999992 Inexact Rounded
-	{"addx6503", "77e-17", "-1", "-0.9999999999999992", 16, big.ToNearestEven},
+	{"addx6503", "77e-17", "-1", "-0.9999999999999992", true, 16, big.ToNearestEven},
 	// addx6504 add   77e-18      -1   ->  -0.9999999999999999 Inexact Rounded
-	{"addx6504", "77e-18", "-1", "-0.9999999999999999", 16, big.ToNearestEven},
+	{"addx6504", "77e-18", "-1", "-0.9999999999999999", true, 16, big.ToNearestEven},
 	// addx6505 add   77e-19      -1   ->  -1.000000000000000 Inexact Rounded
-	{"addx6505", "77e-19", "-1", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6505", "77e-19", "-1", "-1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6506 add   77e-99      -1   ->  -1.000000000000000 Inexact Rounded
-	{"addx6506", "77e-99", "-1", "-1.000000000000000", 16, big.ToNearestEven},
+	{"addx6506", "77e-99", "-1", "-1.000000000000000", true, 16, big.ToNearestEven},
 	// addx6510 add   77e-14      -10  ->   -9.99999999999923
-	{"addx6510", "77e-14", "-10", "-9.99999999999923", 16, big.ToNearestEven},
+	{"addx6510", "77e-14", "-10", "-9.99999999999923", false, 16, big.ToNearestEven},
 	// addx6511 add   77e-15      -10  ->   -9.999999999999923
-	{"addx6511", "77e-15", "-10", "-9.999999999999923", 16, big.ToNearestEven},
+	{"addx6511", "77e-15", "-10", "-9.999999999999923", false, 16, big.ToNearestEven},
 	// addx6512 add   77e-16      -10  ->   -9.999999999999992 Inexact Rounded
-	{"addx6512", "77e-16", "-10", "-9.999999999999992", 16, big.ToNearestEven},
+	{"addx6512", "77e-16", "-10", "-9.999999999999992", true, 16, big.ToNearestEven},
 	// addx6513 add   77e-17      -10  ->   -9.999999999999999 Inexact Rounded
-	{"addx6513", "77e-17", "-10", "-9.999999999999999", 16, big.ToNearestEven},
+	{"addx6513", "77e-17", "-10", "-9.999999999999999", true, 16, big.ToNearestEven},
 	// addx6514 add   77e-18      -10  ->  -10.00000000000000 Inexact Rounded
-	{"addx6514", "77e-18", "-10", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6514", "77e-18", "-10", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6515 add   77e-19      -10  ->  -10.00000000000000 Inexact Rounded
-	{"addx6515", "77e-19", "-10", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6515", "77e-19", "-10", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// addx6516 add   77e-99      -10  ->  -10.00000000000000 Inexact Rounded
-	{"addx6516", "77e-99", "-10", "-10.00000000000000", 16, big.ToNearestEven},
+	{"addx6516", "77e-99", "-10", "-10.00000000000000", true, 16, big.ToNearestEven},
 	// long operands
 	// addx6521 add 101234562345678000 0 -> 1.012345623456780E+17 Rounded
-	{"addx6521", "101234562345678000", "0", "1.012345623456780E+17", 16, big.ToNearestEven},
+	{"addx6521", "101234562345678000", "0", "1.012345623456780E+17", false, 16, big.ToNearestEven},
 	// addx6522 add 0 101234562345678000 -> 1.012345623456780E+17 Rounded
-	{"addx6522", "0", "101234562345678000", "1.012345623456780E+17", 16, big.ToNearestEven},
+	{"addx6522", "0", "101234562345678000", "1.012345623456780E+17", false, 16, big.ToNearestEven},
 	// addx6523 add 10123456234567800  0 -> 1.012345623456780E+16 Rounded
-	{"addx6523", "10123456234567800", "0", "1.012345623456780E+16", 16, big.ToNearestEven},
+	{"addx6523", "10123456234567800", "0", "1.012345623456780E+16", false, 16, big.ToNearestEven},
 	// addx6524 add 0 10123456234567800  -> 1.012345623456780E+16 Rounded
-	{"addx6524", "0", "10123456234567800", "1.012345623456780E+16", 16, big.ToNearestEven},
+	{"addx6524", "0", "10123456234567800", "1.012345623456780E+16", false, 16, big.ToNearestEven},
 	// addx6525 add 10123456234567890  0 -> 1.012345623456789E+16 Rounded
-	{"addx6525", "10123456234567890", "0", "1.012345623456789E+16", 16, big.ToNearestEven},
+	{"addx6525", "10123456234567890", "0", "1.012345623456789E+16", false, 16, big.ToNearestEven},
 	// addx6526 add 0 10123456234567890  -> 1.012345623456789E+16 Rounded
-	{"addx6526", "0", "10123456234567890", "1.012345623456789E+16", 16, big.ToNearestEven},
+	{"addx6526", "0", "10123456234567890", "1.012345623456789E+16", false, 16, big.ToNearestEven},
 	// addx6527 add 10123456234567891  0 -> 1.012345623456789E+16 Inexact Rounded
-	{"addx6527", "10123456234567891", "0", "1.012345623456789E+16", 16, big.ToNearestEven},
+	{"addx6527", "10123456234567891", "0", "1.012345623456789E+16", true, 16, big.ToNearestEven},
 	// addx6528 add 0 10123456234567891  -> 1.012345623456789E+16 Inexact Rounded
-	{"addx6528", "0", "10123456234567891", "1.012345623456789E+16", 16, big.ToNearestEven},
+	{"addx6528", "0", "10123456234567891", "1.012345623456789E+16", true, 16, big.ToNearestEven},
 	// addx6529 add 101234562345678901 0 -> 1.012345623456789E+17 Inexact Rounded
-	{"addx6529", "101234562345678901", "0", "1.012345623456789E+17", 16, big.ToNearestEven},
+	{"addx6529", "101234562345678901", "0", "1.012345623456789E+17", true, 16, big.ToNearestEven},
 	// addx6530 add 0 101234562345678901 -> 1.012345623456789E+17 Inexact Rounded
-	{"addx6530", "0", "101234562345678901", "1.012345623456789E+17", 16, big.ToNearestEven},
+	{"addx6530", "0", "101234562345678901", "1.012345623456789E+17", true, 16, big.ToNearestEven},
 	// addx6531 add 10123456234567896  0 -> 1.012345623456790E+16 Inexact Rounded
-	{"addx6531", "10123456234567896", "0", "1.012345623456790E+16", 16, big.ToNearestEven},
+	{"addx6531", "10123456234567896", "0", "1.012345623456790E+16", true, 16, big.ToNearestEven},
 	// addx6532 add 0 10123456234567896  -> 1.012345623456790E+16 Inexact Rounded
-	{"addx6532", "0", "10123456234567896", "1.012345623456790E+16", 16, big.ToNearestEven},
+	{"addx6532", "0", "10123456234567896", "1.012345623456790E+16", true, 16, big.ToNearestEven},
 	// verify a query
 	// rounding: down
 	// addx6561 add 1e-398 9.000000000000000E+384 -> 9.000000000000000E+384 Inexact Rounded
-	{"addx6561", "1e-398", "9.000000000000000E+384", "9.000000000000000E+384", 16, big.ToZero},
+	{"addx6561", "1e-398", "9.000000000000000E+384", "9.000000000000000E+384", true, 16, big.ToZero},
 	// addx6562 add      0 9.000000000000000E+384 -> 9.000000000000000E+384 Rounded
-	{"addx6562", "0", "9.000000000000000E+384", "9.000000000000000E+384", 16, big.ToZero},
+	{"addx6562", "0", "9.000000000000000E+384", "9.000000000000000E+384", false, 16, big.ToZero},
 	// and using decimal64 bounds...
 	// rounding: down
 	// addx6563 add 1e-388 9.000000000000000E+374 -> 9.000000000000000E+374 Inexact Rounded
-	{"addx6563", "1e-388", "9.000000000000000E+374", "9.000000000000000E+374", 16, big.ToZero},
+	{"addx6563", "1e-388", "9.000000000000000E+374", "9.000000000000000E+374", true, 16, big.ToZero},
 	// addx6564 add      0 9.000000000000000E+374 -> 9.000000000000000E+374 Rounded
-	{"addx6564", "0", "9.000000000000000E+374", "9.000000000000000E+374", 16, big.ToZero},
+	{"addx6564", "0", "9.000000000000000E+374", "9.000000000000000E+374", false, 16, big.ToZero},
 	// more zeros, etc.
 	// rounding: half_even
 	// addx6701 add 5.00 1.00E-3 -> 5.00100
-	{"addx6701", "5.00", "1.00E-3", "5.00100", 16, big.ToNearestEven},
+	{"addx6701", "5.00", "1.00E-3", "5.00100", false, 16, big.ToNearestEven},
 	// addx6702 add 00.00 0.000  -> 0.000
-	{"addx6702", "00.00", "0.000", "0.000", 16, big.ToNearestEven},
+	{"addx6702", "00.00", "0.000", "0.000", false, 16, big.ToNearestEven},
 	// addx6703 add 00.00 0E-3   -> 0.000
-	{"addx6703", "00.00", "0E-3", "0.000", 16, big.ToNearestEven},
+	{"addx6703", "00.00", "0E-3", "0.000", false, 16, big.ToNearestEven},
 	// addx6704 add 0E-3  00.00  -> 0.000
-	{"addx6704", "0E-3", "00.00", "0.000", 16, big.ToNearestEven},
+	{"addx6704", "0E-3", "00.00", "0.000", false, 16, big.ToNearestEven},
 	// addx6710 add 0E+3  00.00  -> 0.00
-	{"addx6710", "0E+3", "00.00", "0.00", 16, big.ToNearestEven},
+	{"addx6710", "0E+3", "00.00", "0.00", false, 16, big.ToNearestEven},
 	// addx6711 add 0E+3  00.0   -> 0.0
-	{"addx6711", "0E+3", "00.0", "0.0", 16, big.ToNearestEven},
+	{"addx6711", "0E+3", "00.0", "0.0", false, 16, big.ToNearestEven},
 	// addx6712 add 0E+3  00.    -> 0
-	{"addx6712", "0E+3", "00.", "0", 16, big.ToNearestEven},
+	{"addx6712", "0E+3", "00.", "0", false, 16, big.ToNearestEven},
 	// addx6713 add 0E+3  00.E+1 -> 0E+1
-	{"addx6713", "0E+3", "00.E+1", "0E+1", 16, big.ToNearestEven},
+	{"addx6713", "0E+3", "00.E+1", "0E+1", false, 16, big.ToNearestEven},
 	// addx6714 add 0E+3  00.E+2 -> 0E+2
-	{"addx6714", "0E+3", "00.E+2", "0E+2", 16, big.ToNearestEven},
+	{"addx6714", "0E+3", "00.E+2", "0E+2", false, 16, big.ToNearestEven},
 	// addx6715 add 0E+3  00.E+3 -> 0E+3
-	{"addx6715", "0E+3", "00.E+3", "0E+3", 16, big.ToNearestEven},
+	{"addx6715", "0E+3", "00.E+3", "0E+3", false, 16, big.ToNearestEven},
 	// addx6716 add 0E+3  00.E+4 -> 0E+3
-	{"addx6716", "0E+3", "00.E+4", "0E+3", 16, big.ToNearestEven},
+	{"addx6716", "0E+3", "00.E+4", "0E+3", false, 16, big.ToNearestEven},
 	// addx6717 add 0E+3  00.E+5 -> 0E+3
-	{"addx6717", "0E+3", "00.E+5", "0E+3", 16, big.ToNearestEven},
+	{"addx6717", "0E+3", "00.E+5", "0E+3", false, 16, big.ToNearestEven},
 	// addx6718 add 0E+3  -00.0   -> 0.0
-	{"addx6718", "0E+3", "-00.0", "0.0", 16, big.ToNearestEven},
+	{"addx6718", "0E+3", "-00.0", "0.0", false, 16, big.ToNearestEven},
 	// addx6719 add 0E+3  -00.    -> 0
-	{"addx6719", "0E+3", "-00.", "0", 16, big.ToNearestEven},
+	{"addx6719", "0E+3", "-00.", "0", false, 16, big.ToNearestEven},
 	// addx6731 add 0E+3  -00.E+1 -> 0E+1
-	{"addx6731", "0E+3", "-00.E+1", "0E+1", 16, big.ToNearestEven},
+	{"addx6731", "0E+3", "-00.E+1", "0E+1", false, 16, big.ToNearestEven},
 	// addx6720 add 00.00  0E+3  -> 0.00
-	{"addx6720", "00.00", "0E+3", "0.00", 16, big.ToNearestEven},
+	{"addx6720", "00.00", "0E+3", "0.00", false, 16, big.ToNearestEven},
 	// addx6721 add 00.0   0E+3  -> 0.0
-	{"addx6721", "00.0", "0E+3", "0.0", 16, big.ToNearestEven},
+	{"addx6721", "00.0", "0E+3", "0.0", false, 16, big.ToNearestEven},
 	// addx6722 add 00.    0E+3  -> 0
-	{"addx6722", "00.", "0E+3", "0", 16, big.ToNearestEven},
+	{"addx6722", "00.", "0E+3", "0", false, 16, big.ToNearestEven},
 	// addx6723 add 00.E+1 0E+3  -> 0E+1
-	{"addx6723", "00.E+1", "0E+3", "0E+1", 16, big.ToNearestEven},
+	{"addx6723", "00.E+1", "0E+3", "0E+1", false, 16, big.ToNearestEven},
 	// addx6724 add 00.E+2 0E+3  -> 0E+2
-	{"addx6724", "00.E+2", "0E+3", "0E+2", 16, big.ToNearestEven},
+	{"addx6724", "00.E+2", "0E+3", "0E+2", false, 16, big.ToNearestEven},
 	// addx6725 add 00.E+3 0E+3  -> 0E+3
-	{"addx6725", "00.E+3", "0E+3", "0E+3", 16, big.ToNearestEven},
+	{"addx6725", "00.E+3", "0E+3", "0E+3", false, 16, big.ToNearestEven},
 	// addx6726 add 00.E+4 0E+3  -> 0E+3
-	{"addx6726", "00.E+4", "0E+3", "0E+3", 16, big.ToNearestEven},
+	{"addx6726", "00.E+4", "0E+3", "0E+3", false, 16, big.ToNearestEven},
 	// addx6727 add 00.E+5 0E+3  -> 0E+3
-	{"addx6727", "00.E+5", "0E+3", "0E+3", 16, big.ToNearestEven},
+	{"addx6727", "00.E+5", "0E+3", "0E+3", false, 16, big.ToNearestEven},
 	// addx6728 add -00.00 0E+3  -> 0.00
-	{"addx6728", "-00.00", "0E+3", "0.00", 16, big.ToNearestEven},
+	{"addx6728", "-00.00", "0E+3", "0.00", false, 16, big.ToNearestEven},
 	// addx6729 add -00.0  0E+3  -> 0.0
-	{"addx6729", "-00.0", "0E+3", "0.0", 16, big.ToNearestEven},
+	{"addx6729", "-00.0", "0E+3", "0.0", false, 16, big.ToNearestEven},
 	// addx6730 add -00.   0E+3  -> 0
-	{"addx6730", "-00.", "0E+3", "0", 16, big.ToNearestEven},
+	{"addx6730", "-00.", "0E+3", "0", false, 16, big.ToNearestEven},
 	// addx6732 add  0     0     ->  0
-	{"addx6732", "0", "0", "0", 16, big.ToNearestEven},
+	{"addx6732", "0", "0", "0", false, 16, big.ToNearestEven},
 	// addx6733 add  0    -0     ->  0
-	{"addx6733", "0", "-0", "0", 16, big.ToNearestEven},
+	{"addx6733", "0", "-0", "0", false, 16, big.ToNearestEven},
 	// addx6734 add -0     0     ->  0
-	{"addx6734", "-0", "0", "0", 16, big.ToNearestEven},
+	{"addx6734", "-0", "0", "0", false, 16, big.ToNearestEven},
 	// addx6735 add -0    -0     -> -0     -- IEEE 854 special case
-	{"addx6735", "-0", "-0", "-0", 16, big.ToNearestEven},
+	{"addx6735", "-0", "-0", "-0", false, 16, big.ToNearestEven},
 	// addx6736 add  1    -1     ->  0
-	{"addx6736", "1", "-1", "0", 16, big.ToNearestEven},
+	{"addx6736", "1", "-1", "0", false, 16, big.ToNearestEven},
 	// addx6737 add -1    -1     -> -2
-	{"addx6737", "-1", "-1", "-2", 16, big.ToNearestEven},
+	{"addx6737", "-1", "-1", "-2", false, 16, big.ToNearestEven},
 	// addx6738 add  1     1     ->  2
-	{"addx6738", "1", "1", "2", 16, big.ToNearestEven},
+	{"addx6738", "1", "1", "2", false, 16, big.ToNearestEven},
 	// addx6739 add -1     1     ->  0
-	{"addx6739", "-1", "1", "0", 16, big.ToNearestEven},
+	{"addx6739", "-1", "1", "0", false, 16, big.ToNearestEven},
 	// addx6741 add  0    -1     -> -1
-	{"addx6741", "0", "-1", "-1", 16, big.ToNearestEven},
+	{"addx6741", "0", "-1", "-1", false, 16, big.ToNearestEven},
 	// addx6742 add -0    -1     -> -1
-	{"addx6742", "-0", "-1", "-1", 16, big.ToNearestEven},
+	{"addx6742", "-0", "-1", "-1", false, 16, big.ToNearestEven},
 	// addx6743 add  0     1     ->  1
-	{"addx6743", "0", "1", "1", 16, big.ToNearestEven},
+	{"addx6743", "0", "1", "1", false, 16, big.ToNearestEven},
 	// addx6744 add -0     1     ->  1
-	{"addx6744", "-0", "1", "1", 16, big.ToNearestEven},
+	{"addx6744", "-0", "1", "1", false, 16, big.ToNearestEven},
 	// addx6745 add -1     0     -> -1
-	{"addx6745", "-1", "0", "-1", 16, big.ToNearestEven},
+	{"addx6745", "-1", "0", "-1", false, 16, big.ToNearestEven},
 	// addx6746 add -1    -0     -> -1
-	{"addx6746", "-1", "-0", "-1", 16, big.ToNearestEven},
+	{"addx6746", "-1", "-0", "-1", false, 16, big.ToNearestEven},
 	// addx6747 add  1     0     ->  1
-	{"addx6747", "1", "0", "1", 16, big.ToNearestEven},
+	{"addx6747", "1", "0", "1", false, 16, big.ToNearestEven},
 	// addx6748 add  1    -0     ->  1
-	{"addx6748", "1", "-0", "1", 16, big.ToNearestEven},
+	{"addx6748", "1", "-0", "1", false, 16, big.ToNearestEven},
 	// addx6751 add  0.0  -1     -> -1.0
-	{"addx6751", "0.0", "-1", "-1.0", 16, big.ToNearestEven},
+	{"addx6751", "0.0", "-1", "-1.0", false, 16, big.ToNearestEven},
 	// addx6752 add -0.0  -1     -> -1.0
-	{"addx6752", "-0.0", "-1", "-1.0", 16, big.ToNearestEven},
+	{"addx6752", "-0.0", "-1", "-1.0", false, 16, big.ToNearestEven},
 	// addx6753 add  0.0   1     ->  1.0
-	{"addx6753", "0.0", "1", "1.0", 16, big.ToNearestEven},
+	{"addx6753", "0.0", "1", "1.0", false, 16, big.ToNearestEven},
 	// addx6754 add -0.0   1     ->  1.0
-	{"addx6754", "-0.0", "1", "1.0", 16, big.ToNearestEven},
+	{"addx6754", "-0.0", "1", "1.0", false, 16, big.ToNearestEven},
 	// addx6755 add -1.0   0     -> -1.0
-	{"addx6755", "-1.0", "0", "-1.0", 16, big.ToNearestEven},
+	{"addx6755", "-1.0", "0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6756 add -1.0  -0     -> -1.0
-	{"addx6756", "-1.0", "-0", "-1.0", 16, big.ToNearestEven},
+	{"addx6756", "-1.0", "-0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6757 add  1.0   0     ->  1.0
-	{"addx6757", "1.0", "0", "1.0", 16, big.ToNearestEven},
+	{"addx6757", "1.0", "0", "1.0", false, 16, big.ToNearestEven},
 	// addx6758 add  1.0  -0     ->  1.0
-	{"addx6758", "1.0", "-0", "1.0", 16, big.ToNearestEven},
+	{"addx6758", "1.0", "-0", "1.0", false, 16, big.ToNearestEven},
 	// addx6761 add  0    -1.0   -> -1.0
-	{"addx6761", "0", "-1.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6761", "0", "-1.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6762 add -0    -1.0   -> -1.0
-	{"addx6762", "-0", "-1.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6762", "-0", "-1.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6763 add  0     1.0   ->  1.0
-	{"addx6763", "0", "1.0", "1.0", 16, big.ToNearestEven},
+	{"addx6763", "0", "1.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6764 add -0     1.0   ->  1.0
-	{"addx6764", "-0", "1.0", "1.0", 16, big.ToNearestEven},
+	{"addx6764", "-0", "1.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6765 add -1     0.0   -> -1.0
-	{"addx6765", "-1", "0.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6765", "-1", "0.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6766 add -1    -0.0   -> -1.0
-	{"addx6766", "-1", "-0.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6766", "-1", "-0.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6767 add  1     0.0   ->  1.0
-	{"addx6767", "1", "0.0", "1.0", 16, big.ToNearestEven},
+	{"addx6767", "1", "0.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6768 add  1    -0.0   ->  1.0
-	{"addx6768", "1", "-0.0", "1.0", 16, big.ToNearestEven},
+	{"addx6768", "1", "-0.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6771 add  0.0  -1.0   -> -1.0
-	{"addx6771", "0.0", "-1.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6771", "0.0", "-1.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6772 add -0.0  -1.0   -> -1.0
-	{"addx6772", "-0.0", "-1.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6772", "-0.0", "-1.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6773 add  0.0   1.0   ->  1.0
-	{"addx6773", "0.0", "1.0", "1.0", 16, big.ToNearestEven},
+	{"addx6773", "0.0", "1.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6774 add -0.0   1.0   ->  1.0
-	{"addx6774", "-0.0", "1.0", "1.0", 16, big.ToNearestEven},
+	{"addx6774", "-0.0", "1.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6775 add -1.0   0.0   -> -1.0
-	{"addx6775", "-1.0", "0.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6775", "-1.0", "0.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6776 add -1.0  -0.0   -> -1.0
-	{"addx6776", "-1.0", "-0.0", "-1.0", 16, big.ToNearestEven},
+	{"addx6776", "-1.0", "-0.0", "-1.0", false, 16, big.ToNearestEven},
 	// addx6777 add  1.0   0.0   ->  1.0
-	{"addx6777", "1.0", "0.0", "1.0", 16, big.ToNearestEven},
+	{"addx6777", "1.0", "0.0", "1.0", false, 16, big.ToNearestEven},
 	// addx6778 add  1.0  -0.0   ->  1.0
-	{"addx6778", "1.0", "-0.0", "1.0", 16, big.ToNearestEven},
+	{"addx6778", "1.0", "-0.0", "1.0", false, 16, big.ToNearestEven},
 	// Specials
 	// addx6780 add -Inf  -Inf   -> -Infinity
-	{"addx6780", "-Inf", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6780", "-Inf", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6781 add -Inf  -1000  -> -Infinity
-	{"addx6781", "-Inf", "-1000", "-Inf", 16, big.ToNearestEven},
+	{"addx6781", "-Inf", "-1000", "-Inf", false, 16, big.ToNearestEven},
 	// addx6782 add -Inf  -1     -> -Infinity
-	{"addx6782", "-Inf", "-1", "-Inf", 16, big.ToNearestEven},
+	{"addx6782", "-Inf", "-1", "-Inf", false, 16, big.ToNearestEven},
 	// addx6783 add -Inf  -0     -> -Infinity
-	{"addx6783", "-Inf", "-0", "-Inf", 16, big.ToNearestEven},
+	{"addx6783", "-Inf", "-0", "-Inf", false, 16, big.ToNearestEven},
 	// addx6784 add -Inf   0     -> -Infinity
-	{"addx6784", "-Inf", "0", "-Inf", 16, big.ToNearestEven},
+	{"addx6784", "-Inf", "0", "-Inf", false, 16, big.ToNearestEven},
 	// addx6785 add -Inf   1     -> -Infinity
-	{"addx6785", "-Inf", "1", "-Inf", 16, big.ToNearestEven},
+	{"addx6785", "-Inf", "1", "-Inf", false, 16, big.ToNearestEven},
 	// addx6786 add -Inf   1000  -> -Infinity
-	{"addx6786", "-Inf", "1000", "-Inf", 16, big.ToNearestEven},
+	{"addx6786", "-Inf", "1000", "-Inf", false, 16, big.ToNearestEven},
 	// addx6787 add -1000 -Inf   -> -Infinity
-	{"addx6787", "-1000", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6787", "-1000", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6788 add -Inf  -Inf   -> -Infinity
-	{"addx6788", "-Inf", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6788", "-Inf", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6789 add -1    -Inf   -> -Infinity
-	{"addx6789", "-1", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6789", "-1", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6790 add -0    -Inf   -> -Infinity
-	{"addx6790", "-0", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6790", "-0", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6791 add  0    -Inf   -> -Infinity
-	{"addx6791", "0", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6791", "0", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6792 add  1    -Inf   -> -Infinity
-	{"addx6792", "1", "-Inf", "-Inf", 16, big.ToNearestEven},
+	{"addx6792", "1", "-Inf", "-Inf", false, 16, big.ToNearestEven},
 	// addx6793 add  1000 -Inf   -> -Infinity
-	{"addx6793", "1000", "-Inf", "-Inf", 16, big.ToNearestEven},
-	// SKIP: addx6794 add  Inf  -Inf   ->  NaN  Invalid_operation
-	// SKIP: addx6800 add  Inf  -Inf   ->  NaN  Invalid_operation
+	{"addx6793", "1000", "-Inf", "-Inf", false, 16, big.ToNearestEven},
+	// SKIP (NaN): addx6794 add  Inf  -Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6800 add  Inf  -Inf   ->  NaN  Invalid_operation
 	// addx6801 add  Inf  -1000  ->  Infinity
-	{"addx6801", "Inf", "-1000", "Inf", 16, big.ToNearestEven},
+	{"addx6801", "Inf", "-1000", "Inf", false, 16, big.ToNearestEven},
 	// addx6802 add  Inf  -1     ->  Infinity
-	{"addx6802", "Inf", "-1", "Inf", 16, big.ToNearestEven},
+	{"addx6802", "Inf", "-1", "Inf", false, 16, big.ToNearestEven},
 	// addx6803 add  Inf  -0     ->  Infinity
-	{"addx6803", "Inf", "-0", "Inf", 16, big.ToNearestEven},
+	{"addx6803", "Inf", "-0", "Inf", false, 16, big.ToNearestEven},
 	// addx6804 add  Inf   0     ->  Infinity
-	{"addx6804", "Inf", "0", "Inf", 16, big.ToNearestEven},
+	{"addx6804", "Inf", "0", "Inf", false, 16, big.ToNearestEven},
 	// addx6805 add  Inf   1     ->  Infinity
-	{"addx6805", "Inf", "1", "Inf", 16, big.ToNearestEven},
+	{"addx6805", "Inf", "1", "Inf", false, 16, big.ToNearestEven},
 	// addx6806 add  Inf   1000  ->  Infinity
-	{"addx6806", "Inf", "1000", "Inf", 16, big.ToNearestEven},
+	{"addx6806", "Inf", "1000", "Inf", false, 16, big.ToNearestEven},
 	// addx6807 add  Inf   Inf   ->  Infinity
-	{"addx6807", "Inf", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6807", "Inf", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6808 add -1000  Inf   ->  Infinity
-	{"addx6808", "-1000", "Inf", "Inf", 16, big.ToNearestEven},
-	// SKIP: addx6809 add -Inf   Inf   ->  NaN  Invalid_operation
+	{"addx6808", "-1000", "Inf", "Inf", false, 16, big.ToNearestEven},
+	// SKIP (NaN): addx6809 add -Inf   Inf   ->  NaN  Invalid_operation
 	// addx6810 add -1     Inf   ->  Infinity
-	{"addx6810", "-1", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6810", "-1", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6811 add -0     Inf   ->  Infinity
-	{"addx6811", "-0", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6811", "-0", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6812 add  0     Inf   ->  Infinity
-	{"addx6812", "0", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6812", "0", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6813 add  1     Inf   ->  Infinity
-	{"addx6813", "1", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6813", "1", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6814 add  1000  Inf   ->  Infinity
-	{"addx6814", "1000", "Inf", "Inf", 16, big.ToNearestEven},
+	{"addx6814", "1000", "Inf", "Inf", false, 16, big.ToNearestEven},
 	// addx6815 add  Inf   Inf   ->  Infinity
-	{"addx6815", "Inf", "Inf", "Inf", 16, big.ToNearestEven},
-	// SKIP: addx6821 add  NaN -Inf    ->  NaN
-	// SKIP: addx6822 add  NaN -1000   ->  NaN
-	// SKIP: addx6823 add  NaN -1      ->  NaN
-	// SKIP: addx6824 add  NaN -0      ->  NaN
-	// SKIP: addx6825 add  NaN  0      ->  NaN
-	// SKIP: addx6826 add  NaN  1      ->  NaN
-	// SKIP: addx6827 add  NaN  1000   ->  NaN
-	// SKIP: addx6828 add  NaN  Inf    ->  NaN
-	// SKIP: addx6829 add  NaN  NaN    ->  NaN
-	// SKIP: addx6830 add -Inf  NaN    ->  NaN
-	// SKIP: addx6831 add -1000 NaN    ->  NaN
-	// SKIP: addx6832 add -1    NaN    ->  NaN
-	// SKIP: addx6833 add -0    NaN    ->  NaN
-	// SKIP: addx6834 add  0    NaN    ->  NaN
-	// SKIP: addx6835 add  1    NaN    ->  NaN
-	// SKIP: addx6836 add  1000 NaN    ->  NaN
-	// SKIP: addx6837 add  Inf  NaN    ->  NaN
-	// SKIP: addx6841 add  sNaN -Inf   ->  NaN  Invalid_operation
-	// SKIP: addx6842 add  sNaN -1000  ->  NaN  Invalid_operation
-	// SKIP: addx6843 add  sNaN -1     ->  NaN  Invalid_operation
-	// SKIP: addx6844 add  sNaN -0     ->  NaN  Invalid_operation
-	// SKIP: addx6845 add  sNaN  0     ->  NaN  Invalid_operation
-	// SKIP: addx6846 add  sNaN  1     ->  NaN  Invalid_operation
-	// SKIP: addx6847 add  sNaN  1000  ->  NaN  Invalid_operation
-	// SKIP: addx6848 add  sNaN  NaN   ->  NaN  Invalid_operation
-	// SKIP: addx6849 add  sNaN sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6850 add  NaN  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6851 add -Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6852 add -1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6853 add -1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6854 add -0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6855 add  0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6856 add  1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6857 add  1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6858 add  Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: addx6859 add  NaN  sNaN   ->  NaN  Invalid_operation
+	{"addx6815", "Inf", "Inf", "Inf", false, 16, big.ToNearestEven},
+	// SKIP (NaN): addx6821 add  NaN -Inf    ->  NaN
+	// SKIP (NaN): addx6822 add  NaN -1000   ->  NaN
+	// SKIP (NaN): addx6823 add  NaN -1      ->  NaN
+	// SKIP (NaN): addx6824 add  NaN -0      ->  NaN
+	// SKIP (NaN): addx6825 add  NaN  0      ->  NaN
+	// SKIP (NaN): addx6826 add  NaN  1      ->  NaN
+	// SKIP (NaN): addx6827 add  NaN  1000   ->  NaN
+	// SKIP (NaN): addx6828 add  NaN  Inf    ->  NaN
+	// SKIP (NaN): addx6829 add  NaN  NaN    ->  NaN
+	// SKIP (NaN): addx6830 add -Inf  NaN    ->  NaN
+	// SKIP (NaN): addx6831 add -1000 NaN    ->  NaN
+	// SKIP (NaN): addx6832 add -1    NaN    ->  NaN
+	// SKIP (NaN): addx6833 add -0    NaN    ->  NaN
+	// SKIP (NaN): addx6834 add  0    NaN    ->  NaN
+	// SKIP (NaN): addx6835 add  1    NaN    ->  NaN
+	// SKIP (NaN): addx6836 add  1000 NaN    ->  NaN
+	// SKIP (NaN): addx6837 add  Inf  NaN    ->  NaN
+	// SKIP (NaN): addx6841 add  sNaN -Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6842 add  sNaN -1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6843 add  sNaN -1     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6844 add  sNaN -0     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6845 add  sNaN  0     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6846 add  sNaN  1     ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6847 add  sNaN  1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6848 add  sNaN  NaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6849 add  sNaN sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6850 add  NaN  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6851 add -Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6852 add -1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6853 add -1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6854 add -0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6855 add  0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6856 add  1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6857 add  1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6858 add  Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): addx6859 add  NaN  sNaN   ->  NaN  Invalid_operation
 	// propagating NaNs
-	// SKIP: addx6861 add  NaN1   -Inf    ->  NaN1
-	// SKIP: addx6862 add +NaN2   -1000   ->  NaN2
-	// SKIP: addx6863 add  NaN3    1000   ->  NaN3
-	// SKIP: addx6864 add  NaN4    Inf    ->  NaN4
-	// SKIP: addx6865 add  NaN5   +NaN6   ->  NaN5
-	// SKIP: addx6866 add -Inf     NaN7   ->  NaN7
-	// SKIP: addx6867 add -1000    NaN8   ->  NaN8
-	// SKIP: addx6868 add  1000    NaN9   ->  NaN9
-	// SKIP: addx6869 add  Inf    +NaN10  ->  NaN10
-	// SKIP: addx6871 add  sNaN11  -Inf   ->  NaN11  Invalid_operation
-	// SKIP: addx6872 add  sNaN12  -1000  ->  NaN12  Invalid_operation
-	// SKIP: addx6873 add  sNaN13   1000  ->  NaN13  Invalid_operation
-	// SKIP: addx6874 add  sNaN14   NaN17 ->  NaN14  Invalid_operation
-	// SKIP: addx6875 add  sNaN15  sNaN18 ->  NaN15  Invalid_operation
-	// SKIP: addx6876 add  NaN16   sNaN19 ->  NaN19  Invalid_operation
-	// SKIP: addx6877 add -Inf    +sNaN20 ->  NaN20  Invalid_operation
-	// SKIP: addx6878 add -1000    sNaN21 ->  NaN21  Invalid_operation
-	// SKIP: addx6879 add  1000    sNaN22 ->  NaN22  Invalid_operation
-	// SKIP: addx6880 add  Inf     sNaN23 ->  NaN23  Invalid_operation
-	// SKIP: addx6881 add +NaN25  +sNaN24 ->  NaN24  Invalid_operation
-	// SKIP: addx6882 add -NaN26    NaN28 -> -NaN26
-	// SKIP: addx6883 add -sNaN27  sNaN29 -> -NaN27  Invalid_operation
-	// SKIP: addx6884 add  1000    -NaN30 -> -NaN30
-	// SKIP: addx6885 add  1000   -sNaN31 -> -NaN31  Invalid_operation
+	// SKIP (NaN): addx6861 add  NaN1   -Inf    ->  NaN1
+	// SKIP (NaN): addx6862 add +NaN2   -1000   ->  NaN2
+	// SKIP (NaN): addx6863 add  NaN3    1000   ->  NaN3
+	// SKIP (NaN): addx6864 add  NaN4    Inf    ->  NaN4
+	// SKIP (NaN): addx6865 add  NaN5   +NaN6   ->  NaN5
+	// SKIP (NaN): addx6866 add -Inf     NaN7   ->  NaN7
+	// SKIP (NaN): addx6867 add -1000    NaN8   ->  NaN8
+	// SKIP (NaN): addx6868 add  1000    NaN9   ->  NaN9
+	// SKIP (NaN): addx6869 add  Inf    +NaN10  ->  NaN10
+	// SKIP (NaN): addx6871 add  sNaN11  -Inf   ->  NaN11  Invalid_operation
+	// SKIP (NaN): addx6872 add  sNaN12  -1000  ->  NaN12  Invalid_operation
+	// SKIP (NaN): addx6873 add  sNaN13   1000  ->  NaN13  Invalid_operation
+	// SKIP (NaN): addx6874 add  sNaN14   NaN17 ->  NaN14  Invalid_operation
+	// SKIP (NaN): addx6875 add  sNaN15  sNaN18 ->  NaN15  Invalid_operation
+	// SKIP (NaN): addx6876 add  NaN16   sNaN19 ->  NaN19  Invalid_operation
+	// SKIP (NaN): addx6877 add -Inf    +sNaN20 ->  NaN20  Invalid_operation
+	// SKIP (NaN): addx6878 add -1000    sNaN21 ->  NaN21  Invalid_operation
+	// SKIP (NaN): addx6879 add  1000    sNaN22 ->  NaN22  Invalid_operation
+	// SKIP (NaN): addx6880 add  Inf     sNaN23 ->  NaN23  Invalid_operation
+	// SKIP (NaN): addx6881 add +NaN25  +sNaN24 ->  NaN24  Invalid_operation
+	// SKIP (NaN): addx6882 add -NaN26    NaN28 -> -NaN26
+	// SKIP (NaN): addx6883 add -sNaN27  sNaN29 -> -NaN27  Invalid_operation
+	// SKIP (NaN): addx6884 add  1000    -NaN30 -> -NaN30
+	// SKIP (NaN): addx6885 add  1000   -sNaN31 -> -NaN31  Invalid_operation
 	// now the case where we can get underflow but the result is normal
 	// [note this can't happen if the operands are also bounded, as we
 	// cannot represent 1E-399, for example]
 	// addx6571 add       1E-383       0  -> 1E-383
-	{"addx6571", "1E-383", "0", "1E-383", 16, big.ToNearestEven},
+	{"addx6571", "1E-383", "0", "1E-383", false, 16, big.ToNearestEven},
 	// addx6572 add       1E-384       0  -> 1E-384   Subnormal
-	{"addx6572", "1E-384", "0", "1E-384", 16, big.ToNearestEven},
+	{"addx6572", "1E-384", "0", "1E-384", false, 16, big.ToNearestEven},
 	// addx6573 add       1E-383  1E-384  -> 1.1E-383
-	{"addx6573", "1E-383", "1E-384", "1.1E-383", 16, big.ToNearestEven},
+	{"addx6573", "1E-383", "1E-384", "1.1E-383", false, 16, big.ToNearestEven},
 	// addx6574 subtract  1E-383  1E-384  ->   9E-384 Subnormal
-	{"addx6574", "1E-383", "1E-384", "9E-384", 16, big.ToNearestEven},
+	{"addx6574", "1E-383", "1E-384", "9E-384", false, 16, big.ToNearestEven},
 	// Here we explore the boundary of rounding a subnormal to Nmin
 	// addx6575 subtract  1E-383  1E-398  ->   9.99999999999999E-384  Subnormal
-	{"addx6575", "1E-383", "1E-398", "9.99999999999999E-384", 16, big.ToNearestEven},
+	{"addx6575", "1E-383", "1E-398", "9.99999999999999E-384", false, 16, big.ToNearestEven},
 	// addx6576 subtract  1E-383  1E-398  ->   9.99999999999999E-384  Subnormal
-	{"addx6576", "1E-383", "1E-398", "9.99999999999999E-384", 16, big.ToNearestEven},
+	{"addx6576", "1E-383", "1E-398", "9.99999999999999E-384", false, 16, big.ToNearestEven},
 	// addx6577 subtract  1E-383  1E-399  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx6577", "1E-383", "1E-399", "1.000000000000000E-383", 16, big.ToNearestEven},
+	{"addx6577", "1E-383", "1E-399", "1.000000000000000E-383", true, 16, big.ToNearestEven},
 	// addx6578 subtract  1E-383  1E-400  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx6578", "1E-383", "1E-400", "1.000000000000000E-383", 16, big.ToNearestEven},
+	{"addx6578", "1E-383", "1E-400", "1.000000000000000E-383", true, 16, big.ToNearestEven},
 	// addx6579 subtract  1E-383  1E-401  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx6579", "1E-383", "1E-401", "1.000000000000000E-383", 16, big.ToNearestEven},
+	{"addx6579", "1E-383", "1E-401", "1.000000000000000E-383", true, 16, big.ToNearestEven},
 	// addx6580 subtract  1E-383  1E-402  ->   1.000000000000000E-383 Underflow Inexact Subnormal Rounded
-	{"addx6580", "1E-383", "1E-402", "1.000000000000000E-383", 16, big.ToNearestEven},
+	{"addx6580", "1E-383", "1E-402", "1.000000000000000E-383", true, 16, big.ToNearestEven},
 	// check overflow edge case
 	//               1234567890123456
-	// SKIP: addx6972 apply   9.999999999999999E+384         -> 9.999999999999999E+384
+	// SKIP (ERROR: expected 2 operands): addx6972 apply   9.999999999999999E+384         -> 9.999999999999999E+384
 	// addx6973 add     9.999999999999999E+384  1      -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6973", "9.999999999999999E+384", "1", "9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6973", "9.999999999999999E+384", "1", "9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6974 add      9999999999999999E+369  1      -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6974", "9999999999999999E+369", "1", "9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6974", "9999999999999999E+369", "1", "9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6975 add      9999999999999999E+369  1E+369  -> Infinity Overflow Inexact Rounded
-	{"addx6975", "9999999999999999E+369", "1E+369", "Inf", 16, big.ToNearestEven},
+	{"addx6975", "9999999999999999E+369", "1E+369", "Inf", true, 16, big.ToNearestEven},
 	// addx6976 add      9999999999999999E+369  9E+368  -> Infinity Overflow Inexact Rounded
-	{"addx6976", "9999999999999999E+369", "9E+368", "Inf", 16, big.ToNearestEven},
+	{"addx6976", "9999999999999999E+369", "9E+368", "Inf", true, 16, big.ToNearestEven},
 	// addx6977 add      9999999999999999E+369  8E+368  -> Infinity Overflow Inexact Rounded
-	{"addx6977", "9999999999999999E+369", "8E+368", "Inf", 16, big.ToNearestEven},
+	{"addx6977", "9999999999999999E+369", "8E+368", "Inf", true, 16, big.ToNearestEven},
 	// addx6978 add      9999999999999999E+369  7E+368  -> Infinity Overflow Inexact Rounded
-	{"addx6978", "9999999999999999E+369", "7E+368", "Inf", 16, big.ToNearestEven},
+	{"addx6978", "9999999999999999E+369", "7E+368", "Inf", true, 16, big.ToNearestEven},
 	// addx6979 add      9999999999999999E+369  6E+368  -> Infinity Overflow Inexact Rounded
-	{"addx6979", "9999999999999999E+369", "6E+368", "Inf", 16, big.ToNearestEven},
+	{"addx6979", "9999999999999999E+369", "6E+368", "Inf", true, 16, big.ToNearestEven},
 	// addx6980 add      9999999999999999E+369  5E+368  -> Infinity Overflow Inexact Rounded
-	{"addx6980", "9999999999999999E+369", "5E+368", "Inf", 16, big.ToNearestEven},
+	{"addx6980", "9999999999999999E+369", "5E+368", "Inf", true, 16, big.ToNearestEven},
 	// addx6981 add      9999999999999999E+369  4E+368  -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6981", "9999999999999999E+369", "4E+368", "9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6981", "9999999999999999E+369", "4E+368", "9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6982 add      9999999999999999E+369  3E+368  -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6982", "9999999999999999E+369", "3E+368", "9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6982", "9999999999999999E+369", "3E+368", "9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6983 add      9999999999999999E+369  2E+368  -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6983", "9999999999999999E+369", "2E+368", "9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6983", "9999999999999999E+369", "2E+368", "9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6984 add      9999999999999999E+369  1E+368  -> 9.999999999999999E+384 Inexact Rounded
-	{"addx6984", "9999999999999999E+369", "1E+368", "9.999999999999999E+384", 16, big.ToNearestEven},
-	// SKIP: addx6985 apply  -9.999999999999999E+384         -> -9.999999999999999E+384
+	{"addx6984", "9999999999999999E+369", "1E+368", "9.999999999999999E+384", true, 16, big.ToNearestEven},
+	// SKIP (ERROR: expected 2 operands): addx6985 apply  -9.999999999999999E+384         -> -9.999999999999999E+384
 	// addx6986 add    -9.999999999999999E+384 -1      -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6986", "-9.999999999999999E+384", "-1", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6986", "-9.999999999999999E+384", "-1", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6987 add     -9999999999999999E+369 -1      -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6987", "-9999999999999999E+369", "-1", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6987", "-9999999999999999E+369", "-1", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6988 add     -9999999999999999E+369 -1E+369  -> -Infinity Overflow Inexact Rounded
-	{"addx6988", "-9999999999999999E+369", "-1E+369", "-Inf", 16, big.ToNearestEven},
+	{"addx6988", "-9999999999999999E+369", "-1E+369", "-Inf", true, 16, big.ToNearestEven},
 	// addx6989 add     -9999999999999999E+369 -9E+368  -> -Infinity Overflow Inexact Rounded
-	{"addx6989", "-9999999999999999E+369", "-9E+368", "-Inf", 16, big.ToNearestEven},
+	{"addx6989", "-9999999999999999E+369", "-9E+368", "-Inf", true, 16, big.ToNearestEven},
 	// addx6990 add     -9999999999999999E+369 -8E+368  -> -Infinity Overflow Inexact Rounded
-	{"addx6990", "-9999999999999999E+369", "-8E+368", "-Inf", 16, big.ToNearestEven},
+	{"addx6990", "-9999999999999999E+369", "-8E+368", "-Inf", true, 16, big.ToNearestEven},
 	// addx6991 add     -9999999999999999E+369 -7E+368  -> -Infinity Overflow Inexact Rounded
-	{"addx6991", "-9999999999999999E+369", "-7E+368", "-Inf", 16, big.ToNearestEven},
+	{"addx6991", "-9999999999999999E+369", "-7E+368", "-Inf", true, 16, big.ToNearestEven},
 	// addx6992 add     -9999999999999999E+369 -6E+368  -> -Infinity Overflow Inexact Rounded
-	{"addx6992", "-9999999999999999E+369", "-6E+368", "-Inf", 16, big.ToNearestEven},
+	{"addx6992", "-9999999999999999E+369", "-6E+368", "-Inf", true, 16, big.ToNearestEven},
 	// addx6993 add     -9999999999999999E+369 -5E+368  -> -Infinity Overflow Inexact Rounded
-	{"addx6993", "-9999999999999999E+369", "-5E+368", "-Inf", 16, big.ToNearestEven},
+	{"addx6993", "-9999999999999999E+369", "-5E+368", "-Inf", true, 16, big.ToNearestEven},
 	// addx6994 add     -9999999999999999E+369 -4E+368  -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6994", "-9999999999999999E+369", "-4E+368", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6994", "-9999999999999999E+369", "-4E+368", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6995 add     -9999999999999999E+369 -3E+368  -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6995", "-9999999999999999E+369", "-3E+368", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6995", "-9999999999999999E+369", "-3E+368", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6996 add     -9999999999999999E+369 -2E+368  -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6996", "-9999999999999999E+369", "-2E+368", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6996", "-9999999999999999E+369", "-2E+368", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// addx6997 add     -9999999999999999E+369 -1E+368  -> -9.999999999999999E+384 Inexact Rounded
-	{"addx6997", "-9999999999999999E+369", "-1E+368", "-9.999999999999999E+384", 16, big.ToNearestEven},
+	{"addx6997", "-9999999999999999E+369", "-1E+368", "-9.999999999999999E+384", true, 16, big.ToNearestEven},
 	// And for round down full and subnormal results
 	// rounding: down
 	// addx61100 add 1e+2 -1e-383    -> 99.99999999999999 Rounded Inexact
-	{"addx61100", "1e+2", "-1e-383", "99.99999999999999", 16, big.ToZero},
+	{"addx61100", "1e+2", "-1e-383", "99.99999999999999", true, 16, big.ToZero},
 	// addx61101 add 1e+1 -1e-383    -> 9.999999999999999  Rounded Inexact
-	{"addx61101", "1e+1", "-1e-383", "9.999999999999999", 16, big.ToZero},
+	{"addx61101", "1e+1", "-1e-383", "9.999999999999999", true, 16, big.ToZero},
 	// addx61103 add   +1 -1e-383    -> 0.9999999999999999  Rounded Inexact
-	{"addx61103", "+1", "-1e-383", "0.9999999999999999", 16, big.ToZero},
+	{"addx61103", "+1", "-1e-383", "0.9999999999999999", true, 16, big.ToZero},
 	// addx61104 add 1e-1 -1e-383    -> 0.09999999999999999  Rounded Inexact
-	{"addx61104", "1e-1", "-1e-383", "0.09999999999999999", 16, big.ToZero},
+	{"addx61104", "1e-1", "-1e-383", "0.09999999999999999", true, 16, big.ToZero},
 	// addx61105 add 1e-2 -1e-383    -> 0.009999999999999999  Rounded Inexact
-	{"addx61105", "1e-2", "-1e-383", "0.009999999999999999", 16, big.ToZero},
+	{"addx61105", "1e-2", "-1e-383", "0.009999999999999999", true, 16, big.ToZero},
 	// addx61106 add 1e-3 -1e-383    -> 0.0009999999999999999  Rounded Inexact
-	{"addx61106", "1e-3", "-1e-383", "0.0009999999999999999", 16, big.ToZero},
+	{"addx61106", "1e-3", "-1e-383", "0.0009999999999999999", true, 16, big.ToZero},
 	// addx61107 add 1e-4 -1e-383    -> 0.00009999999999999999  Rounded Inexact
-	{"addx61107", "1e-4", "-1e-383", "0.00009999999999999999", 16, big.ToZero},
+	{"addx61107", "1e-4", "-1e-383", "0.00009999999999999999", true, 16, big.ToZero},
 	// addx61108 add 1e-5 -1e-383    -> 0.000009999999999999999  Rounded Inexact
-	{"addx61108", "1e-5", "-1e-383", "0.000009999999999999999", 16, big.ToZero},
+	{"addx61108", "1e-5", "-1e-383", "0.000009999999999999999", true, 16, big.ToZero},
 	// addx61109 add 1e-6 -1e-383    -> 9.999999999999999E-7  Rounded Inexact
-	{"addx61109", "1e-6", "-1e-383", "9.999999999999999E-7", 16, big.ToZero},
+	{"addx61109", "1e-6", "-1e-383", "9.999999999999999E-7", true, 16, big.ToZero},
 	// rounding: ceiling
 	// addx61110 add -1e+2 +1e-383   -> -99.99999999999999 Rounded Inexact
-	{"addx61110", "-1e+2", "+1e-383", "-99.99999999999999", 16, big.ToPositiveInf},
+	{"addx61110", "-1e+2", "+1e-383", "-99.99999999999999", true, 16, big.ToPositiveInf},
 	// addx61111 add -1e+1 +1e-383   -> -9.999999999999999  Rounded Inexact
-	{"addx61111", "-1e+1", "+1e-383", "-9.999999999999999", 16, big.ToPositiveInf},
+	{"addx61111", "-1e+1", "+1e-383", "-9.999999999999999", true, 16, big.ToPositiveInf},
 	// addx61113 add    -1 +1e-383   -> -0.9999999999999999  Rounded Inexact
-	{"addx61113", "-1", "+1e-383", "-0.9999999999999999", 16, big.ToPositiveInf},
+	{"addx61113", "-1", "+1e-383", "-0.9999999999999999", true, 16, big.ToPositiveInf},
 	// addx61114 add -1e-1 +1e-383   -> -0.09999999999999999  Rounded Inexact
-	{"addx61114", "-1e-1", "+1e-383", "-0.09999999999999999", 16, big.ToPositiveInf},
+	{"addx61114", "-1e-1", "+1e-383", "-0.09999999999999999", true, 16, big.ToPositiveInf},
 	// addx61115 add -1e-2 +1e-383   -> -0.009999999999999999  Rounded Inexact
-	{"addx61115", "-1e-2", "+1e-383", "-0.009999999999999999", 16, big.ToPositiveInf},
+	{"addx61115", "-1e-2", "+1e-383", "-0.009999999999999999", true, 16, big.ToPositiveInf},
 	// addx61116 add -1e-3 +1e-383   -> -0.0009999999999999999  Rounded Inexact
-	{"addx61116", "-1e-3", "+1e-383", "-0.0009999999999999999", 16, big.ToPositiveInf},
+	{"addx61116", "-1e-3", "+1e-383", "-0.0009999999999999999", true, 16, big.ToPositiveInf},
 	// addx61117 add -1e-4 +1e-383   -> -0.00009999999999999999  Rounded Inexact
-	{"addx61117", "-1e-4", "+1e-383", "-0.00009999999999999999", 16, big.ToPositiveInf},
+	{"addx61117", "-1e-4", "+1e-383", "-0.00009999999999999999", true, 16, big.ToPositiveInf},
 	// addx61118 add -1e-5 +1e-383   -> -0.000009999999999999999  Rounded Inexact
-	{"addx61118", "-1e-5", "+1e-383", "-0.000009999999999999999", 16, big.ToPositiveInf},
+	{"addx61118", "-1e-5", "+1e-383", "-0.000009999999999999999", true, 16, big.ToPositiveInf},
 	// addx61119 add -1e-6 +1e-383   -> -9.999999999999999E-7  Rounded Inexact
-	{"addx61119", "-1e-6", "+1e-383", "-9.999999999999999E-7", 16, big.ToPositiveInf},
+	{"addx61119", "-1e-6", "+1e-383", "-9.999999999999999E-7", true, 16, big.ToPositiveInf},
 	// tests based on Gunnar Degnbol's edge case
 	// rounding: half_even
 	// addx61300 add 1E16  -0.5                 ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61300", "1E16", "-0.5", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61300", "1E16", "-0.5", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61310 add 1E16  -0.51                ->  9999999999999999      Inexact Rounded
-	{"addx61310", "1E16", "-0.51", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61310", "1E16", "-0.51", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61311 add 1E16  -0.501               ->  9999999999999999      Inexact Rounded
-	{"addx61311", "1E16", "-0.501", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61311", "1E16", "-0.501", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61312 add 1E16  -0.5001              ->  9999999999999999      Inexact Rounded
-	{"addx61312", "1E16", "-0.5001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61312", "1E16", "-0.5001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61313 add 1E16  -0.50001             ->  9999999999999999      Inexact Rounded
-	{"addx61313", "1E16", "-0.50001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61313", "1E16", "-0.50001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61314 add 1E16  -0.500001            ->  9999999999999999      Inexact Rounded
-	{"addx61314", "1E16", "-0.500001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61314", "1E16", "-0.500001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61315 add 1E16  -0.5000001           ->  9999999999999999      Inexact Rounded
-	{"addx61315", "1E16", "-0.5000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61315", "1E16", "-0.5000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61316 add 1E16  -0.50000001          ->  9999999999999999      Inexact Rounded
-	{"addx61316", "1E16", "-0.50000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61316", "1E16", "-0.50000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61317 add 1E16  -0.500000001         ->  9999999999999999      Inexact Rounded
-	{"addx61317", "1E16", "-0.500000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61317", "1E16", "-0.500000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61318 add 1E16  -0.5000000001        ->  9999999999999999      Inexact Rounded
-	{"addx61318", "1E16", "-0.5000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61318", "1E16", "-0.5000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61319 add 1E16  -0.50000000001       ->  9999999999999999      Inexact Rounded
-	{"addx61319", "1E16", "-0.50000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61319", "1E16", "-0.50000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61320 add 1E16  -0.500000000001      ->  9999999999999999      Inexact Rounded
-	{"addx61320", "1E16", "-0.500000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61320", "1E16", "-0.500000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61321 add 1E16  -0.5000000000001     ->  9999999999999999      Inexact Rounded
-	{"addx61321", "1E16", "-0.5000000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61321", "1E16", "-0.5000000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61322 add 1E16  -0.50000000000001    ->  9999999999999999      Inexact Rounded
-	{"addx61322", "1E16", "-0.50000000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61322", "1E16", "-0.50000000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61323 add 1E16  -0.500000000000001   ->  9999999999999999      Inexact Rounded
-	{"addx61323", "1E16", "-0.500000000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61323", "1E16", "-0.500000000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61324 add 1E16  -0.5000000000000001  ->  9999999999999999      Inexact Rounded
-	{"addx61324", "1E16", "-0.5000000000000001", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61324", "1E16", "-0.5000000000000001", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61325 add 1E16  -0.5000000000000000  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61325", "1E16", "-0.5000000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61325", "1E16", "-0.5000000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61326 add 1E16  -0.500000000000000   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61326", "1E16", "-0.500000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61326", "1E16", "-0.500000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61327 add 1E16  -0.50000000000000    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61327", "1E16", "-0.50000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61327", "1E16", "-0.50000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61328 add 1E16  -0.5000000000000     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61328", "1E16", "-0.5000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61328", "1E16", "-0.5000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61329 add 1E16  -0.500000000000      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61329", "1E16", "-0.500000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61329", "1E16", "-0.500000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61330 add 1E16  -0.50000000000       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61330", "1E16", "-0.50000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61330", "1E16", "-0.50000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61331 add 1E16  -0.5000000000        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61331", "1E16", "-0.5000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61331", "1E16", "-0.5000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61332 add 1E16  -0.500000000         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61332", "1E16", "-0.500000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61332", "1E16", "-0.500000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61333 add 1E16  -0.50000000          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61333", "1E16", "-0.50000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61333", "1E16", "-0.50000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61334 add 1E16  -0.5000000           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61334", "1E16", "-0.5000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61334", "1E16", "-0.5000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61335 add 1E16  -0.500000            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61335", "1E16", "-0.500000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61335", "1E16", "-0.500000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61336 add 1E16  -0.50000             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61336", "1E16", "-0.50000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61336", "1E16", "-0.50000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61337 add 1E16  -0.5000              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61337", "1E16", "-0.5000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61337", "1E16", "-0.5000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61338 add 1E16  -0.500               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61338", "1E16", "-0.500", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61338", "1E16", "-0.500", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61339 add 1E16  -0.50                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61339", "1E16", "-0.50", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61339", "1E16", "-0.50", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61340 add 1E16  -5000000.000010001   ->  9999999995000000      Inexact Rounded
-	{"addx61340", "1E16", "-5000000.000010001", "9999999995000000", 16, big.ToNearestEven},
+	{"addx61340", "1E16", "-5000000.000010001", "9999999995000000", true, 16, big.ToNearestEven},
 	// addx61341 add 1E16  -5000000.000000001   ->  9999999995000000      Inexact Rounded
-	{"addx61341", "1E16", "-5000000.000000001", "9999999995000000", 16, big.ToNearestEven},
+	{"addx61341", "1E16", "-5000000.000000001", "9999999995000000", true, 16, big.ToNearestEven},
 	// addx61349 add 9999999999999999 0.4                 ->  9999999999999999      Inexact Rounded
-	{"addx61349", "9999999999999999", "0.4", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61349", "9999999999999999", "0.4", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61350 add 9999999999999999 0.49                ->  9999999999999999      Inexact Rounded
-	{"addx61350", "9999999999999999", "0.49", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61350", "9999999999999999", "0.49", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61351 add 9999999999999999 0.499               ->  9999999999999999      Inexact Rounded
-	{"addx61351", "9999999999999999", "0.499", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61351", "9999999999999999", "0.499", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61352 add 9999999999999999 0.4999              ->  9999999999999999      Inexact Rounded
-	{"addx61352", "9999999999999999", "0.4999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61352", "9999999999999999", "0.4999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61353 add 9999999999999999 0.49999             ->  9999999999999999      Inexact Rounded
-	{"addx61353", "9999999999999999", "0.49999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61353", "9999999999999999", "0.49999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61354 add 9999999999999999 0.499999            ->  9999999999999999      Inexact Rounded
-	{"addx61354", "9999999999999999", "0.499999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61354", "9999999999999999", "0.499999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61355 add 9999999999999999 0.4999999           ->  9999999999999999      Inexact Rounded
-	{"addx61355", "9999999999999999", "0.4999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61355", "9999999999999999", "0.4999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61356 add 9999999999999999 0.49999999          ->  9999999999999999      Inexact Rounded
-	{"addx61356", "9999999999999999", "0.49999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61356", "9999999999999999", "0.49999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61357 add 9999999999999999 0.499999999         ->  9999999999999999      Inexact Rounded
-	{"addx61357", "9999999999999999", "0.499999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61357", "9999999999999999", "0.499999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61358 add 9999999999999999 0.4999999999        ->  9999999999999999      Inexact Rounded
-	{"addx61358", "9999999999999999", "0.4999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61358", "9999999999999999", "0.4999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61359 add 9999999999999999 0.49999999999       ->  9999999999999999      Inexact Rounded
-	{"addx61359", "9999999999999999", "0.49999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61359", "9999999999999999", "0.49999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61360 add 9999999999999999 0.499999999999      ->  9999999999999999      Inexact Rounded
-	{"addx61360", "9999999999999999", "0.499999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61360", "9999999999999999", "0.499999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61361 add 9999999999999999 0.4999999999999     ->  9999999999999999      Inexact Rounded
-	{"addx61361", "9999999999999999", "0.4999999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61361", "9999999999999999", "0.4999999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61362 add 9999999999999999 0.49999999999999    ->  9999999999999999      Inexact Rounded
-	{"addx61362", "9999999999999999", "0.49999999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61362", "9999999999999999", "0.49999999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61363 add 9999999999999999 0.499999999999999   ->  9999999999999999      Inexact Rounded
-	{"addx61363", "9999999999999999", "0.499999999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61363", "9999999999999999", "0.499999999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61364 add 9999999999999999 0.4999999999999999  ->  9999999999999999      Inexact Rounded
-	{"addx61364", "9999999999999999", "0.4999999999999999", "9999999999999999", 16, big.ToNearestEven},
+	{"addx61364", "9999999999999999", "0.4999999999999999", "9999999999999999", true, 16, big.ToNearestEven},
 	// addx61365 add 9999999999999999 0.5000000000000000  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61365", "9999999999999999", "0.5000000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61365", "9999999999999999", "0.5000000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61367 add 9999999999999999 0.500000000000000   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61367", "9999999999999999", "0.500000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61367", "9999999999999999", "0.500000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61368 add 9999999999999999 0.50000000000000    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61368", "9999999999999999", "0.50000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61368", "9999999999999999", "0.50000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61369 add 9999999999999999 0.5000000000000     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61369", "9999999999999999", "0.5000000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61369", "9999999999999999", "0.5000000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61370 add 9999999999999999 0.500000000000      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61370", "9999999999999999", "0.500000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61370", "9999999999999999", "0.500000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61371 add 9999999999999999 0.50000000000       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61371", "9999999999999999", "0.50000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61371", "9999999999999999", "0.50000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61372 add 9999999999999999 0.5000000000        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61372", "9999999999999999", "0.5000000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61372", "9999999999999999", "0.5000000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61373 add 9999999999999999 0.500000000         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61373", "9999999999999999", "0.500000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61373", "9999999999999999", "0.500000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61374 add 9999999999999999 0.50000000          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61374", "9999999999999999", "0.50000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61374", "9999999999999999", "0.50000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61375 add 9999999999999999 0.5000000           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61375", "9999999999999999", "0.5000000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61375", "9999999999999999", "0.5000000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61376 add 9999999999999999 0.500000            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61376", "9999999999999999", "0.500000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61376", "9999999999999999", "0.500000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61377 add 9999999999999999 0.50000             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61377", "9999999999999999", "0.50000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61377", "9999999999999999", "0.50000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61378 add 9999999999999999 0.5000              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61378", "9999999999999999", "0.5000", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61378", "9999999999999999", "0.5000", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61379 add 9999999999999999 0.500               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61379", "9999999999999999", "0.500", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61379", "9999999999999999", "0.500", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61380 add 9999999999999999 0.50                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61380", "9999999999999999", "0.50", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61380", "9999999999999999", "0.50", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61381 add 9999999999999999 0.5                 ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61381", "9999999999999999", "0.5", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61381", "9999999999999999", "0.5", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61382 add 9999999999999999 0.5000000000000001  ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61382", "9999999999999999", "0.5000000000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61382", "9999999999999999", "0.5000000000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61383 add 9999999999999999 0.500000000000001   ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61383", "9999999999999999", "0.500000000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61383", "9999999999999999", "0.500000000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61384 add 9999999999999999 0.50000000000001    ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61384", "9999999999999999", "0.50000000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61384", "9999999999999999", "0.50000000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61385 add 9999999999999999 0.5000000000001     ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61385", "9999999999999999", "0.5000000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61385", "9999999999999999", "0.5000000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61386 add 9999999999999999 0.500000000001      ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61386", "9999999999999999", "0.500000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61386", "9999999999999999", "0.500000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61387 add 9999999999999999 0.50000000001       ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61387", "9999999999999999", "0.50000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61387", "9999999999999999", "0.50000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61388 add 9999999999999999 0.5000000001        ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61388", "9999999999999999", "0.5000000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61388", "9999999999999999", "0.5000000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61389 add 9999999999999999 0.500000001         ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61389", "9999999999999999", "0.500000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61389", "9999999999999999", "0.500000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61390 add 9999999999999999 0.50000001          ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61390", "9999999999999999", "0.50000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61390", "9999999999999999", "0.50000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61391 add 9999999999999999 0.5000001           ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61391", "9999999999999999", "0.5000001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61391", "9999999999999999", "0.5000001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61392 add 9999999999999999 0.500001            ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61392", "9999999999999999", "0.500001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61392", "9999999999999999", "0.500001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61393 add 9999999999999999 0.50001             ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61393", "9999999999999999", "0.50001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61393", "9999999999999999", "0.50001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61394 add 9999999999999999 0.5001              ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61394", "9999999999999999", "0.5001", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61394", "9999999999999999", "0.5001", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61395 add 9999999999999999 0.501               ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61395", "9999999999999999", "0.501", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61395", "9999999999999999", "0.501", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// addx61396 add 9999999999999999 0.51                ->  1.000000000000000E+16 Inexact Rounded
-	{"addx61396", "9999999999999999", "0.51", "1.000000000000000E+16", 16, big.ToNearestEven},
+	{"addx61396", "9999999999999999", "0.51", "1.000000000000000E+16", true, 16, big.ToNearestEven},
 	// More GD edge cases, where difference between the unadjusted
 	// exponents is larger than the maximum precision and one side is 0
 	// addx61420 add  0 1.123456789012345     -> 1.123456789012345
-	{"addx61420", "0", "1.123456789012345", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61420", "0", "1.123456789012345", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61421 add  0 1.123456789012345E-1  -> 0.1123456789012345
-	{"addx61421", "0", "1.123456789012345E-1", "0.1123456789012345", 16, big.ToNearestEven},
+	{"addx61421", "0", "1.123456789012345E-1", "0.1123456789012345", false, 16, big.ToNearestEven},
 	// addx61422 add  0 1.123456789012345E-2  -> 0.01123456789012345
-	{"addx61422", "0", "1.123456789012345E-2", "0.01123456789012345", 16, big.ToNearestEven},
+	{"addx61422", "0", "1.123456789012345E-2", "0.01123456789012345", false, 16, big.ToNearestEven},
 	// addx61423 add  0 1.123456789012345E-3  -> 0.001123456789012345
-	{"addx61423", "0", "1.123456789012345E-3", "0.001123456789012345", 16, big.ToNearestEven},
+	{"addx61423", "0", "1.123456789012345E-3", "0.001123456789012345", false, 16, big.ToNearestEven},
 	// addx61424 add  0 1.123456789012345E-4  -> 0.0001123456789012345
-	{"addx61424", "0", "1.123456789012345E-4", "0.0001123456789012345", 16, big.ToNearestEven},
+	{"addx61424", "0", "1.123456789012345E-4", "0.0001123456789012345", false, 16, big.ToNearestEven},
 	// addx61425 add  0 1.123456789012345E-5  -> 0.00001123456789012345
-	{"addx61425", "0", "1.123456789012345E-5", "0.00001123456789012345", 16, big.ToNearestEven},
+	{"addx61425", "0", "1.123456789012345E-5", "0.00001123456789012345", false, 16, big.ToNearestEven},
 	// addx61426 add  0 1.123456789012345E-6  -> 0.000001123456789012345
-	{"addx61426", "0", "1.123456789012345E-6", "0.000001123456789012345", 16, big.ToNearestEven},
+	{"addx61426", "0", "1.123456789012345E-6", "0.000001123456789012345", false, 16, big.ToNearestEven},
 	// addx61427 add  0 1.123456789012345E-7  -> 1.123456789012345E-7
-	{"addx61427", "0", "1.123456789012345E-7", "1.123456789012345E-7", 16, big.ToNearestEven},
+	{"addx61427", "0", "1.123456789012345E-7", "1.123456789012345E-7", false, 16, big.ToNearestEven},
 	// addx61428 add  0 1.123456789012345E-8  -> 1.123456789012345E-8
-	{"addx61428", "0", "1.123456789012345E-8", "1.123456789012345E-8", 16, big.ToNearestEven},
+	{"addx61428", "0", "1.123456789012345E-8", "1.123456789012345E-8", false, 16, big.ToNearestEven},
 	// addx61429 add  0 1.123456789012345E-9  -> 1.123456789012345E-9
-	{"addx61429", "0", "1.123456789012345E-9", "1.123456789012345E-9", 16, big.ToNearestEven},
+	{"addx61429", "0", "1.123456789012345E-9", "1.123456789012345E-9", false, 16, big.ToNearestEven},
 	// addx61430 add  0 1.123456789012345E-10 -> 1.123456789012345E-10
-	{"addx61430", "0", "1.123456789012345E-10", "1.123456789012345E-10", 16, big.ToNearestEven},
+	{"addx61430", "0", "1.123456789012345E-10", "1.123456789012345E-10", false, 16, big.ToNearestEven},
 	// addx61431 add  0 1.123456789012345E-11 -> 1.123456789012345E-11
-	{"addx61431", "0", "1.123456789012345E-11", "1.123456789012345E-11", 16, big.ToNearestEven},
+	{"addx61431", "0", "1.123456789012345E-11", "1.123456789012345E-11", false, 16, big.ToNearestEven},
 	// addx61432 add  0 1.123456789012345E-12 -> 1.123456789012345E-12
-	{"addx61432", "0", "1.123456789012345E-12", "1.123456789012345E-12", 16, big.ToNearestEven},
+	{"addx61432", "0", "1.123456789012345E-12", "1.123456789012345E-12", false, 16, big.ToNearestEven},
 	// addx61433 add  0 1.123456789012345E-13 -> 1.123456789012345E-13
-	{"addx61433", "0", "1.123456789012345E-13", "1.123456789012345E-13", 16, big.ToNearestEven},
+	{"addx61433", "0", "1.123456789012345E-13", "1.123456789012345E-13", false, 16, big.ToNearestEven},
 	// addx61434 add  0 1.123456789012345E-14 -> 1.123456789012345E-14
-	{"addx61434", "0", "1.123456789012345E-14", "1.123456789012345E-14", 16, big.ToNearestEven},
+	{"addx61434", "0", "1.123456789012345E-14", "1.123456789012345E-14", false, 16, big.ToNearestEven},
 	// addx61435 add  0 1.123456789012345E-15 -> 1.123456789012345E-15
-	{"addx61435", "0", "1.123456789012345E-15", "1.123456789012345E-15", 16, big.ToNearestEven},
+	{"addx61435", "0", "1.123456789012345E-15", "1.123456789012345E-15", false, 16, big.ToNearestEven},
 	// addx61436 add  0 1.123456789012345E-16 -> 1.123456789012345E-16
-	{"addx61436", "0", "1.123456789012345E-16", "1.123456789012345E-16", 16, big.ToNearestEven},
+	{"addx61436", "0", "1.123456789012345E-16", "1.123456789012345E-16", false, 16, big.ToNearestEven},
 	// addx61437 add  0 1.123456789012345E-17 -> 1.123456789012345E-17
-	{"addx61437", "0", "1.123456789012345E-17", "1.123456789012345E-17", 16, big.ToNearestEven},
+	{"addx61437", "0", "1.123456789012345E-17", "1.123456789012345E-17", false, 16, big.ToNearestEven},
 	// addx61438 add  0 1.123456789012345E-18 -> 1.123456789012345E-18
-	{"addx61438", "0", "1.123456789012345E-18", "1.123456789012345E-18", 16, big.ToNearestEven},
+	{"addx61438", "0", "1.123456789012345E-18", "1.123456789012345E-18", false, 16, big.ToNearestEven},
 	// addx61439 add  0 1.123456789012345E-19 -> 1.123456789012345E-19
-	{"addx61439", "0", "1.123456789012345E-19", "1.123456789012345E-19", 16, big.ToNearestEven},
+	{"addx61439", "0", "1.123456789012345E-19", "1.123456789012345E-19", false, 16, big.ToNearestEven},
 	// same, reversed 0
 	// addx61440 add 1.123456789012345     0 -> 1.123456789012345
-	{"addx61440", "1.123456789012345", "0", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61440", "1.123456789012345", "0", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61441 add 1.123456789012345E-1  0 -> 0.1123456789012345
-	{"addx61441", "1.123456789012345E-1", "0", "0.1123456789012345", 16, big.ToNearestEven},
+	{"addx61441", "1.123456789012345E-1", "0", "0.1123456789012345", false, 16, big.ToNearestEven},
 	// addx61442 add 1.123456789012345E-2  0 -> 0.01123456789012345
-	{"addx61442", "1.123456789012345E-2", "0", "0.01123456789012345", 16, big.ToNearestEven},
+	{"addx61442", "1.123456789012345E-2", "0", "0.01123456789012345", false, 16, big.ToNearestEven},
 	// addx61443 add 1.123456789012345E-3  0 -> 0.001123456789012345
-	{"addx61443", "1.123456789012345E-3", "0", "0.001123456789012345", 16, big.ToNearestEven},
+	{"addx61443", "1.123456789012345E-3", "0", "0.001123456789012345", false, 16, big.ToNearestEven},
 	// addx61444 add 1.123456789012345E-4  0 -> 0.0001123456789012345
-	{"addx61444", "1.123456789012345E-4", "0", "0.0001123456789012345", 16, big.ToNearestEven},
+	{"addx61444", "1.123456789012345E-4", "0", "0.0001123456789012345", false, 16, big.ToNearestEven},
 	// addx61445 add 1.123456789012345E-5  0 -> 0.00001123456789012345
-	{"addx61445", "1.123456789012345E-5", "0", "0.00001123456789012345", 16, big.ToNearestEven},
+	{"addx61445", "1.123456789012345E-5", "0", "0.00001123456789012345", false, 16, big.ToNearestEven},
 	// addx61446 add 1.123456789012345E-6  0 -> 0.000001123456789012345
-	{"addx61446", "1.123456789012345E-6", "0", "0.000001123456789012345", 16, big.ToNearestEven},
+	{"addx61446", "1.123456789012345E-6", "0", "0.000001123456789012345", false, 16, big.ToNearestEven},
 	// addx61447 add 1.123456789012345E-7  0 -> 1.123456789012345E-7
-	{"addx61447", "1.123456789012345E-7", "0", "1.123456789012345E-7", 16, big.ToNearestEven},
+	{"addx61447", "1.123456789012345E-7", "0", "1.123456789012345E-7", false, 16, big.ToNearestEven},
 	// addx61448 add 1.123456789012345E-8  0 -> 1.123456789012345E-8
-	{"addx61448", "1.123456789012345E-8", "0", "1.123456789012345E-8", 16, big.ToNearestEven},
+	{"addx61448", "1.123456789012345E-8", "0", "1.123456789012345E-8", false, 16, big.ToNearestEven},
 	// addx61449 add 1.123456789012345E-9  0 -> 1.123456789012345E-9
-	{"addx61449", "1.123456789012345E-9", "0", "1.123456789012345E-9", 16, big.ToNearestEven},
+	{"addx61449", "1.123456789012345E-9", "0", "1.123456789012345E-9", false, 16, big.ToNearestEven},
 	// addx61450 add 1.123456789012345E-10 0 -> 1.123456789012345E-10
-	{"addx61450", "1.123456789012345E-10", "0", "1.123456789012345E-10", 16, big.ToNearestEven},
+	{"addx61450", "1.123456789012345E-10", "0", "1.123456789012345E-10", false, 16, big.ToNearestEven},
 	// addx61451 add 1.123456789012345E-11 0 -> 1.123456789012345E-11
-	{"addx61451", "1.123456789012345E-11", "0", "1.123456789012345E-11", 16, big.ToNearestEven},
+	{"addx61451", "1.123456789012345E-11", "0", "1.123456789012345E-11", false, 16, big.ToNearestEven},
 	// addx61452 add 1.123456789012345E-12 0 -> 1.123456789012345E-12
-	{"addx61452", "1.123456789012345E-12", "0", "1.123456789012345E-12", 16, big.ToNearestEven},
+	{"addx61452", "1.123456789012345E-12", "0", "1.123456789012345E-12", false, 16, big.ToNearestEven},
 	// addx61453 add 1.123456789012345E-13 0 -> 1.123456789012345E-13
-	{"addx61453", "1.123456789012345E-13", "0", "1.123456789012345E-13", 16, big.ToNearestEven},
+	{"addx61453", "1.123456789012345E-13", "0", "1.123456789012345E-13", false, 16, big.ToNearestEven},
 	// addx61454 add 1.123456789012345E-14 0 -> 1.123456789012345E-14
-	{"addx61454", "1.123456789012345E-14", "0", "1.123456789012345E-14", 16, big.ToNearestEven},
+	{"addx61454", "1.123456789012345E-14", "0", "1.123456789012345E-14", false, 16, big.ToNearestEven},
 	// addx61455 add 1.123456789012345E-15 0 -> 1.123456789012345E-15
-	{"addx61455", "1.123456789012345E-15", "0", "1.123456789012345E-15", 16, big.ToNearestEven},
+	{"addx61455", "1.123456789012345E-15", "0", "1.123456789012345E-15", false, 16, big.ToNearestEven},
 	// addx61456 add 1.123456789012345E-16 0 -> 1.123456789012345E-16
-	{"addx61456", "1.123456789012345E-16", "0", "1.123456789012345E-16", 16, big.ToNearestEven},
+	{"addx61456", "1.123456789012345E-16", "0", "1.123456789012345E-16", false, 16, big.ToNearestEven},
 	// addx61457 add 1.123456789012345E-17 0 -> 1.123456789012345E-17
-	{"addx61457", "1.123456789012345E-17", "0", "1.123456789012345E-17", 16, big.ToNearestEven},
+	{"addx61457", "1.123456789012345E-17", "0", "1.123456789012345E-17", false, 16, big.ToNearestEven},
 	// addx61458 add 1.123456789012345E-18 0 -> 1.123456789012345E-18
-	{"addx61458", "1.123456789012345E-18", "0", "1.123456789012345E-18", 16, big.ToNearestEven},
+	{"addx61458", "1.123456789012345E-18", "0", "1.123456789012345E-18", false, 16, big.ToNearestEven},
 	// addx61459 add 1.123456789012345E-19 0 -> 1.123456789012345E-19
-	{"addx61459", "1.123456789012345E-19", "0", "1.123456789012345E-19", 16, big.ToNearestEven},
+	{"addx61459", "1.123456789012345E-19", "0", "1.123456789012345E-19", false, 16, big.ToNearestEven},
 	// same, Es on the 0
 	// addx61460 add 1.123456789012345  0E-0   -> 1.123456789012345
-	{"addx61460", "1.123456789012345", "0E-0", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61460", "1.123456789012345", "0E-0", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61461 add 1.123456789012345  0E-1   -> 1.123456789012345
-	{"addx61461", "1.123456789012345", "0E-1", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61461", "1.123456789012345", "0E-1", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61462 add 1.123456789012345  0E-2   -> 1.123456789012345
-	{"addx61462", "1.123456789012345", "0E-2", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61462", "1.123456789012345", "0E-2", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61463 add 1.123456789012345  0E-3   -> 1.123456789012345
-	{"addx61463", "1.123456789012345", "0E-3", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61463", "1.123456789012345", "0E-3", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61464 add 1.123456789012345  0E-4   -> 1.123456789012345
-	{"addx61464", "1.123456789012345", "0E-4", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61464", "1.123456789012345", "0E-4", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61465 add 1.123456789012345  0E-5   -> 1.123456789012345
-	{"addx61465", "1.123456789012345", "0E-5", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61465", "1.123456789012345", "0E-5", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61466 add 1.123456789012345  0E-6   -> 1.123456789012345
-	{"addx61466", "1.123456789012345", "0E-6", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61466", "1.123456789012345", "0E-6", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61467 add 1.123456789012345  0E-7   -> 1.123456789012345
-	{"addx61467", "1.123456789012345", "0E-7", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61467", "1.123456789012345", "0E-7", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61468 add 1.123456789012345  0E-8   -> 1.123456789012345
-	{"addx61468", "1.123456789012345", "0E-8", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61468", "1.123456789012345", "0E-8", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61469 add 1.123456789012345  0E-9   -> 1.123456789012345
-	{"addx61469", "1.123456789012345", "0E-9", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61469", "1.123456789012345", "0E-9", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61470 add 1.123456789012345  0E-10  -> 1.123456789012345
-	{"addx61470", "1.123456789012345", "0E-10", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61470", "1.123456789012345", "0E-10", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61471 add 1.123456789012345  0E-11  -> 1.123456789012345
-	{"addx61471", "1.123456789012345", "0E-11", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61471", "1.123456789012345", "0E-11", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61472 add 1.123456789012345  0E-12  -> 1.123456789012345
-	{"addx61472", "1.123456789012345", "0E-12", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61472", "1.123456789012345", "0E-12", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61473 add 1.123456789012345  0E-13  -> 1.123456789012345
-	{"addx61473", "1.123456789012345", "0E-13", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61473", "1.123456789012345", "0E-13", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61474 add 1.123456789012345  0E-14  -> 1.123456789012345
-	{"addx61474", "1.123456789012345", "0E-14", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61474", "1.123456789012345", "0E-14", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61475 add 1.123456789012345  0E-15  -> 1.123456789012345
-	{"addx61475", "1.123456789012345", "0E-15", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61475", "1.123456789012345", "0E-15", "1.123456789012345", false, 16, big.ToNearestEven},
 	// next four flag Rounded because the 0 extends the result
 	// addx61476 add 1.123456789012345  0E-16  -> 1.123456789012345 Rounded
-	{"addx61476", "1.123456789012345", "0E-16", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61476", "1.123456789012345", "0E-16", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61477 add 1.123456789012345  0E-17  -> 1.123456789012345 Rounded
-	{"addx61477", "1.123456789012345", "0E-17", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61477", "1.123456789012345", "0E-17", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61478 add 1.123456789012345  0E-18  -> 1.123456789012345 Rounded
-	{"addx61478", "1.123456789012345", "0E-18", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61478", "1.123456789012345", "0E-18", "1.123456789012345", false, 16, big.ToNearestEven},
 	// addx61479 add 1.123456789012345  0E-19  -> 1.123456789012345 Rounded
-	{"addx61479", "1.123456789012345", "0E-19", "1.123456789012345", 16, big.ToNearestEven},
+	{"addx61479", "1.123456789012345", "0E-19", "1.123456789012345", false, 16, big.ToNearestEven},
 	// sum of two opposite-sign operands is exactly 0 and floor => -0
 	// rounding: half_up
 	// exact zeros from zeros
 	// addx61500 add  0        0E-19  ->  0E-19
-	{"addx61500", "0", "0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx61500", "0", "0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx61501 add -0        0E-19  ->  0E-19
-	{"addx61501", "-0", "0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx61501", "-0", "0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx61502 add  0       -0E-19  ->  0E-19
-	{"addx61502", "0", "-0E-19", "0E-19", 16, big.ToNearestAway},
+	{"addx61502", "0", "-0E-19", "0E-19", false, 16, big.ToNearestAway},
 	// addx61503 add -0       -0E-19  -> -0E-19
-	{"addx61503", "-0", "-0E-19", "-0E-19", 16, big.ToNearestAway},
+	{"addx61503", "-0", "-0E-19", "-0E-19", false, 16, big.ToNearestAway},
 	// addx61504 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61504", "0E-400", "0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx61504", "0E-400", "0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx61505 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61505", "-0E-400", "0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx61505", "-0E-400", "0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx61506 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx61506", "0E-400", "-0E-19", "0E-398", 16, big.ToNearestAway},
+	{"addx61506", "0E-400", "-0E-19", "0E-398", false, 16, big.ToNearestAway},
 	// addx61507 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61507", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNearestAway},
+	{"addx61507", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNearestAway},
 	// inexact zeros
 	// addx61511 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61511", "1E-401", "1E-400", "0E-398", 16, big.ToNearestAway},
+	{"addx61511", "1E-401", "1E-400", "0E-398", true, 16, big.ToNearestAway},
 	// addx61512 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61512", "-1E-401", "1E-400", "0E-398", 16, big.ToNearestAway},
+	{"addx61512", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNearestAway},
 	// addx61513 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61513", "1E-401", "-1E-400", "-0E-398", 16, big.ToNearestAway},
+	{"addx61513", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestAway},
 	// addx61514 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61514", "-1E-401", "-1E-400", "-0E-398", 16, big.ToNearestAway},
+	{"addx61514", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestAway},
 	// some exact zeros from non-zeros
 	// addx61515 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61515", "1E-401", "1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx61515", "1E-401", "1E-401", "0E-398", true, 16, big.ToNearestAway},
 	// addx61516 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx61516", "-1E-401", "1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx61516", "-1E-401", "1E-401", "0E-398", false, 16, big.ToNearestAway},
 	// addx61517 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx61517", "1E-401", "-1E-401", "0E-398", 16, big.ToNearestAway},
+	{"addx61517", "1E-401", "-1E-401", "0E-398", false, 16, big.ToNearestAway},
 	// addx61518 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61518", "-1E-401", "-1E-401", "-0E-398", 16, big.ToNearestAway},
+	{"addx61518", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToNearestAway},
 	// rounding: half_down
 	// exact zeros from zeros
-	// SKIP: addx61520 add  0        0E-19  ->  0E-19
-	// SKIP: addx61521 add -0        0E-19  ->  0E-19
-	// SKIP: addx61522 add  0       -0E-19  ->  0E-19
-	// SKIP: addx61523 add -0       -0E-19  -> -0E-19
-	// SKIP: addx61524 add  0E-400   0E-19  ->  0E-398 Clamped
-	// SKIP: addx61525 add -0E-400   0E-19  ->  0E-398 Clamped
-	// SKIP: addx61526 add  0E-400  -0E-19  ->  0E-398 Clamped
-	// SKIP: addx61527 add -0E-400  -0E-19  -> -0E-398 Clamped
+	// SKIP (unsupported rounding): addx61520 add  0        0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx61521 add -0        0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx61522 add  0       -0E-19  ->  0E-19
+	// SKIP (unsupported rounding): addx61523 add -0       -0E-19  -> -0E-19
+	// SKIP (unsupported rounding): addx61524 add  0E-400   0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx61525 add -0E-400   0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx61526 add  0E-400  -0E-19  ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx61527 add -0E-400  -0E-19  -> -0E-398 Clamped
 	// inexact zeros
-	// SKIP: addx61531 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx61532 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx61533 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx61534 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61531 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61532 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61533 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61534 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
 	// some exact zeros from non-zeros
-	// SKIP: addx61535 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	// SKIP: addx61536 add -1E-401   1E-401 ->  0E-398 Clamped
-	// SKIP: addx61537 add  1E-401  -1E-401 ->  0E-398 Clamped
-	// SKIP: addx61538 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61535 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
+	// SKIP (unsupported rounding): addx61536 add -1E-401   1E-401 ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx61537 add  1E-401  -1E-401 ->  0E-398 Clamped
+	// SKIP (unsupported rounding): addx61538 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
 	// rounding: half_even
 	// exact zeros from zeros
 	// addx61540 add  0        0E-19  ->  0E-19
-	{"addx61540", "0", "0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx61540", "0", "0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx61541 add -0        0E-19  ->  0E-19
-	{"addx61541", "-0", "0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx61541", "-0", "0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx61542 add  0       -0E-19  ->  0E-19
-	{"addx61542", "0", "-0E-19", "0E-19", 16, big.ToNearestEven},
+	{"addx61542", "0", "-0E-19", "0E-19", false, 16, big.ToNearestEven},
 	// addx61543 add -0       -0E-19  -> -0E-19
-	{"addx61543", "-0", "-0E-19", "-0E-19", 16, big.ToNearestEven},
+	{"addx61543", "-0", "-0E-19", "-0E-19", false, 16, big.ToNearestEven},
 	// addx61544 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61544", "0E-400", "0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx61544", "0E-400", "0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx61545 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61545", "-0E-400", "0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx61545", "-0E-400", "0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx61546 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx61546", "0E-400", "-0E-19", "0E-398", 16, big.ToNearestEven},
+	{"addx61546", "0E-400", "-0E-19", "0E-398", false, 16, big.ToNearestEven},
 	// addx61547 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61547", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNearestEven},
+	{"addx61547", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNearestEven},
 	// inexact zeros
 	// addx61551 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61551", "1E-401", "1E-400", "0E-398", 16, big.ToNearestEven},
+	{"addx61551", "1E-401", "1E-400", "0E-398", true, 16, big.ToNearestEven},
 	// addx61552 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61552", "-1E-401", "1E-400", "0E-398", 16, big.ToNearestEven},
+	{"addx61552", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNearestEven},
 	// addx61553 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61553", "1E-401", "-1E-400", "-0E-398", 16, big.ToNearestEven},
+	{"addx61553", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestEven},
 	// addx61554 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61554", "-1E-401", "-1E-400", "-0E-398", 16, big.ToNearestEven},
+	{"addx61554", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToNearestEven},
 	// some exact zeros from non-zeros
 	// addx61555 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61555", "1E-401", "1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx61555", "1E-401", "1E-401", "0E-398", true, 16, big.ToNearestEven},
 	// addx61556 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx61556", "-1E-401", "1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx61556", "-1E-401", "1E-401", "0E-398", false, 16, big.ToNearestEven},
 	// addx61557 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx61557", "1E-401", "-1E-401", "0E-398", 16, big.ToNearestEven},
+	{"addx61557", "1E-401", "-1E-401", "0E-398", false, 16, big.ToNearestEven},
 	// addx61558 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61558", "-1E-401", "-1E-401", "-0E-398", 16, big.ToNearestEven},
+	{"addx61558", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToNearestEven},
 	// rounding: up
 	// exact zeros from zeros
 	// addx61560 add  0        0E-19  ->  0E-19
-	{"addx61560", "0", "0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx61560", "0", "0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx61561 add -0        0E-19  ->  0E-19
-	{"addx61561", "-0", "0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx61561", "-0", "0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx61562 add  0       -0E-19  ->  0E-19
-	{"addx61562", "0", "-0E-19", "0E-19", 16, big.AwayFromZero},
+	{"addx61562", "0", "-0E-19", "0E-19", false, 16, big.AwayFromZero},
 	// addx61563 add -0       -0E-19  -> -0E-19
-	{"addx61563", "-0", "-0E-19", "-0E-19", 16, big.AwayFromZero},
+	{"addx61563", "-0", "-0E-19", "-0E-19", false, 16, big.AwayFromZero},
 	// addx61564 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61564", "0E-400", "0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx61564", "0E-400", "0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx61565 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61565", "-0E-400", "0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx61565", "-0E-400", "0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx61566 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx61566", "0E-400", "-0E-19", "0E-398", 16, big.AwayFromZero},
+	{"addx61566", "0E-400", "-0E-19", "0E-398", false, 16, big.AwayFromZero},
 	// addx61567 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61567", "-0E-400", "-0E-19", "-0E-398", 16, big.AwayFromZero},
+	{"addx61567", "-0E-400", "-0E-19", "-0E-398", false, 16, big.AwayFromZero},
 	// inexact zeros
 	// addx61571 add  1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61571", "1E-401", "1E-400", "1E-398", 16, big.AwayFromZero},
+	{"addx61571", "1E-401", "1E-400", "1E-398", true, 16, big.AwayFromZero},
 	// addx61572 add -1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61572", "-1E-401", "1E-400", "1E-398", 16, big.AwayFromZero},
+	{"addx61572", "-1E-401", "1E-400", "1E-398", true, 16, big.AwayFromZero},
 	// addx61573 add  1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61573", "1E-401", "-1E-400", "-1E-398", 16, big.AwayFromZero},
+	{"addx61573", "1E-401", "-1E-400", "-1E-398", true, 16, big.AwayFromZero},
 	// addx61574 add -1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61574", "-1E-401", "-1E-400", "-1E-398", 16, big.AwayFromZero},
+	{"addx61574", "-1E-401", "-1E-400", "-1E-398", true, 16, big.AwayFromZero},
 	// some exact zeros from non-zeros
 	// addx61575 add  1E-401   1E-401 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61575", "1E-401", "1E-401", "1E-398", 16, big.AwayFromZero},
+	{"addx61575", "1E-401", "1E-401", "1E-398", true, 16, big.AwayFromZero},
 	// addx61576 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx61576", "-1E-401", "1E-401", "0E-398", 16, big.AwayFromZero},
+	{"addx61576", "-1E-401", "1E-401", "0E-398", false, 16, big.AwayFromZero},
 	// addx61577 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx61577", "1E-401", "-1E-401", "0E-398", 16, big.AwayFromZero},
+	{"addx61577", "1E-401", "-1E-401", "0E-398", false, 16, big.AwayFromZero},
 	// addx61578 add -1E-401  -1E-401 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61578", "-1E-401", "-1E-401", "-1E-398", 16, big.AwayFromZero},
+	{"addx61578", "-1E-401", "-1E-401", "-1E-398", true, 16, big.AwayFromZero},
 	// rounding: down
 	// exact zeros from zeros
 	// addx61580 add  0        0E-19  ->  0E-19
-	{"addx61580", "0", "0E-19", "0E-19", 16, big.ToZero},
+	{"addx61580", "0", "0E-19", "0E-19", false, 16, big.ToZero},
 	// addx61581 add -0        0E-19  ->  0E-19
-	{"addx61581", "-0", "0E-19", "0E-19", 16, big.ToZero},
+	{"addx61581", "-0", "0E-19", "0E-19", false, 16, big.ToZero},
 	// addx61582 add  0       -0E-19  ->  0E-19
-	{"addx61582", "0", "-0E-19", "0E-19", 16, big.ToZero},
+	{"addx61582", "0", "-0E-19", "0E-19", false, 16, big.ToZero},
 	// addx61583 add -0       -0E-19  -> -0E-19
-	{"addx61583", "-0", "-0E-19", "-0E-19", 16, big.ToZero},
+	{"addx61583", "-0", "-0E-19", "-0E-19", false, 16, big.ToZero},
 	// addx61584 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61584", "0E-400", "0E-19", "0E-398", 16, big.ToZero},
+	{"addx61584", "0E-400", "0E-19", "0E-398", false, 16, big.ToZero},
 	// addx61585 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61585", "-0E-400", "0E-19", "0E-398", 16, big.ToZero},
+	{"addx61585", "-0E-400", "0E-19", "0E-398", false, 16, big.ToZero},
 	// addx61586 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx61586", "0E-400", "-0E-19", "0E-398", 16, big.ToZero},
+	{"addx61586", "0E-400", "-0E-19", "0E-398", false, 16, big.ToZero},
 	// addx61587 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61587", "-0E-400", "-0E-19", "-0E-398", 16, big.ToZero},
+	{"addx61587", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToZero},
 	// inexact zeros
 	// addx61591 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61591", "1E-401", "1E-400", "0E-398", 16, big.ToZero},
+	{"addx61591", "1E-401", "1E-400", "0E-398", true, 16, big.ToZero},
 	// addx61592 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61592", "-1E-401", "1E-400", "0E-398", 16, big.ToZero},
+	{"addx61592", "-1E-401", "1E-400", "0E-398", true, 16, big.ToZero},
 	// addx61593 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61593", "1E-401", "-1E-400", "-0E-398", 16, big.ToZero},
+	{"addx61593", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToZero},
 	// addx61594 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61594", "-1E-401", "-1E-400", "-0E-398", 16, big.ToZero},
+	{"addx61594", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToZero},
 	// some exact zeros from non-zeros
 	// addx61595 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61595", "1E-401", "1E-401", "0E-398", 16, big.ToZero},
+	{"addx61595", "1E-401", "1E-401", "0E-398", true, 16, big.ToZero},
 	// addx61596 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx61596", "-1E-401", "1E-401", "0E-398", 16, big.ToZero},
+	{"addx61596", "-1E-401", "1E-401", "0E-398", false, 16, big.ToZero},
 	// addx61597 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx61597", "1E-401", "-1E-401", "0E-398", 16, big.ToZero},
+	{"addx61597", "1E-401", "-1E-401", "0E-398", false, 16, big.ToZero},
 	// addx61598 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61598", "-1E-401", "-1E-401", "-0E-398", 16, big.ToZero},
+	{"addx61598", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToZero},
 	// rounding: ceiling
 	// exact zeros from zeros
 	// addx61600 add  0        0E-19  ->  0E-19
-	{"addx61600", "0", "0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx61600", "0", "0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx61601 add -0        0E-19  ->  0E-19
-	{"addx61601", "-0", "0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx61601", "-0", "0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx61602 add  0       -0E-19  ->  0E-19
-	{"addx61602", "0", "-0E-19", "0E-19", 16, big.ToPositiveInf},
+	{"addx61602", "0", "-0E-19", "0E-19", false, 16, big.ToPositiveInf},
 	// addx61603 add -0       -0E-19  -> -0E-19
-	{"addx61603", "-0", "-0E-19", "-0E-19", 16, big.ToPositiveInf},
+	{"addx61603", "-0", "-0E-19", "-0E-19", false, 16, big.ToPositiveInf},
 	// addx61604 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61604", "0E-400", "0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx61604", "0E-400", "0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx61605 add -0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61605", "-0E-400", "0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx61605", "-0E-400", "0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx61606 add  0E-400  -0E-19  ->  0E-398 Clamped
-	{"addx61606", "0E-400", "-0E-19", "0E-398", 16, big.ToPositiveInf},
+	{"addx61606", "0E-400", "-0E-19", "0E-398", false, 16, big.ToPositiveInf},
 	// addx61607 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61607", "-0E-400", "-0E-19", "-0E-398", 16, big.ToPositiveInf},
+	{"addx61607", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToPositiveInf},
 	// inexact zeros
 	// addx61611 add  1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61611", "1E-401", "1E-400", "1E-398", 16, big.ToPositiveInf},
+	{"addx61611", "1E-401", "1E-400", "1E-398", true, 16, big.ToPositiveInf},
 	// addx61612 add -1E-401   1E-400 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61612", "-1E-401", "1E-400", "1E-398", 16, big.ToPositiveInf},
+	{"addx61612", "-1E-401", "1E-400", "1E-398", true, 16, big.ToPositiveInf},
 	// addx61613 add  1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61613", "1E-401", "-1E-400", "-0E-398", 16, big.ToPositiveInf},
+	{"addx61613", "1E-401", "-1E-400", "-0E-398", true, 16, big.ToPositiveInf},
 	// addx61614 add -1E-401  -1E-400 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61614", "-1E-401", "-1E-400", "-0E-398", 16, big.ToPositiveInf},
+	{"addx61614", "-1E-401", "-1E-400", "-0E-398", true, 16, big.ToPositiveInf},
 	// some exact zeros from non-zeros
 	// addx61615 add  1E-401   1E-401 ->  1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61615", "1E-401", "1E-401", "1E-398", 16, big.ToPositiveInf},
+	{"addx61615", "1E-401", "1E-401", "1E-398", true, 16, big.ToPositiveInf},
 	// addx61616 add -1E-401   1E-401 ->  0E-398 Clamped
-	{"addx61616", "-1E-401", "1E-401", "0E-398", 16, big.ToPositiveInf},
+	{"addx61616", "-1E-401", "1E-401", "0E-398", false, 16, big.ToPositiveInf},
 	// addx61617 add  1E-401  -1E-401 ->  0E-398 Clamped
-	{"addx61617", "1E-401", "-1E-401", "0E-398", 16, big.ToPositiveInf},
+	{"addx61617", "1E-401", "-1E-401", "0E-398", false, 16, big.ToPositiveInf},
 	// addx61618 add -1E-401  -1E-401 -> -0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61618", "-1E-401", "-1E-401", "-0E-398", 16, big.ToPositiveInf},
+	{"addx61618", "-1E-401", "-1E-401", "-0E-398", true, 16, big.ToPositiveInf},
 	// and the extra-special ugly case; unusual minuses marked by -- *
 	// rounding: floor
 	// exact zeros from zeros
 	// addx61620 add  0        0E-19  ->  0E-19
-	{"addx61620", "0", "0E-19", "0E-19", 16, big.ToNegativeInf},
+	{"addx61620", "0", "0E-19", "0E-19", false, 16, big.ToNegativeInf},
 	// addx61621 add -0        0E-19  -> -0E-19           -- *
-	{"addx61621", "-0", "0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx61621", "-0", "0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx61622 add  0       -0E-19  -> -0E-19           -- *
-	{"addx61622", "0", "-0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx61622", "0", "-0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx61623 add -0       -0E-19  -> -0E-19
-	{"addx61623", "-0", "-0E-19", "-0E-19", 16, big.ToNegativeInf},
+	{"addx61623", "-0", "-0E-19", "-0E-19", false, 16, big.ToNegativeInf},
 	// addx61624 add  0E-400   0E-19  ->  0E-398 Clamped
-	{"addx61624", "0E-400", "0E-19", "0E-398", 16, big.ToNegativeInf},
+	{"addx61624", "0E-400", "0E-19", "0E-398", false, 16, big.ToNegativeInf},
 	// addx61625 add -0E-400   0E-19  -> -0E-398 Clamped  -- *
-	{"addx61625", "-0E-400", "0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx61625", "-0E-400", "0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx61626 add  0E-400  -0E-19  -> -0E-398 Clamped  -- *
-	{"addx61626", "0E-400", "-0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx61626", "0E-400", "-0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx61627 add -0E-400  -0E-19  -> -0E-398 Clamped
-	{"addx61627", "-0E-400", "-0E-19", "-0E-398", 16, big.ToNegativeInf},
+	{"addx61627", "-0E-400", "-0E-19", "-0E-398", false, 16, big.ToNegativeInf},
 	// inexact zeros
 	// addx61631 add  1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61631", "1E-401", "1E-400", "0E-398", 16, big.ToNegativeInf},
+	{"addx61631", "1E-401", "1E-400", "0E-398", true, 16, big.ToNegativeInf},
 	// addx61632 add -1E-401   1E-400 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61632", "-1E-401", "1E-400", "0E-398", 16, big.ToNegativeInf},
+	{"addx61632", "-1E-401", "1E-400", "0E-398", true, 16, big.ToNegativeInf},
 	// addx61633 add  1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61633", "1E-401", "-1E-400", "-1E-398", 16, big.ToNegativeInf},
+	{"addx61633", "1E-401", "-1E-400", "-1E-398", true, 16, big.ToNegativeInf},
 	// addx61634 add -1E-401  -1E-400 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61634", "-1E-401", "-1E-400", "-1E-398", 16, big.ToNegativeInf},
+	{"addx61634", "-1E-401", "-1E-400", "-1E-398", true, 16, big.ToNegativeInf},
 	// some exact zeros from non-zeros
 	// addx61635 add  1E-401   1E-401 ->  0E-398 Subnormal Inexact Rounded Underflow Clamped
-	{"addx61635", "1E-401", "1E-401", "0E-398", 16, big.ToNegativeInf},
+	{"addx61635", "1E-401", "1E-401", "0E-398", true, 16, big.ToNegativeInf},
 	// addx61636 add -1E-401   1E-401 -> -0E-398 Clamped  -- *
-	{"addx61636", "-1E-401", "1E-401", "-0E-398", 16, big.ToNegativeInf},
+	{"addx61636", "-1E-401", "1E-401", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx61637 add  1E-401  -1E-401 -> -0E-398 Clamped  -- *
-	{"addx61637", "1E-401", "-1E-401", "-0E-398", 16, big.ToNegativeInf},
+	{"addx61637", "1E-401", "-1E-401", "-0E-398", false, 16, big.ToNegativeInf},
 	// addx61638 add -1E-401  -1E-401 -> -1E-398 Subnormal Inexact Rounded Underflow
-	{"addx61638", "-1E-401", "-1E-401", "-1E-398", 16, big.ToNegativeInf},
+	{"addx61638", "-1E-401", "-1E-401", "-1E-398", true, 16, big.ToNegativeInf},
 	// Examples from SQL proposal (Krishna Kulkarni)
 	// addx61701 add 130E-2    120E-2    -> 2.50
-	{"addx61701", "130E-2", "120E-2", "2.50", 16, big.ToNegativeInf},
+	{"addx61701", "130E-2", "120E-2", "2.50", false, 16, big.ToNegativeInf},
 	// addx61702 add 130E-2    12E-1     -> 2.50
-	{"addx61702", "130E-2", "12E-1", "2.50", 16, big.ToNegativeInf},
+	{"addx61702", "130E-2", "12E-1", "2.50", false, 16, big.ToNegativeInf},
 	// addx61703 add 130E-2    1E0       -> 2.30
-	{"addx61703", "130E-2", "1E0", "2.30", 16, big.ToNegativeInf},
+	{"addx61703", "130E-2", "1E0", "2.30", false, 16, big.ToNegativeInf},
 	// addx61704 add 1E2       1E4       -> 1.01E+4
-	{"addx61704", "1E2", "1E4", "1.01E+4", 16, big.ToNegativeInf},
+	{"addx61704", "1E2", "1E4", "1.01E+4", false, 16, big.ToNegativeInf},
 	// addx61705 subtract 130E-2  120E-2 -> 0.10
-	{"addx61705", "130E-2", "120E-2", "0.10", 16, big.ToNegativeInf},
+	{"addx61705", "130E-2", "120E-2", "0.10", false, 16, big.ToNegativeInf},
 	// addx61706 subtract 130E-2  12E-1  -> 0.10
-	{"addx61706", "130E-2", "12E-1", "0.10", 16, big.ToNegativeInf},
+	{"addx61706", "130E-2", "12E-1", "0.10", false, 16, big.ToNegativeInf},
 	// addx61707 subtract 130E-2  1E0    -> 0.30
-	{"addx61707", "130E-2", "1E0", "0.30", 16, big.ToNegativeInf},
+	{"addx61707", "130E-2", "1E0", "0.30", false, 16, big.ToNegativeInf},
 	// addx61708 subtract 1E2     1E4    -> -9.9E+3
-	{"addx61708", "1E2", "1E4", "-9.9E+3", 16, big.ToNegativeInf},
+	{"addx61708", "1E2", "1E4", "-9.9E+3", false, 16, big.ToNegativeInf},
 	// Gappy coefficients; check residue handling even with full coefficient gap
 	// rounding: half_even
 	// addx62001 add 1234567890123456 1      -> 1234567890123457
-	{"addx62001", "1234567890123456", "1", "1234567890123457", 16, big.ToNearestEven},
+	{"addx62001", "1234567890123456", "1", "1234567890123457", false, 16, big.ToNearestEven},
 	// addx62002 add 1234567890123456 0.6    -> 1234567890123457  Inexact Rounded
-	{"addx62002", "1234567890123456", "0.6", "1234567890123457", 16, big.ToNearestEven},
+	{"addx62002", "1234567890123456", "0.6", "1234567890123457", true, 16, big.ToNearestEven},
 	// addx62003 add 1234567890123456 0.06   -> 1234567890123456  Inexact Rounded
-	{"addx62003", "1234567890123456", "0.06", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62003", "1234567890123456", "0.06", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62004 add 1234567890123456 6E-3   -> 1234567890123456  Inexact Rounded
-	{"addx62004", "1234567890123456", "6E-3", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62004", "1234567890123456", "6E-3", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62005 add 1234567890123456 6E-4   -> 1234567890123456  Inexact Rounded
-	{"addx62005", "1234567890123456", "6E-4", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62005", "1234567890123456", "6E-4", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62006 add 1234567890123456 6E-5   -> 1234567890123456  Inexact Rounded
-	{"addx62006", "1234567890123456", "6E-5", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62006", "1234567890123456", "6E-5", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62007 add 1234567890123456 6E-6   -> 1234567890123456  Inexact Rounded
-	{"addx62007", "1234567890123456", "6E-6", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62007", "1234567890123456", "6E-6", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62008 add 1234567890123456 6E-7   -> 1234567890123456  Inexact Rounded
-	{"addx62008", "1234567890123456", "6E-7", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62008", "1234567890123456", "6E-7", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62009 add 1234567890123456 6E-8   -> 1234567890123456  Inexact Rounded
-	{"addx62009", "1234567890123456", "6E-8", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62009", "1234567890123456", "6E-8", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62010 add 1234567890123456 6E-9   -> 1234567890123456  Inexact Rounded
-	{"addx62010", "1234567890123456", "6E-9", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62010", "1234567890123456", "6E-9", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62011 add 1234567890123456 6E-10  -> 1234567890123456  Inexact Rounded
-	{"addx62011", "1234567890123456", "6E-10", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62011", "1234567890123456", "6E-10", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62012 add 1234567890123456 6E-11  -> 1234567890123456  Inexact Rounded
-	{"addx62012", "1234567890123456", "6E-11", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62012", "1234567890123456", "6E-11", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62013 add 1234567890123456 6E-12  -> 1234567890123456  Inexact Rounded
-	{"addx62013", "1234567890123456", "6E-12", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62013", "1234567890123456", "6E-12", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62014 add 1234567890123456 6E-13  -> 1234567890123456  Inexact Rounded
-	{"addx62014", "1234567890123456", "6E-13", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62014", "1234567890123456", "6E-13", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62015 add 1234567890123456 6E-14  -> 1234567890123456  Inexact Rounded
-	{"addx62015", "1234567890123456", "6E-14", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62015", "1234567890123456", "6E-14", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62016 add 1234567890123456 6E-15  -> 1234567890123456  Inexact Rounded
-	{"addx62016", "1234567890123456", "6E-15", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62016", "1234567890123456", "6E-15", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62017 add 1234567890123456 6E-16  -> 1234567890123456  Inexact Rounded
-	{"addx62017", "1234567890123456", "6E-16", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62017", "1234567890123456", "6E-16", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62018 add 1234567890123456 6E-17  -> 1234567890123456  Inexact Rounded
-	{"addx62018", "1234567890123456", "6E-17", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62018", "1234567890123456", "6E-17", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62019 add 1234567890123456 6E-18  -> 1234567890123456  Inexact Rounded
-	{"addx62019", "1234567890123456", "6E-18", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62019", "1234567890123456", "6E-18", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62020 add 1234567890123456 6E-19  -> 1234567890123456  Inexact Rounded
-	{"addx62020", "1234567890123456", "6E-19", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62020", "1234567890123456", "6E-19", "1234567890123456", true, 16, big.ToNearestEven},
 	// addx62021 add 1234567890123456 6E-20  -> 1234567890123456  Inexact Rounded
-	{"addx62021", "1234567890123456", "6E-20", "1234567890123456", 16, big.ToNearestEven},
+	{"addx62021", "1234567890123456", "6E-20", "1234567890123456", true, 16, big.ToNearestEven},
 	// widening second argument at gap
 	// addx62030 add 12345678 1                       -> 12345679
-	{"addx62030", "12345678", "1", "12345679", 16, big.ToNearestEven},
+	{"addx62030", "12345678", "1", "12345679", false, 16, big.ToNearestEven},
 	// addx62031 add 12345678 0.1                     -> 12345678.1
-	{"addx62031", "12345678", "0.1", "12345678.1", 16, big.ToNearestEven},
+	{"addx62031", "12345678", "0.1", "12345678.1", false, 16, big.ToNearestEven},
 	// addx62032 add 12345678 0.12                    -> 12345678.12
-	{"addx62032", "12345678", "0.12", "12345678.12", 16, big.ToNearestEven},
+	{"addx62032", "12345678", "0.12", "12345678.12", false, 16, big.ToNearestEven},
 	// addx62033 add 12345678 0.123                   -> 12345678.123
-	{"addx62033", "12345678", "0.123", "12345678.123", 16, big.ToNearestEven},
+	{"addx62033", "12345678", "0.123", "12345678.123", false, 16, big.ToNearestEven},
 	// addx62034 add 12345678 0.1234                  -> 12345678.1234
-	{"addx62034", "12345678", "0.1234", "12345678.1234", 16, big.ToNearestEven},
+	{"addx62034", "12345678", "0.1234", "12345678.1234", false, 16, big.ToNearestEven},
 	// addx62035 add 12345678 0.12345                 -> 12345678.12345
-	{"addx62035", "12345678", "0.12345", "12345678.12345", 16, big.ToNearestEven},
+	{"addx62035", "12345678", "0.12345", "12345678.12345", false, 16, big.ToNearestEven},
 	// addx62036 add 12345678 0.123456                -> 12345678.123456
-	{"addx62036", "12345678", "0.123456", "12345678.123456", 16, big.ToNearestEven},
+	{"addx62036", "12345678", "0.123456", "12345678.123456", false, 16, big.ToNearestEven},
 	// addx62037 add 12345678 0.1234567               -> 12345678.1234567
-	{"addx62037", "12345678", "0.1234567", "12345678.1234567", 16, big.ToNearestEven},
+	{"addx62037", "12345678", "0.1234567", "12345678.1234567", false, 16, big.ToNearestEven},
 	// addx62038 add 12345678 0.12345678              -> 12345678.12345678
-	{"addx62038", "12345678", "0.12345678", "12345678.12345678", 16, big.ToNearestEven},
+	{"addx62038", "12345678", "0.12345678", "12345678.12345678", false, 16, big.ToNearestEven},
 	// addx62039 add 12345678 0.123456789             -> 12345678.12345679 Inexact Rounded
-	{"addx62039", "12345678", "0.123456789", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62039", "12345678", "0.123456789", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62040 add 12345678 0.123456785             -> 12345678.12345678 Inexact Rounded
-	{"addx62040", "12345678", "0.123456785", "12345678.12345678", 16, big.ToNearestEven},
+	{"addx62040", "12345678", "0.123456785", "12345678.12345678", true, 16, big.ToNearestEven},
 	// addx62041 add 12345678 0.1234567850            -> 12345678.12345678 Inexact Rounded
-	{"addx62041", "12345678", "0.1234567850", "12345678.12345678", 16, big.ToNearestEven},
+	{"addx62041", "12345678", "0.1234567850", "12345678.12345678", true, 16, big.ToNearestEven},
 	// addx62042 add 12345678 0.1234567851            -> 12345678.12345679 Inexact Rounded
-	{"addx62042", "12345678", "0.1234567851", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62042", "12345678", "0.1234567851", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62043 add 12345678 0.12345678501           -> 12345678.12345679 Inexact Rounded
-	{"addx62043", "12345678", "0.12345678501", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62043", "12345678", "0.12345678501", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62044 add 12345678 0.123456785001          -> 12345678.12345679 Inexact Rounded
-	{"addx62044", "12345678", "0.123456785001", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62044", "12345678", "0.123456785001", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62045 add 12345678 0.1234567850001         -> 12345678.12345679 Inexact Rounded
-	{"addx62045", "12345678", "0.1234567850001", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62045", "12345678", "0.1234567850001", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62046 add 12345678 0.12345678500001        -> 12345678.12345679 Inexact Rounded
-	{"addx62046", "12345678", "0.12345678500001", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62046", "12345678", "0.12345678500001", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62047 add 12345678 0.123456785000001       -> 12345678.12345679 Inexact Rounded
-	{"addx62047", "12345678", "0.123456785000001", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62047", "12345678", "0.123456785000001", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62048 add 12345678 0.1234567850000001      -> 12345678.12345679 Inexact Rounded
-	{"addx62048", "12345678", "0.1234567850000001", "12345678.12345679", 16, big.ToNearestEven},
+	{"addx62048", "12345678", "0.1234567850000001", "12345678.12345679", true, 16, big.ToNearestEven},
 	// addx62049 add 12345678 0.1234567850000000      -> 12345678.12345678 Inexact Rounded
-	{"addx62049", "12345678", "0.1234567850000000", "12345678.12345678", 16, big.ToNearestEven},
+	{"addx62049", "12345678", "0.1234567850000000", "12345678.12345678", true, 16, big.ToNearestEven},
 	//                               90123456
 	// rounding: half_even
 	// addx62050 add 12345678 0.0234567750000000      -> 12345678.02345678 Inexact Rounded
-	{"addx62050", "12345678", "0.0234567750000000", "12345678.02345678", 16, big.ToNearestEven},
+	{"addx62050", "12345678", "0.0234567750000000", "12345678.02345678", true, 16, big.ToNearestEven},
 	// addx62051 add 12345678 0.0034567750000000      -> 12345678.00345678 Inexact Rounded
-	{"addx62051", "12345678", "0.0034567750000000", "12345678.00345678", 16, big.ToNearestEven},
+	{"addx62051", "12345678", "0.0034567750000000", "12345678.00345678", true, 16, big.ToNearestEven},
 	// addx62052 add 12345678 0.0004567750000000      -> 12345678.00045678 Inexact Rounded
-	{"addx62052", "12345678", "0.0004567750000000", "12345678.00045678", 16, big.ToNearestEven},
+	{"addx62052", "12345678", "0.0004567750000000", "12345678.00045678", true, 16, big.ToNearestEven},
 	// addx62053 add 12345678 0.0000567750000000      -> 12345678.00005678 Inexact Rounded
-	{"addx62053", "12345678", "0.0000567750000000", "12345678.00005678", 16, big.ToNearestEven},
+	{"addx62053", "12345678", "0.0000567750000000", "12345678.00005678", true, 16, big.ToNearestEven},
 	// addx62054 add 12345678 0.0000067750000000      -> 12345678.00000678 Inexact Rounded
-	{"addx62054", "12345678", "0.0000067750000000", "12345678.00000678", 16, big.ToNearestEven},
+	{"addx62054", "12345678", "0.0000067750000000", "12345678.00000678", true, 16, big.ToNearestEven},
 	// addx62055 add 12345678 0.0000007750000000      -> 12345678.00000078 Inexact Rounded
-	{"addx62055", "12345678", "0.0000007750000000", "12345678.00000078", 16, big.ToNearestEven},
+	{"addx62055", "12345678", "0.0000007750000000", "12345678.00000078", true, 16, big.ToNearestEven},
 	// addx62056 add 12345678 0.0000000750000000      -> 12345678.00000008 Inexact Rounded
-	{"addx62056", "12345678", "0.0000000750000000", "12345678.00000008", 16, big.ToNearestEven},
+	{"addx62056", "12345678", "0.0000000750000000", "12345678.00000008", true, 16, big.ToNearestEven},
 	// addx62057 add 12345678 0.0000000050000000      -> 12345678.00000000 Inexact Rounded
-	{"addx62057", "12345678", "0.0000000050000000", "12345678.00000000", 16, big.ToNearestEven},
+	{"addx62057", "12345678", "0.0000000050000000", "12345678.00000000", true, 16, big.ToNearestEven},
 	// addx62060 add 12345678 0.0234567750000001      -> 12345678.02345678 Inexact Rounded
-	{"addx62060", "12345678", "0.0234567750000001", "12345678.02345678", 16, big.ToNearestEven},
+	{"addx62060", "12345678", "0.0234567750000001", "12345678.02345678", true, 16, big.ToNearestEven},
 	// addx62061 add 12345678 0.0034567750000001      -> 12345678.00345678 Inexact Rounded
-	{"addx62061", "12345678", "0.0034567750000001", "12345678.00345678", 16, big.ToNearestEven},
+	{"addx62061", "12345678", "0.0034567750000001", "12345678.00345678", true, 16, big.ToNearestEven},
 	// addx62062 add 12345678 0.0004567750000001      -> 12345678.00045678 Inexact Rounded
-	{"addx62062", "12345678", "0.0004567750000001", "12345678.00045678", 16, big.ToNearestEven},
+	{"addx62062", "12345678", "0.0004567750000001", "12345678.00045678", true, 16, big.ToNearestEven},
 	// addx62063 add 12345678 0.0000567750000001      -> 12345678.00005678 Inexact Rounded
-	{"addx62063", "12345678", "0.0000567750000001", "12345678.00005678", 16, big.ToNearestEven},
+	{"addx62063", "12345678", "0.0000567750000001", "12345678.00005678", true, 16, big.ToNearestEven},
 	// addx62064 add 12345678 0.0000067750000001      -> 12345678.00000678 Inexact Rounded
-	{"addx62064", "12345678", "0.0000067750000001", "12345678.00000678", 16, big.ToNearestEven},
+	{"addx62064", "12345678", "0.0000067750000001", "12345678.00000678", true, 16, big.ToNearestEven},
 	// addx62065 add 12345678 0.0000007750000001      -> 12345678.00000078 Inexact Rounded
-	{"addx62065", "12345678", "0.0000007750000001", "12345678.00000078", 16, big.ToNearestEven},
+	{"addx62065", "12345678", "0.0000007750000001", "12345678.00000078", true, 16, big.ToNearestEven},
 	// addx62066 add 12345678 0.0000000750000001      -> 12345678.00000008 Inexact Rounded
-	{"addx62066", "12345678", "0.0000000750000001", "12345678.00000008", 16, big.ToNearestEven},
+	{"addx62066", "12345678", "0.0000000750000001", "12345678.00000008", true, 16, big.ToNearestEven},
 	// addx62067 add 12345678 0.0000000050000001      -> 12345678.00000001 Inexact Rounded
-	{"addx62067", "12345678", "0.0000000050000001", "12345678.00000001", 16, big.ToNearestEven},
+	{"addx62067", "12345678", "0.0000000050000001", "12345678.00000001", true, 16, big.ToNearestEven},
 	// far-out residues (full coefficient gap is 16+15 digits)
 	// rounding: up
 	// addx62070 add 12345678 1E-8                    -> 12345678.00000001
-	{"addx62070", "12345678", "1E-8", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62070", "12345678", "1E-8", "12345678.00000001", false, 16, big.AwayFromZero},
 	// addx62071 add 12345678 1E-9                    -> 12345678.00000001 Inexact Rounded
-	{"addx62071", "12345678", "1E-9", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62071", "12345678", "1E-9", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62072 add 12345678 1E-10                   -> 12345678.00000001 Inexact Rounded
-	{"addx62072", "12345678", "1E-10", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62072", "12345678", "1E-10", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62073 add 12345678 1E-11                   -> 12345678.00000001 Inexact Rounded
-	{"addx62073", "12345678", "1E-11", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62073", "12345678", "1E-11", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62074 add 12345678 1E-12                   -> 12345678.00000001 Inexact Rounded
-	{"addx62074", "12345678", "1E-12", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62074", "12345678", "1E-12", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62075 add 12345678 1E-13                   -> 12345678.00000001 Inexact Rounded
-	{"addx62075", "12345678", "1E-13", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62075", "12345678", "1E-13", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62076 add 12345678 1E-14                   -> 12345678.00000001 Inexact Rounded
-	{"addx62076", "12345678", "1E-14", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62076", "12345678", "1E-14", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62077 add 12345678 1E-15                   -> 12345678.00000001 Inexact Rounded
-	{"addx62077", "12345678", "1E-15", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62077", "12345678", "1E-15", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62078 add 12345678 1E-16                   -> 12345678.00000001 Inexact Rounded
-	{"addx62078", "12345678", "1E-16", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62078", "12345678", "1E-16", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62079 add 12345678 1E-17                   -> 12345678.00000001 Inexact Rounded
-	{"addx62079", "12345678", "1E-17", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62079", "12345678", "1E-17", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62080 add 12345678 1E-18                   -> 12345678.00000001 Inexact Rounded
-	{"addx62080", "12345678", "1E-18", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62080", "12345678", "1E-18", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62081 add 12345678 1E-19                   -> 12345678.00000001 Inexact Rounded
-	{"addx62081", "12345678", "1E-19", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62081", "12345678", "1E-19", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62082 add 12345678 1E-20                   -> 12345678.00000001 Inexact Rounded
-	{"addx62082", "12345678", "1E-20", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62082", "12345678", "1E-20", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62083 add 12345678 1E-25                   -> 12345678.00000001 Inexact Rounded
-	{"addx62083", "12345678", "1E-25", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62083", "12345678", "1E-25", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62084 add 12345678 1E-30                   -> 12345678.00000001 Inexact Rounded
-	{"addx62084", "12345678", "1E-30", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62084", "12345678", "1E-30", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62085 add 12345678 1E-31                   -> 12345678.00000001 Inexact Rounded
-	{"addx62085", "12345678", "1E-31", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62085", "12345678", "1E-31", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62086 add 12345678 1E-32                   -> 12345678.00000001 Inexact Rounded
-	{"addx62086", "12345678", "1E-32", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62086", "12345678", "1E-32", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62087 add 12345678 1E-33                   -> 12345678.00000001 Inexact Rounded
-	{"addx62087", "12345678", "1E-33", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62087", "12345678", "1E-33", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62088 add 12345678 1E-34                   -> 12345678.00000001 Inexact Rounded
-	{"addx62088", "12345678", "1E-34", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62088", "12345678", "1E-34", "12345678.00000001", true, 16, big.AwayFromZero},
 	// addx62089 add 12345678 1E-35                   -> 12345678.00000001 Inexact Rounded
-	{"addx62089", "12345678", "1E-35", "12345678.00000001", 16, big.AwayFromZero},
+	{"addx62089", "12345678", "1E-35", "12345678.00000001", true, 16, big.AwayFromZero},
 	// payload decapitate
 	// precision: 5
-	// SKIP: addx62100 add      11  sNaN123456789 ->  NaN56789  Invalid_operation
-	// SKIP: addx62101 add     -11 -sNaN123456789 -> -NaN56789  Invalid_operation
-	// SKIP: addx62102 add      11   NaN123456789 ->  NaN56789
-	// SKIP: addx62103 add     -11  -NaN123456789 -> -NaN56789
+	// SKIP (NaN): addx62100 add      11  sNaN123456789 ->  NaN56789  Invalid_operation
+	// SKIP (NaN): addx62101 add     -11 -sNaN123456789 -> -NaN56789  Invalid_operation
+	// SKIP (NaN): addx62102 add      11   NaN123456789 ->  NaN56789
+	// SKIP (NaN): addx62103 add     -11  -NaN123456789 -> -NaN56789
 	// Null tests
-	// SKIP: addx9990 add 10  # -> NaN Invalid_operation
-	// SKIP: addx9991 add  # 10 -> NaN Invalid_operation
+	// SKIP (NaN): addx9990 add 10  # -> NaN Invalid_operation
+	// SKIP (NaN): addx9991 add  # 10 -> NaN Invalid_operation
 }

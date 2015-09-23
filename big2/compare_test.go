@@ -1113,66 +1113,66 @@ var compareTests = []struct {
 	{"comx814", "1000", "-Inf", 1},
 	// comx815 compare  Inf  -Inf   ->  1
 	{"comx815", "Inf", "-Inf", 1},
-	// SKIP: comx821 compare  NaN -Inf    ->  NaN
-	// SKIP: comx822 compare  NaN -1000   ->  NaN
-	// SKIP: comx823 compare  NaN -1      ->  NaN
-	// SKIP: comx824 compare  NaN -0      ->  NaN
-	// SKIP: comx825 compare  NaN  0      ->  NaN
-	// SKIP: comx826 compare  NaN  1      ->  NaN
-	// SKIP: comx827 compare  NaN  1000   ->  NaN
-	// SKIP: comx828 compare  NaN  Inf    ->  NaN
-	// SKIP: comx829 compare  NaN  NaN    ->  NaN
-	// SKIP: comx830 compare -Inf  NaN    ->  NaN
-	// SKIP: comx831 compare -1000 NaN    ->  NaN
-	// SKIP: comx832 compare -1    NaN    ->  NaN
-	// SKIP: comx833 compare -0    NaN    ->  NaN
-	// SKIP: comx834 compare  0    NaN    ->  NaN
-	// SKIP: comx835 compare  1    NaN    ->  NaN
-	// SKIP: comx836 compare  1000 NaN    ->  NaN
-	// SKIP: comx837 compare  Inf  NaN    ->  NaN
-	// SKIP: comx838 compare -NaN -NaN    -> -NaN
-	// SKIP: comx839 compare +NaN -NaN    ->  NaN
-	// SKIP: comx840 compare -NaN +NaN    -> -NaN
-	// SKIP: comx841 compare  sNaN -Inf   ->  NaN  Invalid_operation
-	// SKIP: comx842 compare  sNaN -1000  ->  NaN  Invalid_operation
-	// SKIP: comx843 compare  sNaN -1     ->  NaN  Invalid_operation
-	// SKIP: comx844 compare  sNaN -0     ->  NaN  Invalid_operation
-	// SKIP: comx845 compare  sNaN  0     ->  NaN  Invalid_operation
-	// SKIP: comx846 compare  sNaN  1     ->  NaN  Invalid_operation
-	// SKIP: comx847 compare  sNaN  1000  ->  NaN  Invalid_operation
-	// SKIP: comx848 compare  sNaN  NaN   ->  NaN  Invalid_operation
-	// SKIP: comx849 compare  sNaN sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx850 compare  NaN  sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx851 compare -Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx852 compare -1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx853 compare -1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx854 compare -0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx855 compare  0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx856 compare  1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx857 compare  1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx858 compare  Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: comx859 compare  NaN  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx821 compare  NaN -Inf    ->  NaN
+	// SKIP (NaN): comx822 compare  NaN -1000   ->  NaN
+	// SKIP (NaN): comx823 compare  NaN -1      ->  NaN
+	// SKIP (NaN): comx824 compare  NaN -0      ->  NaN
+	// SKIP (NaN): comx825 compare  NaN  0      ->  NaN
+	// SKIP (NaN): comx826 compare  NaN  1      ->  NaN
+	// SKIP (NaN): comx827 compare  NaN  1000   ->  NaN
+	// SKIP (NaN): comx828 compare  NaN  Inf    ->  NaN
+	// SKIP (NaN): comx829 compare  NaN  NaN    ->  NaN
+	// SKIP (NaN): comx830 compare -Inf  NaN    ->  NaN
+	// SKIP (NaN): comx831 compare -1000 NaN    ->  NaN
+	// SKIP (NaN): comx832 compare -1    NaN    ->  NaN
+	// SKIP (NaN): comx833 compare -0    NaN    ->  NaN
+	// SKIP (NaN): comx834 compare  0    NaN    ->  NaN
+	// SKIP (NaN): comx835 compare  1    NaN    ->  NaN
+	// SKIP (NaN): comx836 compare  1000 NaN    ->  NaN
+	// SKIP (NaN): comx837 compare  Inf  NaN    ->  NaN
+	// SKIP (NaN): comx838 compare -NaN -NaN    -> -NaN
+	// SKIP (NaN): comx839 compare +NaN -NaN    ->  NaN
+	// SKIP (NaN): comx840 compare -NaN +NaN    -> -NaN
+	// SKIP (NaN): comx841 compare  sNaN -Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx842 compare  sNaN -1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): comx843 compare  sNaN -1     ->  NaN  Invalid_operation
+	// SKIP (NaN): comx844 compare  sNaN -0     ->  NaN  Invalid_operation
+	// SKIP (NaN): comx845 compare  sNaN  0     ->  NaN  Invalid_operation
+	// SKIP (NaN): comx846 compare  sNaN  1     ->  NaN  Invalid_operation
+	// SKIP (NaN): comx847 compare  sNaN  1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): comx848 compare  sNaN  NaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx849 compare  sNaN sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx850 compare  NaN  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx851 compare -Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx852 compare -1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx853 compare -1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx854 compare -0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx855 compare  0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx856 compare  1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx857 compare  1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx858 compare  Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): comx859 compare  NaN  sNaN   ->  NaN  Invalid_operation
 	// propagating NaNs
-	// SKIP: comx860 compare  NaN9 -Inf   ->  NaN9
-	// SKIP: comx861 compare  NaN8  999   ->  NaN8
-	// SKIP: comx862 compare  NaN77 Inf   ->  NaN77
-	// SKIP: comx863 compare -NaN67 NaN5  -> -NaN67
-	// SKIP: comx864 compare -Inf  -NaN4  -> -NaN4
-	// SKIP: comx865 compare -999  -NaN33 -> -NaN33
-	// SKIP: comx866 compare  Inf   NaN2  ->  NaN2
-	// SKIP: comx867 compare -NaN41 -NaN42 -> -NaN41
-	// SKIP: comx868 compare +NaN41 -NaN42 ->  NaN41
-	// SKIP: comx869 compare -NaN41 +NaN42 -> -NaN41
-	// SKIP: comx870 compare +NaN41 +NaN42 ->  NaN41
-	// SKIP: comx871 compare -sNaN99 -Inf    -> -NaN99 Invalid_operation
-	// SKIP: comx872 compare  sNaN98 -11     ->  NaN98 Invalid_operation
-	// SKIP: comx873 compare  sNaN97  NaN    ->  NaN97 Invalid_operation
-	// SKIP: comx874 compare  sNaN16 sNaN94  ->  NaN16 Invalid_operation
-	// SKIP: comx875 compare  NaN85  sNaN83  ->  NaN83 Invalid_operation
-	// SKIP: comx876 compare -Inf    sNaN92  ->  NaN92 Invalid_operation
-	// SKIP: comx877 compare  088    sNaN81  ->  NaN81 Invalid_operation
-	// SKIP: comx878 compare  Inf    sNaN90  ->  NaN90 Invalid_operation
-	// SKIP: comx879 compare  NaN   -sNaN89  -> -NaN89 Invalid_operation
+	// SKIP (NaN): comx860 compare  NaN9 -Inf   ->  NaN9
+	// SKIP (NaN): comx861 compare  NaN8  999   ->  NaN8
+	// SKIP (NaN): comx862 compare  NaN77 Inf   ->  NaN77
+	// SKIP (NaN): comx863 compare -NaN67 NaN5  -> -NaN67
+	// SKIP (NaN): comx864 compare -Inf  -NaN4  -> -NaN4
+	// SKIP (NaN): comx865 compare -999  -NaN33 -> -NaN33
+	// SKIP (NaN): comx866 compare  Inf   NaN2  ->  NaN2
+	// SKIP (NaN): comx867 compare -NaN41 -NaN42 -> -NaN41
+	// SKIP (NaN): comx868 compare +NaN41 -NaN42 ->  NaN41
+	// SKIP (NaN): comx869 compare -NaN41 +NaN42 -> -NaN41
+	// SKIP (NaN): comx870 compare +NaN41 +NaN42 ->  NaN41
+	// SKIP (NaN): comx871 compare -sNaN99 -Inf    -> -NaN99 Invalid_operation
+	// SKIP (NaN): comx872 compare  sNaN98 -11     ->  NaN98 Invalid_operation
+	// SKIP (NaN): comx873 compare  sNaN97  NaN    ->  NaN97 Invalid_operation
+	// SKIP (NaN): comx874 compare  sNaN16 sNaN94  ->  NaN16 Invalid_operation
+	// SKIP (NaN): comx875 compare  NaN85  sNaN83  ->  NaN83 Invalid_operation
+	// SKIP (NaN): comx876 compare -Inf    sNaN92  ->  NaN92 Invalid_operation
+	// SKIP (NaN): comx877 compare  088    sNaN81  ->  NaN81 Invalid_operation
+	// SKIP (NaN): comx878 compare  Inf    sNaN90  ->  NaN90 Invalid_operation
+	// SKIP (NaN): comx879 compare  NaN   -sNaN89  -> -NaN89 Invalid_operation
 	// overflow and underflow tests .. subnormal results now allowed
 	// maxexponent: 999999999
 	// minexponent: -999999999
@@ -1283,6 +1283,6 @@ var compareTests = []struct {
 	// comx941 compare  -0      -0E-383  ->  0
 	{"comx941", "-0", "-0E-383", 0},
 	// Null tests
-	// SKIP: comx990 compare 10  # -> NaN Invalid_operation
-	// SKIP: comx991 compare  # 10 -> NaN Invalid_operation
+	// SKIP (NaN): comx990 compare 10  # -> NaN Invalid_operation
+	// SKIP (NaN): comx991 compare  # 10 -> NaN Invalid_operation
 }

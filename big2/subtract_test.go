@@ -5,12 +5,13 @@ package big2
 import "math/big"
 
 var subtractTests = []struct {
-	id   string
-	op1  string
-	op2  string
-	out  string
-	prec uint
-	mode big.RoundingMode
+	id      string
+	in1     string
+	in2     string
+	out     string
+	inexact bool
+	prec    uint
+	mode    big.RoundingMode
 }{
 	// version: 2.62
 	// extended: 1
@@ -20,1407 +21,1407 @@ var subtractTests = []struct {
 	// minexponent: -383
 	// [first group are 'quick confidence check']
 	// subx001 subtract  0   0  -> '0'
-	{"subx001", "0", "0", "0", 9, big.ToNearestAway},
+	{"subx001", "0", "0", "0", false, 9, big.ToNearestAway},
 	// subx002 subtract  1   1  -> '0'
-	{"subx002", "1", "1", "0", 9, big.ToNearestAway},
+	{"subx002", "1", "1", "0", false, 9, big.ToNearestAway},
 	// subx003 subtract  1   2  -> '-1'
-	{"subx003", "1", "2", "-1", 9, big.ToNearestAway},
+	{"subx003", "1", "2", "-1", false, 9, big.ToNearestAway},
 	// subx004 subtract  2   1  -> '1'
-	{"subx004", "2", "1", "1", 9, big.ToNearestAway},
+	{"subx004", "2", "1", "1", false, 9, big.ToNearestAway},
 	// subx005 subtract  2   2  -> '0'
-	{"subx005", "2", "2", "0", 9, big.ToNearestAway},
+	{"subx005", "2", "2", "0", false, 9, big.ToNearestAway},
 	// subx006 subtract  3   2  -> '1'
-	{"subx006", "3", "2", "1", 9, big.ToNearestAway},
+	{"subx006", "3", "2", "1", false, 9, big.ToNearestAway},
 	// subx007 subtract  2   3  -> '-1'
-	{"subx007", "2", "3", "-1", 9, big.ToNearestAway},
+	{"subx007", "2", "3", "-1", false, 9, big.ToNearestAway},
 	// subx011 subtract -0   0  -> '-0'
-	{"subx011", "-0", "0", "-0", 9, big.ToNearestAway},
+	{"subx011", "-0", "0", "-0", false, 9, big.ToNearestAway},
 	// subx012 subtract -1   1  -> '-2'
-	{"subx012", "-1", "1", "-2", 9, big.ToNearestAway},
+	{"subx012", "-1", "1", "-2", false, 9, big.ToNearestAway},
 	// subx013 subtract -1   2  -> '-3'
-	{"subx013", "-1", "2", "-3", 9, big.ToNearestAway},
+	{"subx013", "-1", "2", "-3", false, 9, big.ToNearestAway},
 	// subx014 subtract -2   1  -> '-3'
-	{"subx014", "-2", "1", "-3", 9, big.ToNearestAway},
+	{"subx014", "-2", "1", "-3", false, 9, big.ToNearestAway},
 	// subx015 subtract -2   2  -> '-4'
-	{"subx015", "-2", "2", "-4", 9, big.ToNearestAway},
+	{"subx015", "-2", "2", "-4", false, 9, big.ToNearestAway},
 	// subx016 subtract -3   2  -> '-5'
-	{"subx016", "-3", "2", "-5", 9, big.ToNearestAway},
+	{"subx016", "-3", "2", "-5", false, 9, big.ToNearestAway},
 	// subx017 subtract -2   3  -> '-5'
-	{"subx017", "-2", "3", "-5", 9, big.ToNearestAway},
+	{"subx017", "-2", "3", "-5", false, 9, big.ToNearestAway},
 	// subx021 subtract  0  -0  -> '0'
-	{"subx021", "0", "-0", "0", 9, big.ToNearestAway},
+	{"subx021", "0", "-0", "0", false, 9, big.ToNearestAway},
 	// subx022 subtract  1  -1  -> '2'
-	{"subx022", "1", "-1", "2", 9, big.ToNearestAway},
+	{"subx022", "1", "-1", "2", false, 9, big.ToNearestAway},
 	// subx023 subtract  1  -2  -> '3'
-	{"subx023", "1", "-2", "3", 9, big.ToNearestAway},
+	{"subx023", "1", "-2", "3", false, 9, big.ToNearestAway},
 	// subx024 subtract  2  -1  -> '3'
-	{"subx024", "2", "-1", "3", 9, big.ToNearestAway},
+	{"subx024", "2", "-1", "3", false, 9, big.ToNearestAway},
 	// subx025 subtract  2  -2  -> '4'
-	{"subx025", "2", "-2", "4", 9, big.ToNearestAway},
+	{"subx025", "2", "-2", "4", false, 9, big.ToNearestAway},
 	// subx026 subtract  3  -2  -> '5'
-	{"subx026", "3", "-2", "5", 9, big.ToNearestAway},
+	{"subx026", "3", "-2", "5", false, 9, big.ToNearestAway},
 	// subx027 subtract  2  -3  -> '5'
-	{"subx027", "2", "-3", "5", 9, big.ToNearestAway},
+	{"subx027", "2", "-3", "5", false, 9, big.ToNearestAway},
 	// subx030 subtract  11  1  -> 10
-	{"subx030", "11", "1", "10", 9, big.ToNearestAway},
+	{"subx030", "11", "1", "10", false, 9, big.ToNearestAway},
 	// subx031 subtract  10  1  ->  9
-	{"subx031", "10", "1", "9", 9, big.ToNearestAway},
+	{"subx031", "10", "1", "9", false, 9, big.ToNearestAway},
 	// subx032 subtract  9   1  ->  8
-	{"subx032", "9", "1", "8", 9, big.ToNearestAway},
+	{"subx032", "9", "1", "8", false, 9, big.ToNearestAway},
 	// subx033 subtract  1   1  ->  0
-	{"subx033", "1", "1", "0", 9, big.ToNearestAway},
+	{"subx033", "1", "1", "0", false, 9, big.ToNearestAway},
 	// subx034 subtract  0   1  -> -1
-	{"subx034", "0", "1", "-1", 9, big.ToNearestAway},
+	{"subx034", "0", "1", "-1", false, 9, big.ToNearestAway},
 	// subx035 subtract -1   1  -> -2
-	{"subx035", "-1", "1", "-2", 9, big.ToNearestAway},
+	{"subx035", "-1", "1", "-2", false, 9, big.ToNearestAway},
 	// subx036 subtract -9   1  -> -10
-	{"subx036", "-9", "1", "-10", 9, big.ToNearestAway},
+	{"subx036", "-9", "1", "-10", false, 9, big.ToNearestAway},
 	// subx037 subtract -10  1  -> -11
-	{"subx037", "-10", "1", "-11", 9, big.ToNearestAway},
+	{"subx037", "-10", "1", "-11", false, 9, big.ToNearestAway},
 	// subx038 subtract -11  1  -> -12
-	{"subx038", "-11", "1", "-12", 9, big.ToNearestAway},
+	{"subx038", "-11", "1", "-12", false, 9, big.ToNearestAway},
 	// subx040 subtract '5.75' '3.3'  -> '2.45'
-	{"subx040", "5.75", "3.3", "2.45", 9, big.ToNearestAway},
+	{"subx040", "5.75", "3.3", "2.45", false, 9, big.ToNearestAway},
 	// subx041 subtract '5'    '-3'   -> '8'
-	{"subx041", "5", "-3", "8", 9, big.ToNearestAway},
+	{"subx041", "5", "-3", "8", false, 9, big.ToNearestAway},
 	// subx042 subtract '-5'   '-3'   -> '-2'
-	{"subx042", "-5", "-3", "-2", 9, big.ToNearestAway},
+	{"subx042", "-5", "-3", "-2", false, 9, big.ToNearestAway},
 	// subx043 subtract '-7'   '2.5'  -> '-9.5'
-	{"subx043", "-7", "2.5", "-9.5", 9, big.ToNearestAway},
+	{"subx043", "-7", "2.5", "-9.5", false, 9, big.ToNearestAway},
 	// subx044 subtract '0.7'  '0.3'  -> '0.4'
-	{"subx044", "0.7", "0.3", "0.4", 9, big.ToNearestAway},
+	{"subx044", "0.7", "0.3", "0.4", false, 9, big.ToNearestAway},
 	// subx045 subtract '1.3'  '0.3'  -> '1.0'
-	{"subx045", "1.3", "0.3", "1.0", 9, big.ToNearestAway},
+	{"subx045", "1.3", "0.3", "1.0", false, 9, big.ToNearestAway},
 	// subx046 subtract '1.25' '1.25' -> '0.00'
-	{"subx046", "1.25", "1.25", "0.00", 9, big.ToNearestAway},
+	{"subx046", "1.25", "1.25", "0.00", false, 9, big.ToNearestAway},
 	// subx050 subtract '1.23456789'    '1.00000000' -> '0.23456789'
-	{"subx050", "1.23456789", "1.00000000", "0.23456789", 9, big.ToNearestAway},
+	{"subx050", "1.23456789", "1.00000000", "0.23456789", false, 9, big.ToNearestAway},
 	// subx051 subtract '1.23456789'    '1.00000089' -> '0.23456700'
-	{"subx051", "1.23456789", "1.00000089", "0.23456700", 9, big.ToNearestAway},
+	{"subx051", "1.23456789", "1.00000089", "0.23456700", false, 9, big.ToNearestAway},
 	// subx052 subtract '0.5555555559'    '0.0000000001' -> '0.555555556' Inexact Rounded
-	{"subx052", "0.5555555559", "0.0000000001", "0.555555556", 9, big.ToNearestAway},
+	{"subx052", "0.5555555559", "0.0000000001", "0.555555556", true, 9, big.ToNearestAway},
 	// subx053 subtract '0.5555555559'    '0.0000000005' -> '0.555555555' Inexact Rounded
-	{"subx053", "0.5555555559", "0.0000000005", "0.555555555", 9, big.ToNearestAway},
+	{"subx053", "0.5555555559", "0.0000000005", "0.555555555", true, 9, big.ToNearestAway},
 	// subx054 subtract '0.4444444444'    '0.1111111111' -> '0.333333333' Inexact Rounded
-	{"subx054", "0.4444444444", "0.1111111111", "0.333333333", 9, big.ToNearestAway},
+	{"subx054", "0.4444444444", "0.1111111111", "0.333333333", true, 9, big.ToNearestAway},
 	// subx055 subtract '1.0000000000'    '0.00000001' -> '0.999999990' Rounded
-	{"subx055", "1.0000000000", "0.00000001", "0.999999990", 9, big.ToNearestAway},
+	{"subx055", "1.0000000000", "0.00000001", "0.999999990", false, 9, big.ToNearestAway},
 	// subx056 subtract '0.4444444444999'    '0' -> '0.444444444' Inexact Rounded
-	{"subx056", "0.4444444444999", "0", "0.444444444", 9, big.ToNearestAway},
+	{"subx056", "0.4444444444999", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// subx057 subtract '0.4444444445000'    '0' -> '0.444444445' Inexact Rounded
-	{"subx057", "0.4444444445000", "0", "0.444444445", 9, big.ToNearestAway},
+	{"subx057", "0.4444444445000", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// subx060 subtract '70'    '10000e+9' -> '-1.00000000E+13' Inexact Rounded
-	{"subx060", "70", "10000e+9", "-1.00000000E+13", 9, big.ToNearestAway},
+	{"subx060", "70", "10000e+9", "-1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx061 subtract '700'    '10000e+9' -> '-1.00000000E+13' Inexact Rounded
-	{"subx061", "700", "10000e+9", "-1.00000000E+13", 9, big.ToNearestAway},
+	{"subx061", "700", "10000e+9", "-1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx062 subtract '7000'    '10000e+9' -> '-9.99999999E+12' Inexact Rounded
-	{"subx062", "7000", "10000e+9", "-9.99999999E+12", 9, big.ToNearestAway},
+	{"subx062", "7000", "10000e+9", "-9.99999999E+12", true, 9, big.ToNearestAway},
 	// subx063 subtract '70000'    '10000e+9' -> '-9.99999993E+12' Rounded
-	{"subx063", "70000", "10000e+9", "-9.99999993E+12", 9, big.ToNearestAway},
+	{"subx063", "70000", "10000e+9", "-9.99999993E+12", false, 9, big.ToNearestAway},
 	// subx064 subtract '700000'    '10000e+9' -> '-9.99999930E+12' Rounded
-	{"subx064", "700000", "10000e+9", "-9.99999930E+12", 9, big.ToNearestAway},
+	{"subx064", "700000", "10000e+9", "-9.99999930E+12", false, 9, big.ToNearestAway},
 	// symmetry:
 	// subx065 subtract '10000e+9'    '70' -> '1.00000000E+13' Inexact Rounded
-	{"subx065", "10000e+9", "70", "1.00000000E+13", 9, big.ToNearestAway},
+	{"subx065", "10000e+9", "70", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx066 subtract '10000e+9'    '700' -> '1.00000000E+13' Inexact Rounded
-	{"subx066", "10000e+9", "700", "1.00000000E+13", 9, big.ToNearestAway},
+	{"subx066", "10000e+9", "700", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx067 subtract '10000e+9'    '7000' -> '9.99999999E+12' Inexact Rounded
-	{"subx067", "10000e+9", "7000", "9.99999999E+12", 9, big.ToNearestAway},
+	{"subx067", "10000e+9", "7000", "9.99999999E+12", true, 9, big.ToNearestAway},
 	// subx068 subtract '10000e+9'    '70000' -> '9.99999993E+12' Rounded
-	{"subx068", "10000e+9", "70000", "9.99999993E+12", 9, big.ToNearestAway},
+	{"subx068", "10000e+9", "70000", "9.99999993E+12", false, 9, big.ToNearestAway},
 	// subx069 subtract '10000e+9'    '700000' -> '9.99999930E+12' Rounded
-	{"subx069", "10000e+9", "700000", "9.99999930E+12", 9, big.ToNearestAway},
+	{"subx069", "10000e+9", "700000", "9.99999930E+12", false, 9, big.ToNearestAway},
 	// change precision
 	// subx080 subtract '10000e+9'    '70000' -> '9.99999993E+12' Rounded
-	{"subx080", "10000e+9", "70000", "9.99999993E+12", 9, big.ToNearestAway},
+	{"subx080", "10000e+9", "70000", "9.99999993E+12", false, 9, big.ToNearestAway},
 	// precision: 6
 	// subx081 subtract '10000e+9'    '70000' -> '1.00000E+13' Inexact Rounded
-	{"subx081", "10000e+9", "70000", "1.00000E+13", 6, big.ToNearestAway},
+	{"subx081", "10000e+9", "70000", "1.00000E+13", true, 6, big.ToNearestAway},
 	// precision: 9
 	// some of the next group are really constructor tests
 	// subx090 subtract '00.0'    '0.0'  -> '0.0'
-	{"subx090", "00.0", "0.0", "0.0", 9, big.ToNearestAway},
+	{"subx090", "00.0", "0.0", "0.0", false, 9, big.ToNearestAway},
 	// subx091 subtract '00.0'    '0.00' -> '0.00'
-	{"subx091", "00.0", "0.00", "0.00", 9, big.ToNearestAway},
+	{"subx091", "00.0", "0.00", "0.00", false, 9, big.ToNearestAway},
 	// subx092 subtract '0.00'    '00.0' -> '0.00'
-	{"subx092", "0.00", "00.0", "0.00", 9, big.ToNearestAway},
+	{"subx092", "0.00", "00.0", "0.00", false, 9, big.ToNearestAway},
 	// subx093 subtract '00.0'    '0.00' -> '0.00'
-	{"subx093", "00.0", "0.00", "0.00", 9, big.ToNearestAway},
+	{"subx093", "00.0", "0.00", "0.00", false, 9, big.ToNearestAway},
 	// subx094 subtract '0.00'    '00.0' -> '0.00'
-	{"subx094", "0.00", "00.0", "0.00", 9, big.ToNearestAway},
+	{"subx094", "0.00", "00.0", "0.00", false, 9, big.ToNearestAway},
 	// subx095 subtract '3'    '.3'   -> '2.7'
-	{"subx095", "3", ".3", "2.7", 9, big.ToNearestAway},
+	{"subx095", "3", ".3", "2.7", false, 9, big.ToNearestAway},
 	// subx096 subtract '3.'   '.3'   -> '2.7'
-	{"subx096", "3.", ".3", "2.7", 9, big.ToNearestAway},
+	{"subx096", "3.", ".3", "2.7", false, 9, big.ToNearestAway},
 	// subx097 subtract '3.0'  '.3'   -> '2.7'
-	{"subx097", "3.0", ".3", "2.7", 9, big.ToNearestAway},
+	{"subx097", "3.0", ".3", "2.7", false, 9, big.ToNearestAway},
 	// subx098 subtract '3.00' '.3'   -> '2.70'
-	{"subx098", "3.00", ".3", "2.70", 9, big.ToNearestAway},
+	{"subx098", "3.00", ".3", "2.70", false, 9, big.ToNearestAway},
 	// subx099 subtract '3'    '3'    -> '0'
-	{"subx099", "3", "3", "0", 9, big.ToNearestAway},
+	{"subx099", "3", "3", "0", false, 9, big.ToNearestAway},
 	// subx100 subtract '3'    '+3'   -> '0'
-	{"subx100", "3", "+3", "0", 9, big.ToNearestAway},
+	{"subx100", "3", "+3", "0", false, 9, big.ToNearestAway},
 	// subx101 subtract '3'    '-3'   -> '6'
-	{"subx101", "3", "-3", "6", 9, big.ToNearestAway},
+	{"subx101", "3", "-3", "6", false, 9, big.ToNearestAway},
 	// subx102 subtract '3'    '0.3'  -> '2.7'
-	{"subx102", "3", "0.3", "2.7", 9, big.ToNearestAway},
+	{"subx102", "3", "0.3", "2.7", false, 9, big.ToNearestAway},
 	// subx103 subtract '3.'   '0.3'  -> '2.7'
-	{"subx103", "3.", "0.3", "2.7", 9, big.ToNearestAway},
+	{"subx103", "3.", "0.3", "2.7", false, 9, big.ToNearestAway},
 	// subx104 subtract '3.0'  '0.3'  -> '2.7'
-	{"subx104", "3.0", "0.3", "2.7", 9, big.ToNearestAway},
+	{"subx104", "3.0", "0.3", "2.7", false, 9, big.ToNearestAway},
 	// subx105 subtract '3.00' '0.3'  -> '2.70'
-	{"subx105", "3.00", "0.3", "2.70", 9, big.ToNearestAway},
+	{"subx105", "3.00", "0.3", "2.70", false, 9, big.ToNearestAway},
 	// subx106 subtract '3'    '3.0'  -> '0.0'
-	{"subx106", "3", "3.0", "0.0", 9, big.ToNearestAway},
+	{"subx106", "3", "3.0", "0.0", false, 9, big.ToNearestAway},
 	// subx107 subtract '3'    '+3.0' -> '0.0'
-	{"subx107", "3", "+3.0", "0.0", 9, big.ToNearestAway},
+	{"subx107", "3", "+3.0", "0.0", false, 9, big.ToNearestAway},
 	// subx108 subtract '3'    '-3.0' -> '6.0'
-	{"subx108", "3", "-3.0", "6.0", 9, big.ToNearestAway},
+	{"subx108", "3", "-3.0", "6.0", false, 9, big.ToNearestAway},
 	// the above all from add; massaged and extended.  Now some new ones...
 	// [particularly important for comparisons]
 	// NB: -xE-8 below were non-exponents pre-ANSI X3-274, and -1E-7 or 0E-7
 	// with input rounding.
 	// subx120 subtract  '10.23456784'    '10.23456789'  -> '-5E-8'
-	{"subx120", "10.23456784", "10.23456789", "-5E-8", 9, big.ToNearestAway},
+	{"subx120", "10.23456784", "10.23456789", "-5E-8", false, 9, big.ToNearestAway},
 	// subx121 subtract  '10.23456785'    '10.23456789'  -> '-4E-8'
-	{"subx121", "10.23456785", "10.23456789", "-4E-8", 9, big.ToNearestAway},
+	{"subx121", "10.23456785", "10.23456789", "-4E-8", false, 9, big.ToNearestAway},
 	// subx122 subtract  '10.23456786'    '10.23456789'  -> '-3E-8'
-	{"subx122", "10.23456786", "10.23456789", "-3E-8", 9, big.ToNearestAway},
+	{"subx122", "10.23456786", "10.23456789", "-3E-8", false, 9, big.ToNearestAway},
 	// subx123 subtract  '10.23456787'    '10.23456789'  -> '-2E-8'
-	{"subx123", "10.23456787", "10.23456789", "-2E-8", 9, big.ToNearestAway},
+	{"subx123", "10.23456787", "10.23456789", "-2E-8", false, 9, big.ToNearestAway},
 	// subx124 subtract  '10.23456788'    '10.23456789'  -> '-1E-8'
-	{"subx124", "10.23456788", "10.23456789", "-1E-8", 9, big.ToNearestAway},
+	{"subx124", "10.23456788", "10.23456789", "-1E-8", false, 9, big.ToNearestAway},
 	// subx125 subtract  '10.23456789'    '10.23456789'  -> '0E-8'
-	{"subx125", "10.23456789", "10.23456789", "0E-8", 9, big.ToNearestAway},
+	{"subx125", "10.23456789", "10.23456789", "0E-8", false, 9, big.ToNearestAway},
 	// subx126 subtract  '10.23456790'    '10.23456789'  -> '1E-8'
-	{"subx126", "10.23456790", "10.23456789", "1E-8", 9, big.ToNearestAway},
+	{"subx126", "10.23456790", "10.23456789", "1E-8", false, 9, big.ToNearestAway},
 	// subx127 subtract  '10.23456791'    '10.23456789'  -> '2E-8'
-	{"subx127", "10.23456791", "10.23456789", "2E-8", 9, big.ToNearestAway},
+	{"subx127", "10.23456791", "10.23456789", "2E-8", false, 9, big.ToNearestAway},
 	// subx128 subtract  '10.23456792'    '10.23456789'  -> '3E-8'
-	{"subx128", "10.23456792", "10.23456789", "3E-8", 9, big.ToNearestAway},
+	{"subx128", "10.23456792", "10.23456789", "3E-8", false, 9, big.ToNearestAway},
 	// subx129 subtract  '10.23456793'    '10.23456789'  -> '4E-8'
-	{"subx129", "10.23456793", "10.23456789", "4E-8", 9, big.ToNearestAway},
+	{"subx129", "10.23456793", "10.23456789", "4E-8", false, 9, big.ToNearestAway},
 	// subx130 subtract  '10.23456794'    '10.23456789'  -> '5E-8'
-	{"subx130", "10.23456794", "10.23456789", "5E-8", 9, big.ToNearestAway},
+	{"subx130", "10.23456794", "10.23456789", "5E-8", false, 9, big.ToNearestAway},
 	// subx131 subtract  '10.23456781'    '10.23456786'  -> '-5E-8'
-	{"subx131", "10.23456781", "10.23456786", "-5E-8", 9, big.ToNearestAway},
+	{"subx131", "10.23456781", "10.23456786", "-5E-8", false, 9, big.ToNearestAway},
 	// subx132 subtract  '10.23456782'    '10.23456786'  -> '-4E-8'
-	{"subx132", "10.23456782", "10.23456786", "-4E-8", 9, big.ToNearestAway},
+	{"subx132", "10.23456782", "10.23456786", "-4E-8", false, 9, big.ToNearestAway},
 	// subx133 subtract  '10.23456783'    '10.23456786'  -> '-3E-8'
-	{"subx133", "10.23456783", "10.23456786", "-3E-8", 9, big.ToNearestAway},
+	{"subx133", "10.23456783", "10.23456786", "-3E-8", false, 9, big.ToNearestAway},
 	// subx134 subtract  '10.23456784'    '10.23456786'  -> '-2E-8'
-	{"subx134", "10.23456784", "10.23456786", "-2E-8", 9, big.ToNearestAway},
+	{"subx134", "10.23456784", "10.23456786", "-2E-8", false, 9, big.ToNearestAway},
 	// subx135 subtract  '10.23456785'    '10.23456786'  -> '-1E-8'
-	{"subx135", "10.23456785", "10.23456786", "-1E-8", 9, big.ToNearestAway},
+	{"subx135", "10.23456785", "10.23456786", "-1E-8", false, 9, big.ToNearestAway},
 	// subx136 subtract  '10.23456786'    '10.23456786'  -> '0E-8'
-	{"subx136", "10.23456786", "10.23456786", "0E-8", 9, big.ToNearestAway},
+	{"subx136", "10.23456786", "10.23456786", "0E-8", false, 9, big.ToNearestAway},
 	// subx137 subtract  '10.23456787'    '10.23456786'  -> '1E-8'
-	{"subx137", "10.23456787", "10.23456786", "1E-8", 9, big.ToNearestAway},
+	{"subx137", "10.23456787", "10.23456786", "1E-8", false, 9, big.ToNearestAway},
 	// subx138 subtract  '10.23456788'    '10.23456786'  -> '2E-8'
-	{"subx138", "10.23456788", "10.23456786", "2E-8", 9, big.ToNearestAway},
+	{"subx138", "10.23456788", "10.23456786", "2E-8", false, 9, big.ToNearestAway},
 	// subx139 subtract  '10.23456789'    '10.23456786'  -> '3E-8'
-	{"subx139", "10.23456789", "10.23456786", "3E-8", 9, big.ToNearestAway},
+	{"subx139", "10.23456789", "10.23456786", "3E-8", false, 9, big.ToNearestAway},
 	// subx140 subtract  '10.23456790'    '10.23456786'  -> '4E-8'
-	{"subx140", "10.23456790", "10.23456786", "4E-8", 9, big.ToNearestAway},
+	{"subx140", "10.23456790", "10.23456786", "4E-8", false, 9, big.ToNearestAway},
 	// subx141 subtract  '10.23456791'    '10.23456786'  -> '5E-8'
-	{"subx141", "10.23456791", "10.23456786", "5E-8", 9, big.ToNearestAway},
+	{"subx141", "10.23456791", "10.23456786", "5E-8", false, 9, big.ToNearestAway},
 	// subx142 subtract  '1'              '0.999999999'  -> '1E-9'
-	{"subx142", "1", "0.999999999", "1E-9", 9, big.ToNearestAway},
+	{"subx142", "1", "0.999999999", "1E-9", false, 9, big.ToNearestAway},
 	// subx143 subtract  '0.999999999'    '1'            -> '-1E-9'
-	{"subx143", "0.999999999", "1", "-1E-9", 9, big.ToNearestAway},
+	{"subx143", "0.999999999", "1", "-1E-9", false, 9, big.ToNearestAway},
 	// subx144 subtract  '-10.23456780'   '-10.23456786' -> '6E-8'
-	{"subx144", "-10.23456780", "-10.23456786", "6E-8", 9, big.ToNearestAway},
+	{"subx144", "-10.23456780", "-10.23456786", "6E-8", false, 9, big.ToNearestAway},
 	// subx145 subtract  '-10.23456790'   '-10.23456786' -> '-4E-8'
-	{"subx145", "-10.23456790", "-10.23456786", "-4E-8", 9, big.ToNearestAway},
+	{"subx145", "-10.23456790", "-10.23456786", "-4E-8", false, 9, big.ToNearestAway},
 	// subx146 subtract  '-10.23456791'   '-10.23456786' -> '-5E-8'
-	{"subx146", "-10.23456791", "-10.23456786", "-5E-8", 9, big.ToNearestAway},
+	{"subx146", "-10.23456791", "-10.23456786", "-5E-8", false, 9, big.ToNearestAway},
 	// precision: 3
 	// subx150 subtract '12345678900000' '9999999999999'  -> 2.35E+12 Inexact Rounded
-	{"subx150", "12345678900000", "9999999999999", "2.35E+12", 3, big.ToNearestAway},
+	{"subx150", "12345678900000", "9999999999999", "2.35E+12", true, 3, big.ToNearestAway},
 	// subx151 subtract '9999999999999'  '12345678900000' -> -2.35E+12 Inexact Rounded
-	{"subx151", "9999999999999", "12345678900000", "-2.35E+12", 3, big.ToNearestAway},
+	{"subx151", "9999999999999", "12345678900000", "-2.35E+12", true, 3, big.ToNearestAway},
 	// precision: 6
 	// subx152 subtract '12345678900000' '9999999999999'  -> 2.34568E+12 Inexact Rounded
-	{"subx152", "12345678900000", "9999999999999", "2.34568E+12", 6, big.ToNearestAway},
+	{"subx152", "12345678900000", "9999999999999", "2.34568E+12", true, 6, big.ToNearestAway},
 	// subx153 subtract '9999999999999'  '12345678900000' -> -2.34568E+12 Inexact Rounded
-	{"subx153", "9999999999999", "12345678900000", "-2.34568E+12", 6, big.ToNearestAway},
+	{"subx153", "9999999999999", "12345678900000", "-2.34568E+12", true, 6, big.ToNearestAway},
 	// precision: 9
 	// subx154 subtract '12345678900000' '9999999999999'  -> 2.34567890E+12 Inexact Rounded
-	{"subx154", "12345678900000", "9999999999999", "2.34567890E+12", 9, big.ToNearestAway},
+	{"subx154", "12345678900000", "9999999999999", "2.34567890E+12", true, 9, big.ToNearestAway},
 	// subx155 subtract '9999999999999'  '12345678900000' -> -2.34567890E+12 Inexact Rounded
-	{"subx155", "9999999999999", "12345678900000", "-2.34567890E+12", 9, big.ToNearestAway},
+	{"subx155", "9999999999999", "12345678900000", "-2.34567890E+12", true, 9, big.ToNearestAway},
 	// precision: 12
 	// subx156 subtract '12345678900000' '9999999999999'  -> 2.34567890000E+12 Inexact Rounded
-	{"subx156", "12345678900000", "9999999999999", "2.34567890000E+12", 12, big.ToNearestAway},
+	{"subx156", "12345678900000", "9999999999999", "2.34567890000E+12", true, 12, big.ToNearestAway},
 	// subx157 subtract '9999999999999'  '12345678900000' -> -2.34567890000E+12 Inexact Rounded
-	{"subx157", "9999999999999", "12345678900000", "-2.34567890000E+12", 12, big.ToNearestAway},
+	{"subx157", "9999999999999", "12345678900000", "-2.34567890000E+12", true, 12, big.ToNearestAway},
 	// precision: 15
 	// subx158 subtract '12345678900000' '9999999999999'  -> 2345678900001
-	{"subx158", "12345678900000", "9999999999999", "2345678900001", 15, big.ToNearestAway},
+	{"subx158", "12345678900000", "9999999999999", "2345678900001", false, 15, big.ToNearestAway},
 	// subx159 subtract '9999999999999'  '12345678900000' -> -2345678900001
-	{"subx159", "9999999999999", "12345678900000", "-2345678900001", 15, big.ToNearestAway},
+	{"subx159", "9999999999999", "12345678900000", "-2345678900001", false, 15, big.ToNearestAway},
 	// precision: 9
 	// additional scaled arithmetic tests [0.97 problem]
 	// subx160 subtract '0'     '.1'      -> '-0.1'
-	{"subx160", "0", ".1", "-0.1", 9, big.ToNearestAway},
+	{"subx160", "0", ".1", "-0.1", false, 9, big.ToNearestAway},
 	// subx161 subtract '00'    '.97983'  -> '-0.97983'
-	{"subx161", "00", ".97983", "-0.97983", 9, big.ToNearestAway},
+	{"subx161", "00", ".97983", "-0.97983", false, 9, big.ToNearestAway},
 	// subx162 subtract '0'     '.9'      -> '-0.9'
-	{"subx162", "0", ".9", "-0.9", 9, big.ToNearestAway},
+	{"subx162", "0", ".9", "-0.9", false, 9, big.ToNearestAway},
 	// subx163 subtract '0'     '0.102'   -> '-0.102'
-	{"subx163", "0", "0.102", "-0.102", 9, big.ToNearestAway},
+	{"subx163", "0", "0.102", "-0.102", false, 9, big.ToNearestAway},
 	// subx164 subtract '0'     '.4'      -> '-0.4'
-	{"subx164", "0", ".4", "-0.4", 9, big.ToNearestAway},
+	{"subx164", "0", ".4", "-0.4", false, 9, big.ToNearestAway},
 	// subx165 subtract '0'     '.307'    -> '-0.307'
-	{"subx165", "0", ".307", "-0.307", 9, big.ToNearestAway},
+	{"subx165", "0", ".307", "-0.307", false, 9, big.ToNearestAway},
 	// subx166 subtract '0'     '.43822'  -> '-0.43822'
-	{"subx166", "0", ".43822", "-0.43822", 9, big.ToNearestAway},
+	{"subx166", "0", ".43822", "-0.43822", false, 9, big.ToNearestAway},
 	// subx167 subtract '0'     '.911'    -> '-0.911'
-	{"subx167", "0", ".911", "-0.911", 9, big.ToNearestAway},
+	{"subx167", "0", ".911", "-0.911", false, 9, big.ToNearestAway},
 	// subx168 subtract '.0'    '.02'     -> '-0.02'
-	{"subx168", ".0", ".02", "-0.02", 9, big.ToNearestAway},
+	{"subx168", ".0", ".02", "-0.02", false, 9, big.ToNearestAway},
 	// subx169 subtract '00'    '.392'    -> '-0.392'
-	{"subx169", "00", ".392", "-0.392", 9, big.ToNearestAway},
+	{"subx169", "00", ".392", "-0.392", false, 9, big.ToNearestAway},
 	// subx170 subtract '0'     '.26'     -> '-0.26'
-	{"subx170", "0", ".26", "-0.26", 9, big.ToNearestAway},
+	{"subx170", "0", ".26", "-0.26", false, 9, big.ToNearestAway},
 	// subx171 subtract '0'     '0.51'    -> '-0.51'
-	{"subx171", "0", "0.51", "-0.51", 9, big.ToNearestAway},
+	{"subx171", "0", "0.51", "-0.51", false, 9, big.ToNearestAway},
 	// subx172 subtract '0'     '.2234'   -> '-0.2234'
-	{"subx172", "0", ".2234", "-0.2234", 9, big.ToNearestAway},
+	{"subx172", "0", ".2234", "-0.2234", false, 9, big.ToNearestAway},
 	// subx173 subtract '0'     '.2'      -> '-0.2'
-	{"subx173", "0", ".2", "-0.2", 9, big.ToNearestAway},
+	{"subx173", "0", ".2", "-0.2", false, 9, big.ToNearestAway},
 	// subx174 subtract '.0'    '.0008'   -> '-0.0008'
-	{"subx174", ".0", ".0008", "-0.0008", 9, big.ToNearestAway},
+	{"subx174", ".0", ".0008", "-0.0008", false, 9, big.ToNearestAway},
 	// 0. on left
 	// subx180 subtract '0.0'     '-.1'      -> '0.1'
-	{"subx180", "0.0", "-.1", "0.1", 9, big.ToNearestAway},
+	{"subx180", "0.0", "-.1", "0.1", false, 9, big.ToNearestAway},
 	// subx181 subtract '0.00'    '-.97983'  -> '0.97983'
-	{"subx181", "0.00", "-.97983", "0.97983", 9, big.ToNearestAway},
+	{"subx181", "0.00", "-.97983", "0.97983", false, 9, big.ToNearestAway},
 	// subx182 subtract '0.0'     '-.9'      -> '0.9'
-	{"subx182", "0.0", "-.9", "0.9", 9, big.ToNearestAway},
+	{"subx182", "0.0", "-.9", "0.9", false, 9, big.ToNearestAway},
 	// subx183 subtract '0.0'     '-0.102'   -> '0.102'
-	{"subx183", "0.0", "-0.102", "0.102", 9, big.ToNearestAway},
+	{"subx183", "0.0", "-0.102", "0.102", false, 9, big.ToNearestAway},
 	// subx184 subtract '0.0'     '-.4'      -> '0.4'
-	{"subx184", "0.0", "-.4", "0.4", 9, big.ToNearestAway},
+	{"subx184", "0.0", "-.4", "0.4", false, 9, big.ToNearestAway},
 	// subx185 subtract '0.0'     '-.307'    -> '0.307'
-	{"subx185", "0.0", "-.307", "0.307", 9, big.ToNearestAway},
+	{"subx185", "0.0", "-.307", "0.307", false, 9, big.ToNearestAway},
 	// subx186 subtract '0.0'     '-.43822'  -> '0.43822'
-	{"subx186", "0.0", "-.43822", "0.43822", 9, big.ToNearestAway},
+	{"subx186", "0.0", "-.43822", "0.43822", false, 9, big.ToNearestAway},
 	// subx187 subtract '0.0'     '-.911'    -> '0.911'
-	{"subx187", "0.0", "-.911", "0.911", 9, big.ToNearestAway},
+	{"subx187", "0.0", "-.911", "0.911", false, 9, big.ToNearestAway},
 	// subx188 subtract '0.0'     '-.02'     -> '0.02'
-	{"subx188", "0.0", "-.02", "0.02", 9, big.ToNearestAway},
+	{"subx188", "0.0", "-.02", "0.02", false, 9, big.ToNearestAway},
 	// subx189 subtract '0.00'    '-.392'    -> '0.392'
-	{"subx189", "0.00", "-.392", "0.392", 9, big.ToNearestAway},
+	{"subx189", "0.00", "-.392", "0.392", false, 9, big.ToNearestAway},
 	// subx190 subtract '0.0'     '-.26'     -> '0.26'
-	{"subx190", "0.0", "-.26", "0.26", 9, big.ToNearestAway},
+	{"subx190", "0.0", "-.26", "0.26", false, 9, big.ToNearestAway},
 	// subx191 subtract '0.0'     '-0.51'    -> '0.51'
-	{"subx191", "0.0", "-0.51", "0.51", 9, big.ToNearestAway},
+	{"subx191", "0.0", "-0.51", "0.51", false, 9, big.ToNearestAway},
 	// subx192 subtract '0.0'     '-.2234'   -> '0.2234'
-	{"subx192", "0.0", "-.2234", "0.2234", 9, big.ToNearestAway},
+	{"subx192", "0.0", "-.2234", "0.2234", false, 9, big.ToNearestAway},
 	// subx193 subtract '0.0'     '-.2'      -> '0.2'
-	{"subx193", "0.0", "-.2", "0.2", 9, big.ToNearestAway},
+	{"subx193", "0.0", "-.2", "0.2", false, 9, big.ToNearestAway},
 	// subx194 subtract '0.0'     '-.0008'   -> '0.0008'
-	{"subx194", "0.0", "-.0008", "0.0008", 9, big.ToNearestAway},
+	{"subx194", "0.0", "-.0008", "0.0008", false, 9, big.ToNearestAway},
 	// negatives of same
 	// subx200 subtract '0'     '-.1'      -> '0.1'
-	{"subx200", "0", "-.1", "0.1", 9, big.ToNearestAway},
+	{"subx200", "0", "-.1", "0.1", false, 9, big.ToNearestAway},
 	// subx201 subtract '00'    '-.97983'  -> '0.97983'
-	{"subx201", "00", "-.97983", "0.97983", 9, big.ToNearestAway},
+	{"subx201", "00", "-.97983", "0.97983", false, 9, big.ToNearestAway},
 	// subx202 subtract '0'     '-.9'      -> '0.9'
-	{"subx202", "0", "-.9", "0.9", 9, big.ToNearestAway},
+	{"subx202", "0", "-.9", "0.9", false, 9, big.ToNearestAway},
 	// subx203 subtract '0'     '-0.102'   -> '0.102'
-	{"subx203", "0", "-0.102", "0.102", 9, big.ToNearestAway},
+	{"subx203", "0", "-0.102", "0.102", false, 9, big.ToNearestAway},
 	// subx204 subtract '0'     '-.4'      -> '0.4'
-	{"subx204", "0", "-.4", "0.4", 9, big.ToNearestAway},
+	{"subx204", "0", "-.4", "0.4", false, 9, big.ToNearestAway},
 	// subx205 subtract '0'     '-.307'    -> '0.307'
-	{"subx205", "0", "-.307", "0.307", 9, big.ToNearestAway},
+	{"subx205", "0", "-.307", "0.307", false, 9, big.ToNearestAway},
 	// subx206 subtract '0'     '-.43822'  -> '0.43822'
-	{"subx206", "0", "-.43822", "0.43822", 9, big.ToNearestAway},
+	{"subx206", "0", "-.43822", "0.43822", false, 9, big.ToNearestAway},
 	// subx207 subtract '0'     '-.911'    -> '0.911'
-	{"subx207", "0", "-.911", "0.911", 9, big.ToNearestAway},
+	{"subx207", "0", "-.911", "0.911", false, 9, big.ToNearestAway},
 	// subx208 subtract '.0'    '-.02'     -> '0.02'
-	{"subx208", ".0", "-.02", "0.02", 9, big.ToNearestAway},
+	{"subx208", ".0", "-.02", "0.02", false, 9, big.ToNearestAway},
 	// subx209 subtract '00'    '-.392'    -> '0.392'
-	{"subx209", "00", "-.392", "0.392", 9, big.ToNearestAway},
+	{"subx209", "00", "-.392", "0.392", false, 9, big.ToNearestAway},
 	// subx210 subtract '0'     '-.26'     -> '0.26'
-	{"subx210", "0", "-.26", "0.26", 9, big.ToNearestAway},
+	{"subx210", "0", "-.26", "0.26", false, 9, big.ToNearestAway},
 	// subx211 subtract '0'     '-0.51'    -> '0.51'
-	{"subx211", "0", "-0.51", "0.51", 9, big.ToNearestAway},
+	{"subx211", "0", "-0.51", "0.51", false, 9, big.ToNearestAway},
 	// subx212 subtract '0'     '-.2234'   -> '0.2234'
-	{"subx212", "0", "-.2234", "0.2234", 9, big.ToNearestAway},
+	{"subx212", "0", "-.2234", "0.2234", false, 9, big.ToNearestAway},
 	// subx213 subtract '0'     '-.2'      -> '0.2'
-	{"subx213", "0", "-.2", "0.2", 9, big.ToNearestAway},
+	{"subx213", "0", "-.2", "0.2", false, 9, big.ToNearestAway},
 	// subx214 subtract '.0'    '-.0008'   -> '0.0008'
-	{"subx214", ".0", "-.0008", "0.0008", 9, big.ToNearestAway},
+	{"subx214", ".0", "-.0008", "0.0008", false, 9, big.ToNearestAway},
 	// more fixed, LHS swaps [really the same as testcases under add]
 	// subx220 subtract '-56267E-12' 0  -> '-5.6267E-8'
-	{"subx220", "-56267E-12", "0", "-5.6267E-8", 9, big.ToNearestAway},
+	{"subx220", "-56267E-12", "0", "-5.6267E-8", false, 9, big.ToNearestAway},
 	// subx221 subtract '-56267E-11' 0  -> '-5.6267E-7'
-	{"subx221", "-56267E-11", "0", "-5.6267E-7", 9, big.ToNearestAway},
+	{"subx221", "-56267E-11", "0", "-5.6267E-7", false, 9, big.ToNearestAway},
 	// subx222 subtract '-56267E-10' 0  -> '-0.0000056267'
-	{"subx222", "-56267E-10", "0", "-0.0000056267", 9, big.ToNearestAway},
+	{"subx222", "-56267E-10", "0", "-0.0000056267", false, 9, big.ToNearestAway},
 	// subx223 subtract '-56267E-9'  0  -> '-0.000056267'
-	{"subx223", "-56267E-9", "0", "-0.000056267", 9, big.ToNearestAway},
+	{"subx223", "-56267E-9", "0", "-0.000056267", false, 9, big.ToNearestAway},
 	// subx224 subtract '-56267E-8'  0  -> '-0.00056267'
-	{"subx224", "-56267E-8", "0", "-0.00056267", 9, big.ToNearestAway},
+	{"subx224", "-56267E-8", "0", "-0.00056267", false, 9, big.ToNearestAway},
 	// subx225 subtract '-56267E-7'  0  -> '-0.0056267'
-	{"subx225", "-56267E-7", "0", "-0.0056267", 9, big.ToNearestAway},
+	{"subx225", "-56267E-7", "0", "-0.0056267", false, 9, big.ToNearestAway},
 	// subx226 subtract '-56267E-6'  0  -> '-0.056267'
-	{"subx226", "-56267E-6", "0", "-0.056267", 9, big.ToNearestAway},
+	{"subx226", "-56267E-6", "0", "-0.056267", false, 9, big.ToNearestAway},
 	// subx227 subtract '-56267E-5'  0  -> '-0.56267'
-	{"subx227", "-56267E-5", "0", "-0.56267", 9, big.ToNearestAway},
+	{"subx227", "-56267E-5", "0", "-0.56267", false, 9, big.ToNearestAway},
 	// subx228 subtract '-56267E-2'  0  -> '-562.67'
-	{"subx228", "-56267E-2", "0", "-562.67", 9, big.ToNearestAway},
+	{"subx228", "-56267E-2", "0", "-562.67", false, 9, big.ToNearestAway},
 	// subx229 subtract '-56267E-1'  0  -> '-5626.7'
-	{"subx229", "-56267E-1", "0", "-5626.7", 9, big.ToNearestAway},
+	{"subx229", "-56267E-1", "0", "-5626.7", false, 9, big.ToNearestAway},
 	// subx230 subtract '-56267E-0'  0  -> '-56267'
-	{"subx230", "-56267E-0", "0", "-56267", 9, big.ToNearestAway},
+	{"subx230", "-56267E-0", "0", "-56267", false, 9, big.ToNearestAway},
 	// symmetry ...
 	// subx240 subtract 0 '-56267E-12'  -> '5.6267E-8'
-	{"subx240", "0", "-56267E-12", "5.6267E-8", 9, big.ToNearestAway},
+	{"subx240", "0", "-56267E-12", "5.6267E-8", false, 9, big.ToNearestAway},
 	// subx241 subtract 0 '-56267E-11'  -> '5.6267E-7'
-	{"subx241", "0", "-56267E-11", "5.6267E-7", 9, big.ToNearestAway},
+	{"subx241", "0", "-56267E-11", "5.6267E-7", false, 9, big.ToNearestAway},
 	// subx242 subtract 0 '-56267E-10'  -> '0.0000056267'
-	{"subx242", "0", "-56267E-10", "0.0000056267", 9, big.ToNearestAway},
+	{"subx242", "0", "-56267E-10", "0.0000056267", false, 9, big.ToNearestAway},
 	// subx243 subtract 0 '-56267E-9'   -> '0.000056267'
-	{"subx243", "0", "-56267E-9", "0.000056267", 9, big.ToNearestAway},
+	{"subx243", "0", "-56267E-9", "0.000056267", false, 9, big.ToNearestAway},
 	// subx244 subtract 0 '-56267E-8'   -> '0.00056267'
-	{"subx244", "0", "-56267E-8", "0.00056267", 9, big.ToNearestAway},
+	{"subx244", "0", "-56267E-8", "0.00056267", false, 9, big.ToNearestAway},
 	// subx245 subtract 0 '-56267E-7'   -> '0.0056267'
-	{"subx245", "0", "-56267E-7", "0.0056267", 9, big.ToNearestAway},
+	{"subx245", "0", "-56267E-7", "0.0056267", false, 9, big.ToNearestAway},
 	// subx246 subtract 0 '-56267E-6'   -> '0.056267'
-	{"subx246", "0", "-56267E-6", "0.056267", 9, big.ToNearestAway},
+	{"subx246", "0", "-56267E-6", "0.056267", false, 9, big.ToNearestAway},
 	// subx247 subtract 0 '-56267E-5'   -> '0.56267'
-	{"subx247", "0", "-56267E-5", "0.56267", 9, big.ToNearestAway},
+	{"subx247", "0", "-56267E-5", "0.56267", false, 9, big.ToNearestAway},
 	// subx248 subtract 0 '-56267E-2'   -> '562.67'
-	{"subx248", "0", "-56267E-2", "562.67", 9, big.ToNearestAway},
+	{"subx248", "0", "-56267E-2", "562.67", false, 9, big.ToNearestAway},
 	// subx249 subtract 0 '-56267E-1'   -> '5626.7'
-	{"subx249", "0", "-56267E-1", "5626.7", 9, big.ToNearestAway},
+	{"subx249", "0", "-56267E-1", "5626.7", false, 9, big.ToNearestAway},
 	// subx250 subtract 0 '-56267E-0'   -> '56267'
-	{"subx250", "0", "-56267E-0", "56267", 9, big.ToNearestAway},
+	{"subx250", "0", "-56267E-0", "56267", false, 9, big.ToNearestAway},
 	// now some more from the 'new' add
 	// precision: 9
 	// subx301 subtract '1.23456789'  '1.00000000' -> '0.23456789'
-	{"subx301", "1.23456789", "1.00000000", "0.23456789", 9, big.ToNearestAway},
+	{"subx301", "1.23456789", "1.00000000", "0.23456789", false, 9, big.ToNearestAway},
 	// subx302 subtract '1.23456789'  '1.00000011' -> '0.23456778'
-	{"subx302", "1.23456789", "1.00000011", "0.23456778", 9, big.ToNearestAway},
+	{"subx302", "1.23456789", "1.00000011", "0.23456778", false, 9, big.ToNearestAway},
 	// subx311 subtract '0.4444444444'  '0.5555555555' -> '-0.111111111' Inexact Rounded
-	{"subx311", "0.4444444444", "0.5555555555", "-0.111111111", 9, big.ToNearestAway},
+	{"subx311", "0.4444444444", "0.5555555555", "-0.111111111", true, 9, big.ToNearestAway},
 	// subx312 subtract '0.4444444440'  '0.5555555555' -> '-0.111111112' Inexact Rounded
-	{"subx312", "0.4444444440", "0.5555555555", "-0.111111112", 9, big.ToNearestAway},
+	{"subx312", "0.4444444440", "0.5555555555", "-0.111111112", true, 9, big.ToNearestAway},
 	// subx313 subtract '0.4444444444'  '0.5555555550' -> '-0.111111111' Inexact Rounded
-	{"subx313", "0.4444444444", "0.5555555550", "-0.111111111", 9, big.ToNearestAway},
+	{"subx313", "0.4444444444", "0.5555555550", "-0.111111111", true, 9, big.ToNearestAway},
 	// subx314 subtract '0.44444444449'    '0' -> '0.444444444' Inexact Rounded
-	{"subx314", "0.44444444449", "0", "0.444444444", 9, big.ToNearestAway},
+	{"subx314", "0.44444444449", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// subx315 subtract '0.444444444499'   '0' -> '0.444444444' Inexact Rounded
-	{"subx315", "0.444444444499", "0", "0.444444444", 9, big.ToNearestAway},
+	{"subx315", "0.444444444499", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// subx316 subtract '0.4444444444999'  '0' -> '0.444444444' Inexact Rounded
-	{"subx316", "0.4444444444999", "0", "0.444444444", 9, big.ToNearestAway},
+	{"subx316", "0.4444444444999", "0", "0.444444444", true, 9, big.ToNearestAway},
 	// subx317 subtract '0.4444444445000'  '0' -> '0.444444445' Inexact Rounded
-	{"subx317", "0.4444444445000", "0", "0.444444445", 9, big.ToNearestAway},
+	{"subx317", "0.4444444445000", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// subx318 subtract '0.4444444445001'  '0' -> '0.444444445' Inexact Rounded
-	{"subx318", "0.4444444445001", "0", "0.444444445", 9, big.ToNearestAway},
+	{"subx318", "0.4444444445001", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// subx319 subtract '0.444444444501'   '0' -> '0.444444445' Inexact Rounded
-	{"subx319", "0.444444444501", "0", "0.444444445", 9, big.ToNearestAway},
+	{"subx319", "0.444444444501", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// subx320 subtract '0.44444444451'    '0' -> '0.444444445' Inexact Rounded
-	{"subx320", "0.44444444451", "0", "0.444444445", 9, big.ToNearestAway},
+	{"subx320", "0.44444444451", "0", "0.444444445", true, 9, big.ToNearestAway},
 	// some carrying effects
 	// subx321 subtract '0.9998'  '0.0000' -> '0.9998'
-	{"subx321", "0.9998", "0.0000", "0.9998", 9, big.ToNearestAway},
+	{"subx321", "0.9998", "0.0000", "0.9998", false, 9, big.ToNearestAway},
 	// subx322 subtract '0.9998'  '0.0001' -> '0.9997'
-	{"subx322", "0.9998", "0.0001", "0.9997", 9, big.ToNearestAway},
+	{"subx322", "0.9998", "0.0001", "0.9997", false, 9, big.ToNearestAway},
 	// subx323 subtract '0.9998'  '0.0002' -> '0.9996'
-	{"subx323", "0.9998", "0.0002", "0.9996", 9, big.ToNearestAway},
+	{"subx323", "0.9998", "0.0002", "0.9996", false, 9, big.ToNearestAway},
 	// subx324 subtract '0.9998'  '0.0003' -> '0.9995'
-	{"subx324", "0.9998", "0.0003", "0.9995", 9, big.ToNearestAway},
+	{"subx324", "0.9998", "0.0003", "0.9995", false, 9, big.ToNearestAway},
 	// subx325 subtract '0.9998'  '-0.0000' -> '0.9998'
-	{"subx325", "0.9998", "-0.0000", "0.9998", 9, big.ToNearestAway},
+	{"subx325", "0.9998", "-0.0000", "0.9998", false, 9, big.ToNearestAway},
 	// subx326 subtract '0.9998'  '-0.0001' -> '0.9999'
-	{"subx326", "0.9998", "-0.0001", "0.9999", 9, big.ToNearestAway},
+	{"subx326", "0.9998", "-0.0001", "0.9999", false, 9, big.ToNearestAway},
 	// subx327 subtract '0.9998'  '-0.0002' -> '1.0000'
-	{"subx327", "0.9998", "-0.0002", "1.0000", 9, big.ToNearestAway},
+	{"subx327", "0.9998", "-0.0002", "1.0000", false, 9, big.ToNearestAway},
 	// subx328 subtract '0.9998'  '-0.0003' -> '1.0001'
-	{"subx328", "0.9998", "-0.0003", "1.0001", 9, big.ToNearestAway},
+	{"subx328", "0.9998", "-0.0003", "1.0001", false, 9, big.ToNearestAway},
 	// subx330 subtract '70'  '10000e+9' -> '-1.00000000E+13' Inexact Rounded
-	{"subx330", "70", "10000e+9", "-1.00000000E+13", 9, big.ToNearestAway},
+	{"subx330", "70", "10000e+9", "-1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx331 subtract '700'  '10000e+9' -> '-1.00000000E+13' Inexact Rounded
-	{"subx331", "700", "10000e+9", "-1.00000000E+13", 9, big.ToNearestAway},
+	{"subx331", "700", "10000e+9", "-1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx332 subtract '7000'  '10000e+9' -> '-9.99999999E+12' Inexact Rounded
-	{"subx332", "7000", "10000e+9", "-9.99999999E+12", 9, big.ToNearestAway},
+	{"subx332", "7000", "10000e+9", "-9.99999999E+12", true, 9, big.ToNearestAway},
 	// subx333 subtract '70000'  '10000e+9' -> '-9.99999993E+12' Rounded
-	{"subx333", "70000", "10000e+9", "-9.99999993E+12", 9, big.ToNearestAway},
+	{"subx333", "70000", "10000e+9", "-9.99999993E+12", false, 9, big.ToNearestAway},
 	// subx334 subtract '700000'  '10000e+9' -> '-9.99999930E+12' Rounded
-	{"subx334", "700000", "10000e+9", "-9.99999930E+12", 9, big.ToNearestAway},
+	{"subx334", "700000", "10000e+9", "-9.99999930E+12", false, 9, big.ToNearestAway},
 	// subx335 subtract '7000000'  '10000e+9' -> '-9.99999300E+12' Rounded
-	{"subx335", "7000000", "10000e+9", "-9.99999300E+12", 9, big.ToNearestAway},
+	{"subx335", "7000000", "10000e+9", "-9.99999300E+12", false, 9, big.ToNearestAway},
 	// symmetry:
 	// subx340 subtract '10000e+9'  '70' -> '1.00000000E+13' Inexact Rounded
-	{"subx340", "10000e+9", "70", "1.00000000E+13", 9, big.ToNearestAway},
+	{"subx340", "10000e+9", "70", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx341 subtract '10000e+9'  '700' -> '1.00000000E+13' Inexact Rounded
-	{"subx341", "10000e+9", "700", "1.00000000E+13", 9, big.ToNearestAway},
+	{"subx341", "10000e+9", "700", "1.00000000E+13", true, 9, big.ToNearestAway},
 	// subx342 subtract '10000e+9'  '7000' -> '9.99999999E+12' Inexact Rounded
-	{"subx342", "10000e+9", "7000", "9.99999999E+12", 9, big.ToNearestAway},
+	{"subx342", "10000e+9", "7000", "9.99999999E+12", true, 9, big.ToNearestAway},
 	// subx343 subtract '10000e+9'  '70000' -> '9.99999993E+12' Rounded
-	{"subx343", "10000e+9", "70000", "9.99999993E+12", 9, big.ToNearestAway},
+	{"subx343", "10000e+9", "70000", "9.99999993E+12", false, 9, big.ToNearestAway},
 	// subx344 subtract '10000e+9'  '700000' -> '9.99999930E+12' Rounded
-	{"subx344", "10000e+9", "700000", "9.99999930E+12", 9, big.ToNearestAway},
+	{"subx344", "10000e+9", "700000", "9.99999930E+12", false, 9, big.ToNearestAway},
 	// subx345 subtract '10000e+9'  '7000000' -> '9.99999300E+12' Rounded
-	{"subx345", "10000e+9", "7000000", "9.99999300E+12", 9, big.ToNearestAway},
+	{"subx345", "10000e+9", "7000000", "9.99999300E+12", false, 9, big.ToNearestAway},
 	// same, higher precision
 	// precision: 15
 	// subx346 subtract '10000e+9'  '7'   -> '9999999999993'
-	{"subx346", "10000e+9", "7", "9999999999993", 15, big.ToNearestAway},
+	{"subx346", "10000e+9", "7", "9999999999993", false, 15, big.ToNearestAway},
 	// subx347 subtract '10000e+9'  '70'   -> '9999999999930'
-	{"subx347", "10000e+9", "70", "9999999999930", 15, big.ToNearestAway},
+	{"subx347", "10000e+9", "70", "9999999999930", false, 15, big.ToNearestAway},
 	// subx348 subtract '10000e+9'  '700'   -> '9999999999300'
-	{"subx348", "10000e+9", "700", "9999999999300", 15, big.ToNearestAway},
+	{"subx348", "10000e+9", "700", "9999999999300", false, 15, big.ToNearestAway},
 	// subx349 subtract '10000e+9'  '7000'   -> '9999999993000'
-	{"subx349", "10000e+9", "7000", "9999999993000", 15, big.ToNearestAway},
+	{"subx349", "10000e+9", "7000", "9999999993000", false, 15, big.ToNearestAway},
 	// subx350 subtract '10000e+9'  '70000'   -> '9999999930000'
-	{"subx350", "10000e+9", "70000", "9999999930000", 15, big.ToNearestAway},
+	{"subx350", "10000e+9", "70000", "9999999930000", false, 15, big.ToNearestAway},
 	// subx351 subtract '10000e+9'  '700000'   -> '9999999300000'
-	{"subx351", "10000e+9", "700000", "9999999300000", 15, big.ToNearestAway},
+	{"subx351", "10000e+9", "700000", "9999999300000", false, 15, big.ToNearestAway},
 	// subx352 subtract '7' '10000e+9'   -> '-9999999999993'
-	{"subx352", "7", "10000e+9", "-9999999999993", 15, big.ToNearestAway},
+	{"subx352", "7", "10000e+9", "-9999999999993", false, 15, big.ToNearestAway},
 	// subx353 subtract '70' '10000e+9'   -> '-9999999999930'
-	{"subx353", "70", "10000e+9", "-9999999999930", 15, big.ToNearestAway},
+	{"subx353", "70", "10000e+9", "-9999999999930", false, 15, big.ToNearestAway},
 	// subx354 subtract '700' '10000e+9'   -> '-9999999999300'
-	{"subx354", "700", "10000e+9", "-9999999999300", 15, big.ToNearestAway},
+	{"subx354", "700", "10000e+9", "-9999999999300", false, 15, big.ToNearestAway},
 	// subx355 subtract '7000' '10000e+9'   -> '-9999999993000'
-	{"subx355", "7000", "10000e+9", "-9999999993000", 15, big.ToNearestAway},
+	{"subx355", "7000", "10000e+9", "-9999999993000", false, 15, big.ToNearestAway},
 	// subx356 subtract '70000' '10000e+9'   -> '-9999999930000'
-	{"subx356", "70000", "10000e+9", "-9999999930000", 15, big.ToNearestAway},
+	{"subx356", "70000", "10000e+9", "-9999999930000", false, 15, big.ToNearestAway},
 	// subx357 subtract '700000' '10000e+9'   -> '-9999999300000'
-	{"subx357", "700000", "10000e+9", "-9999999300000", 15, big.ToNearestAway},
+	{"subx357", "700000", "10000e+9", "-9999999300000", false, 15, big.ToNearestAway},
 	// zero preservation
 	// precision: 6
 	// subx360 subtract '10000e+9'  '70000' -> '1.00000E+13' Inexact Rounded
-	{"subx360", "10000e+9", "70000", "1.00000E+13", 6, big.ToNearestAway},
+	{"subx360", "10000e+9", "70000", "1.00000E+13", true, 6, big.ToNearestAway},
 	// subx361 subtract 1 '0.0001' -> '0.9999'
-	{"subx361", "1", "0.0001", "0.9999", 6, big.ToNearestAway},
+	{"subx361", "1", "0.0001", "0.9999", false, 6, big.ToNearestAway},
 	// subx362 subtract 1 '0.00001' -> '0.99999'
-	{"subx362", "1", "0.00001", "0.99999", 6, big.ToNearestAway},
+	{"subx362", "1", "0.00001", "0.99999", false, 6, big.ToNearestAway},
 	// subx363 subtract 1 '0.000001' -> '0.999999'
-	{"subx363", "1", "0.000001", "0.999999", 6, big.ToNearestAway},
+	{"subx363", "1", "0.000001", "0.999999", false, 6, big.ToNearestAway},
 	// subx364 subtract 1 '0.0000001' -> '1.00000' Inexact Rounded
-	{"subx364", "1", "0.0000001", "1.00000", 6, big.ToNearestAway},
+	{"subx364", "1", "0.0000001", "1.00000", true, 6, big.ToNearestAway},
 	// subx365 subtract 1 '0.00000001' -> '1.00000' Inexact Rounded
-	{"subx365", "1", "0.00000001", "1.00000", 6, big.ToNearestAway},
+	{"subx365", "1", "0.00000001", "1.00000", true, 6, big.ToNearestAway},
 	// some funny zeros [in case of bad signum]
 	// subx370 subtract 1  0  -> 1
-	{"subx370", "1", "0", "1", 6, big.ToNearestAway},
+	{"subx370", "1", "0", "1", false, 6, big.ToNearestAway},
 	// subx371 subtract 1 0.  -> 1
-	{"subx371", "1", "0.", "1", 6, big.ToNearestAway},
+	{"subx371", "1", "0.", "1", false, 6, big.ToNearestAway},
 	// subx372 subtract 1  .0 -> 1.0
-	{"subx372", "1", ".0", "1.0", 6, big.ToNearestAway},
+	{"subx372", "1", ".0", "1.0", false, 6, big.ToNearestAway},
 	// subx373 subtract 1 0.0 -> 1.0
-	{"subx373", "1", "0.0", "1.0", 6, big.ToNearestAway},
+	{"subx373", "1", "0.0", "1.0", false, 6, big.ToNearestAway},
 	// subx374 subtract  0  1 -> -1
-	{"subx374", "0", "1", "-1", 6, big.ToNearestAway},
+	{"subx374", "0", "1", "-1", false, 6, big.ToNearestAway},
 	// subx375 subtract 0.  1 -> -1
-	{"subx375", "0.", "1", "-1", 6, big.ToNearestAway},
+	{"subx375", "0.", "1", "-1", false, 6, big.ToNearestAway},
 	// subx376 subtract  .0 1 -> -1.0
-	{"subx376", ".0", "1", "-1.0", 6, big.ToNearestAway},
+	{"subx376", ".0", "1", "-1.0", false, 6, big.ToNearestAway},
 	// subx377 subtract 0.0 1 -> -1.0
-	{"subx377", "0.0", "1", "-1.0", 6, big.ToNearestAway},
+	{"subx377", "0.0", "1", "-1.0", false, 6, big.ToNearestAway},
 	// precision: 9
 	// leading 0 digit before round
 	// subx910 subtract -103519362 -51897955.3 -> -51621406.7
-	{"subx910", "-103519362", "-51897955.3", "-51621406.7", 9, big.ToNearestAway},
+	{"subx910", "-103519362", "-51897955.3", "-51621406.7", false, 9, big.ToNearestAway},
 	// subx911 subtract 159579.444 89827.5229 -> 69751.9211
-	{"subx911", "159579.444", "89827.5229", "69751.9211", 9, big.ToNearestAway},
+	{"subx911", "159579.444", "89827.5229", "69751.9211", false, 9, big.ToNearestAway},
 	// subx920 subtract 333.123456 33.1234566 -> 299.999999 Inexact Rounded
-	{"subx920", "333.123456", "33.1234566", "299.999999", 9, big.ToNearestAway},
+	{"subx920", "333.123456", "33.1234566", "299.999999", true, 9, big.ToNearestAway},
 	// subx921 subtract 333.123456 33.1234565 -> 300.000000 Inexact Rounded
-	{"subx921", "333.123456", "33.1234565", "300.000000", 9, big.ToNearestAway},
+	{"subx921", "333.123456", "33.1234565", "300.000000", true, 9, big.ToNearestAway},
 	// subx922 subtract 133.123456 33.1234565 ->  99.9999995
-	{"subx922", "133.123456", "33.1234565", "99.9999995", 9, big.ToNearestAway},
+	{"subx922", "133.123456", "33.1234565", "99.9999995", false, 9, big.ToNearestAway},
 	// subx923 subtract 133.123456 33.1234564 ->  99.9999996
-	{"subx923", "133.123456", "33.1234564", "99.9999996", 9, big.ToNearestAway},
+	{"subx923", "133.123456", "33.1234564", "99.9999996", false, 9, big.ToNearestAway},
 	// subx924 subtract 133.123456 33.1234540 -> 100.000002 Rounded
-	{"subx924", "133.123456", "33.1234540", "100.000002", 9, big.ToNearestAway},
+	{"subx924", "133.123456", "33.1234540", "100.000002", false, 9, big.ToNearestAway},
 	// subx925 subtract 133.123456 43.1234560 ->  90.0000000
-	{"subx925", "133.123456", "43.1234560", "90.0000000", 9, big.ToNearestAway},
+	{"subx925", "133.123456", "43.1234560", "90.0000000", false, 9, big.ToNearestAway},
 	// subx926 subtract 133.123456 43.1234561 ->  89.9999999
-	{"subx926", "133.123456", "43.1234561", "89.9999999", 9, big.ToNearestAway},
+	{"subx926", "133.123456", "43.1234561", "89.9999999", false, 9, big.ToNearestAway},
 	// subx927 subtract 133.123456 43.1234566 ->  89.9999994
-	{"subx927", "133.123456", "43.1234566", "89.9999994", 9, big.ToNearestAway},
+	{"subx927", "133.123456", "43.1234566", "89.9999994", false, 9, big.ToNearestAway},
 	// subx928 subtract 101.123456 91.1234566 ->   9.9999994
-	{"subx928", "101.123456", "91.1234566", "9.9999994", 9, big.ToNearestAway},
+	{"subx928", "101.123456", "91.1234566", "9.9999994", false, 9, big.ToNearestAway},
 	// subx929 subtract 101.123456 99.1234566 ->   1.9999994
-	{"subx929", "101.123456", "99.1234566", "1.9999994", 9, big.ToNearestAway},
+	{"subx929", "101.123456", "99.1234566", "1.9999994", false, 9, big.ToNearestAway},
 	// more of the same; probe for cluster boundary problems
 	// precision: 1
 	// subx930 subtract  11 2           -> 9
-	{"subx930", "11", "2", "9", 1, big.ToNearestAway},
+	{"subx930", "11", "2", "9", false, 1, big.ToNearestAway},
 	// precision: 2
 	// subx932 subtract 101 2           -> 99
-	{"subx932", "101", "2", "99", 2, big.ToNearestAway},
+	{"subx932", "101", "2", "99", false, 2, big.ToNearestAway},
 	// precision: 3
 	// subx934 subtract 101 2.1         -> 98.9
-	{"subx934", "101", "2.1", "98.9", 3, big.ToNearestAway},
+	{"subx934", "101", "2.1", "98.9", false, 3, big.ToNearestAway},
 	// subx935 subtract 101 92.01       ->  8.99
-	{"subx935", "101", "92.01", "8.99", 3, big.ToNearestAway},
+	{"subx935", "101", "92.01", "8.99", false, 3, big.ToNearestAway},
 	// precision: 4
 	// subx936 subtract 101 2.01        -> 98.99
-	{"subx936", "101", "2.01", "98.99", 4, big.ToNearestAway},
+	{"subx936", "101", "2.01", "98.99", false, 4, big.ToNearestAway},
 	// subx937 subtract 101 92.01       ->  8.99
-	{"subx937", "101", "92.01", "8.99", 4, big.ToNearestAway},
+	{"subx937", "101", "92.01", "8.99", false, 4, big.ToNearestAway},
 	// subx938 subtract 101 92.006      ->  8.994
-	{"subx938", "101", "92.006", "8.994", 4, big.ToNearestAway},
+	{"subx938", "101", "92.006", "8.994", false, 4, big.ToNearestAway},
 	// precision: 5
 	// subx939 subtract 101 2.001       -> 98.999
-	{"subx939", "101", "2.001", "98.999", 5, big.ToNearestAway},
+	{"subx939", "101", "2.001", "98.999", false, 5, big.ToNearestAway},
 	// subx940 subtract 101 92.001      ->  8.999
-	{"subx940", "101", "92.001", "8.999", 5, big.ToNearestAway},
+	{"subx940", "101", "92.001", "8.999", false, 5, big.ToNearestAway},
 	// subx941 subtract 101 92.0006     ->  8.9994
-	{"subx941", "101", "92.0006", "8.9994", 5, big.ToNearestAway},
+	{"subx941", "101", "92.0006", "8.9994", false, 5, big.ToNearestAway},
 	// precision: 6
 	// subx942 subtract 101 2.0001      -> 98.9999
-	{"subx942", "101", "2.0001", "98.9999", 6, big.ToNearestAway},
+	{"subx942", "101", "2.0001", "98.9999", false, 6, big.ToNearestAway},
 	// subx943 subtract 101 92.0001     ->  8.9999
-	{"subx943", "101", "92.0001", "8.9999", 6, big.ToNearestAway},
+	{"subx943", "101", "92.0001", "8.9999", false, 6, big.ToNearestAway},
 	// subx944 subtract 101 92.00006    ->  8.99994
-	{"subx944", "101", "92.00006", "8.99994", 6, big.ToNearestAway},
+	{"subx944", "101", "92.00006", "8.99994", false, 6, big.ToNearestAway},
 	// precision: 7
 	// subx945 subtract 101 2.00001     -> 98.99999
-	{"subx945", "101", "2.00001", "98.99999", 7, big.ToNearestAway},
+	{"subx945", "101", "2.00001", "98.99999", false, 7, big.ToNearestAway},
 	// subx946 subtract 101 92.00001    ->  8.99999
-	{"subx946", "101", "92.00001", "8.99999", 7, big.ToNearestAway},
+	{"subx946", "101", "92.00001", "8.99999", false, 7, big.ToNearestAway},
 	// subx947 subtract 101 92.000006   ->  8.999994
-	{"subx947", "101", "92.000006", "8.999994", 7, big.ToNearestAway},
+	{"subx947", "101", "92.000006", "8.999994", false, 7, big.ToNearestAway},
 	// precision: 8
 	// subx948 subtract 101 2.000001    -> 98.999999
-	{"subx948", "101", "2.000001", "98.999999", 8, big.ToNearestAway},
+	{"subx948", "101", "2.000001", "98.999999", false, 8, big.ToNearestAway},
 	// subx949 subtract 101 92.000001   ->  8.999999
-	{"subx949", "101", "92.000001", "8.999999", 8, big.ToNearestAway},
+	{"subx949", "101", "92.000001", "8.999999", false, 8, big.ToNearestAway},
 	// subx950 subtract 101 92.0000006  ->  8.9999994
-	{"subx950", "101", "92.0000006", "8.9999994", 8, big.ToNearestAway},
+	{"subx950", "101", "92.0000006", "8.9999994", false, 8, big.ToNearestAway},
 	// precision: 9
 	// subx951 subtract 101 2.0000001   -> 98.9999999
-	{"subx951", "101", "2.0000001", "98.9999999", 9, big.ToNearestAway},
+	{"subx951", "101", "2.0000001", "98.9999999", false, 9, big.ToNearestAway},
 	// subx952 subtract 101 92.0000001  ->  8.9999999
-	{"subx952", "101", "92.0000001", "8.9999999", 9, big.ToNearestAway},
+	{"subx952", "101", "92.0000001", "8.9999999", false, 9, big.ToNearestAway},
 	// subx953 subtract 101 92.00000006 ->  8.99999994
-	{"subx953", "101", "92.00000006", "8.99999994", 9, big.ToNearestAway},
+	{"subx953", "101", "92.00000006", "8.99999994", false, 9, big.ToNearestAway},
 	// precision: 9
 	// more LHS swaps [were fixed]
 	// subx390 subtract '-56267E-10'   0 ->  '-0.0000056267'
-	{"subx390", "-56267E-10", "0", "-0.0000056267", 9, big.ToNearestAway},
+	{"subx390", "-56267E-10", "0", "-0.0000056267", false, 9, big.ToNearestAway},
 	// subx391 subtract '-56267E-6'    0 ->  '-0.056267'
-	{"subx391", "-56267E-6", "0", "-0.056267", 9, big.ToNearestAway},
+	{"subx391", "-56267E-6", "0", "-0.056267", false, 9, big.ToNearestAway},
 	// subx392 subtract '-56267E-5'    0 ->  '-0.56267'
-	{"subx392", "-56267E-5", "0", "-0.56267", 9, big.ToNearestAway},
+	{"subx392", "-56267E-5", "0", "-0.56267", false, 9, big.ToNearestAway},
 	// subx393 subtract '-56267E-4'    0 ->  '-5.6267'
-	{"subx393", "-56267E-4", "0", "-5.6267", 9, big.ToNearestAway},
+	{"subx393", "-56267E-4", "0", "-5.6267", false, 9, big.ToNearestAway},
 	// subx394 subtract '-56267E-3'    0 ->  '-56.267'
-	{"subx394", "-56267E-3", "0", "-56.267", 9, big.ToNearestAway},
+	{"subx394", "-56267E-3", "0", "-56.267", false, 9, big.ToNearestAway},
 	// subx395 subtract '-56267E-2'    0 ->  '-562.67'
-	{"subx395", "-56267E-2", "0", "-562.67", 9, big.ToNearestAway},
+	{"subx395", "-56267E-2", "0", "-562.67", false, 9, big.ToNearestAway},
 	// subx396 subtract '-56267E-1'    0 ->  '-5626.7'
-	{"subx396", "-56267E-1", "0", "-5626.7", 9, big.ToNearestAway},
+	{"subx396", "-56267E-1", "0", "-5626.7", false, 9, big.ToNearestAway},
 	// subx397 subtract '-56267E-0'    0 ->  '-56267'
-	{"subx397", "-56267E-0", "0", "-56267", 9, big.ToNearestAway},
+	{"subx397", "-56267E-0", "0", "-56267", false, 9, big.ToNearestAway},
 	// subx398 subtract '-5E-10'       0 ->  '-5E-10'
-	{"subx398", "-5E-10", "0", "-5E-10", 9, big.ToNearestAway},
+	{"subx398", "-5E-10", "0", "-5E-10", false, 9, big.ToNearestAway},
 	// subx399 subtract '-5E-7'        0 ->  '-5E-7'
-	{"subx399", "-5E-7", "0", "-5E-7", 9, big.ToNearestAway},
+	{"subx399", "-5E-7", "0", "-5E-7", false, 9, big.ToNearestAway},
 	// subx400 subtract '-5E-6'        0 ->  '-0.000005'
-	{"subx400", "-5E-6", "0", "-0.000005", 9, big.ToNearestAway},
+	{"subx400", "-5E-6", "0", "-0.000005", false, 9, big.ToNearestAway},
 	// subx401 subtract '-5E-5'        0 ->  '-0.00005'
-	{"subx401", "-5E-5", "0", "-0.00005", 9, big.ToNearestAway},
+	{"subx401", "-5E-5", "0", "-0.00005", false, 9, big.ToNearestAway},
 	// subx402 subtract '-5E-4'        0 ->  '-0.0005'
-	{"subx402", "-5E-4", "0", "-0.0005", 9, big.ToNearestAway},
+	{"subx402", "-5E-4", "0", "-0.0005", false, 9, big.ToNearestAway},
 	// subx403 subtract '-5E-1'        0 ->  '-0.5'
-	{"subx403", "-5E-1", "0", "-0.5", 9, big.ToNearestAway},
+	{"subx403", "-5E-1", "0", "-0.5", false, 9, big.ToNearestAway},
 	// subx404 subtract '-5E0'         0 ->  '-5'
-	{"subx404", "-5E0", "0", "-5", 9, big.ToNearestAway},
+	{"subx404", "-5E0", "0", "-5", false, 9, big.ToNearestAway},
 	// subx405 subtract '-5E1'         0 ->  '-50'
-	{"subx405", "-5E1", "0", "-50", 9, big.ToNearestAway},
+	{"subx405", "-5E1", "0", "-50", false, 9, big.ToNearestAway},
 	// subx406 subtract '-5E5'         0 ->  '-500000'
-	{"subx406", "-5E5", "0", "-500000", 9, big.ToNearestAway},
+	{"subx406", "-5E5", "0", "-500000", false, 9, big.ToNearestAway},
 	// subx407 subtract '-5E8'         0 ->  '-500000000'
-	{"subx407", "-5E8", "0", "-500000000", 9, big.ToNearestAway},
+	{"subx407", "-5E8", "0", "-500000000", false, 9, big.ToNearestAway},
 	// subx408 subtract '-5E9'         0 ->  '-5.00000000E+9'   Rounded
-	{"subx408", "-5E9", "0", "-5.00000000E+9", 9, big.ToNearestAway},
+	{"subx408", "-5E9", "0", "-5.00000000E+9", false, 9, big.ToNearestAway},
 	// subx409 subtract '-5E10'        0 ->  '-5.00000000E+10'  Rounded
-	{"subx409", "-5E10", "0", "-5.00000000E+10", 9, big.ToNearestAway},
+	{"subx409", "-5E10", "0", "-5.00000000E+10", false, 9, big.ToNearestAway},
 	// subx410 subtract '-5E11'        0 ->  '-5.00000000E+11'  Rounded
-	{"subx410", "-5E11", "0", "-5.00000000E+11", 9, big.ToNearestAway},
+	{"subx410", "-5E11", "0", "-5.00000000E+11", false, 9, big.ToNearestAway},
 	// subx411 subtract '-5E100'       0 ->  '-5.00000000E+100' Rounded
-	{"subx411", "-5E100", "0", "-5.00000000E+100", 9, big.ToNearestAway},
+	{"subx411", "-5E100", "0", "-5.00000000E+100", false, 9, big.ToNearestAway},
 	// more RHS swaps [were fixed]
 	// subx420 subtract 0  '-56267E-10' ->  '0.0000056267'
-	{"subx420", "0", "-56267E-10", "0.0000056267", 9, big.ToNearestAway},
+	{"subx420", "0", "-56267E-10", "0.0000056267", false, 9, big.ToNearestAway},
 	// subx421 subtract 0  '-56267E-6'  ->  '0.056267'
-	{"subx421", "0", "-56267E-6", "0.056267", 9, big.ToNearestAway},
+	{"subx421", "0", "-56267E-6", "0.056267", false, 9, big.ToNearestAway},
 	// subx422 subtract 0  '-56267E-5'  ->  '0.56267'
-	{"subx422", "0", "-56267E-5", "0.56267", 9, big.ToNearestAway},
+	{"subx422", "0", "-56267E-5", "0.56267", false, 9, big.ToNearestAway},
 	// subx423 subtract 0  '-56267E-4'  ->  '5.6267'
-	{"subx423", "0", "-56267E-4", "5.6267", 9, big.ToNearestAway},
+	{"subx423", "0", "-56267E-4", "5.6267", false, 9, big.ToNearestAway},
 	// subx424 subtract 0  '-56267E-3'  ->  '56.267'
-	{"subx424", "0", "-56267E-3", "56.267", 9, big.ToNearestAway},
+	{"subx424", "0", "-56267E-3", "56.267", false, 9, big.ToNearestAway},
 	// subx425 subtract 0  '-56267E-2'  ->  '562.67'
-	{"subx425", "0", "-56267E-2", "562.67", 9, big.ToNearestAway},
+	{"subx425", "0", "-56267E-2", "562.67", false, 9, big.ToNearestAway},
 	// subx426 subtract 0  '-56267E-1'  ->  '5626.7'
-	{"subx426", "0", "-56267E-1", "5626.7", 9, big.ToNearestAway},
+	{"subx426", "0", "-56267E-1", "5626.7", false, 9, big.ToNearestAway},
 	// subx427 subtract 0  '-56267E-0'  ->  '56267'
-	{"subx427", "0", "-56267E-0", "56267", 9, big.ToNearestAway},
+	{"subx427", "0", "-56267E-0", "56267", false, 9, big.ToNearestAway},
 	// subx428 subtract 0  '-5E-10'     ->  '5E-10'
-	{"subx428", "0", "-5E-10", "5E-10", 9, big.ToNearestAway},
+	{"subx428", "0", "-5E-10", "5E-10", false, 9, big.ToNearestAway},
 	// subx429 subtract 0  '-5E-7'      ->  '5E-7'
-	{"subx429", "0", "-5E-7", "5E-7", 9, big.ToNearestAway},
+	{"subx429", "0", "-5E-7", "5E-7", false, 9, big.ToNearestAway},
 	// subx430 subtract 0  '-5E-6'      ->  '0.000005'
-	{"subx430", "0", "-5E-6", "0.000005", 9, big.ToNearestAway},
+	{"subx430", "0", "-5E-6", "0.000005", false, 9, big.ToNearestAway},
 	// subx431 subtract 0  '-5E-5'      ->  '0.00005'
-	{"subx431", "0", "-5E-5", "0.00005", 9, big.ToNearestAway},
+	{"subx431", "0", "-5E-5", "0.00005", false, 9, big.ToNearestAway},
 	// subx432 subtract 0  '-5E-4'      ->  '0.0005'
-	{"subx432", "0", "-5E-4", "0.0005", 9, big.ToNearestAway},
+	{"subx432", "0", "-5E-4", "0.0005", false, 9, big.ToNearestAway},
 	// subx433 subtract 0  '-5E-1'      ->  '0.5'
-	{"subx433", "0", "-5E-1", "0.5", 9, big.ToNearestAway},
+	{"subx433", "0", "-5E-1", "0.5", false, 9, big.ToNearestAway},
 	// subx434 subtract 0  '-5E0'       ->  '5'
-	{"subx434", "0", "-5E0", "5", 9, big.ToNearestAway},
+	{"subx434", "0", "-5E0", "5", false, 9, big.ToNearestAway},
 	// subx435 subtract 0  '-5E1'       ->  '50'
-	{"subx435", "0", "-5E1", "50", 9, big.ToNearestAway},
+	{"subx435", "0", "-5E1", "50", false, 9, big.ToNearestAway},
 	// subx436 subtract 0  '-5E5'       ->  '500000'
-	{"subx436", "0", "-5E5", "500000", 9, big.ToNearestAway},
+	{"subx436", "0", "-5E5", "500000", false, 9, big.ToNearestAway},
 	// subx437 subtract 0  '-5E8'       ->  '500000000'
-	{"subx437", "0", "-5E8", "500000000", 9, big.ToNearestAway},
+	{"subx437", "0", "-5E8", "500000000", false, 9, big.ToNearestAway},
 	// subx438 subtract 0  '-5E9'       ->  '5.00000000E+9'    Rounded
-	{"subx438", "0", "-5E9", "5.00000000E+9", 9, big.ToNearestAway},
+	{"subx438", "0", "-5E9", "5.00000000E+9", false, 9, big.ToNearestAway},
 	// subx439 subtract 0  '-5E10'      ->  '5.00000000E+10'   Rounded
-	{"subx439", "0", "-5E10", "5.00000000E+10", 9, big.ToNearestAway},
+	{"subx439", "0", "-5E10", "5.00000000E+10", false, 9, big.ToNearestAway},
 	// subx440 subtract 0  '-5E11'      ->  '5.00000000E+11'   Rounded
-	{"subx440", "0", "-5E11", "5.00000000E+11", 9, big.ToNearestAway},
+	{"subx440", "0", "-5E11", "5.00000000E+11", false, 9, big.ToNearestAway},
 	// subx441 subtract 0  '-5E100'     ->  '5.00000000E+100'  Rounded
-	{"subx441", "0", "-5E100", "5.00000000E+100", 9, big.ToNearestAway},
+	{"subx441", "0", "-5E100", "5.00000000E+100", false, 9, big.ToNearestAway},
 	// try borderline precision, with carries, etc.
 	// precision: 15
 	// subx461 subtract '1E+12' '1'       -> '999999999999'
-	{"subx461", "1E+12", "1", "999999999999", 15, big.ToNearestAway},
+	{"subx461", "1E+12", "1", "999999999999", false, 15, big.ToNearestAway},
 	// subx462 subtract '1E+12' '-1.11'   -> '1000000000001.11'
-	{"subx462", "1E+12", "-1.11", "1000000000001.11", 15, big.ToNearestAway},
+	{"subx462", "1E+12", "-1.11", "1000000000001.11", false, 15, big.ToNearestAway},
 	// subx463 subtract '1.11'  '-1E+12'  -> '1000000000001.11'
-	{"subx463", "1.11", "-1E+12", "1000000000001.11", 15, big.ToNearestAway},
+	{"subx463", "1.11", "-1E+12", "1000000000001.11", false, 15, big.ToNearestAway},
 	// subx464 subtract '-1'    '-1E+12'  -> '999999999999'
-	{"subx464", "-1", "-1E+12", "999999999999", 15, big.ToNearestAway},
+	{"subx464", "-1", "-1E+12", "999999999999", false, 15, big.ToNearestAway},
 	// subx465 subtract '7E+12' '1'       -> '6999999999999'
-	{"subx465", "7E+12", "1", "6999999999999", 15, big.ToNearestAway},
+	{"subx465", "7E+12", "1", "6999999999999", false, 15, big.ToNearestAway},
 	// subx466 subtract '7E+12' '-1.11'   -> '7000000000001.11'
-	{"subx466", "7E+12", "-1.11", "7000000000001.11", 15, big.ToNearestAway},
+	{"subx466", "7E+12", "-1.11", "7000000000001.11", false, 15, big.ToNearestAway},
 	// subx467 subtract '1.11'  '-7E+12'  -> '7000000000001.11'
-	{"subx467", "1.11", "-7E+12", "7000000000001.11", 15, big.ToNearestAway},
+	{"subx467", "1.11", "-7E+12", "7000000000001.11", false, 15, big.ToNearestAway},
 	// subx468 subtract '-1'    '-7E+12'  -> '6999999999999'
-	{"subx468", "-1", "-7E+12", "6999999999999", 15, big.ToNearestAway},
+	{"subx468", "-1", "-7E+12", "6999999999999", false, 15, big.ToNearestAway},
 	//                 123456789012345       123456789012345      1 23456789012345
 	// subx470 subtract '0.444444444444444'  '-0.555555555555563' -> '1.00000000000001' Inexact Rounded
-	{"subx470", "0.444444444444444", "-0.555555555555563", "1.00000000000001", 15, big.ToNearestAway},
+	{"subx470", "0.444444444444444", "-0.555555555555563", "1.00000000000001", true, 15, big.ToNearestAway},
 	// subx471 subtract '0.444444444444444'  '-0.555555555555562' -> '1.00000000000001' Inexact Rounded
-	{"subx471", "0.444444444444444", "-0.555555555555562", "1.00000000000001", 15, big.ToNearestAway},
+	{"subx471", "0.444444444444444", "-0.555555555555562", "1.00000000000001", true, 15, big.ToNearestAway},
 	// subx472 subtract '0.444444444444444'  '-0.555555555555561' -> '1.00000000000001' Inexact Rounded
-	{"subx472", "0.444444444444444", "-0.555555555555561", "1.00000000000001", 15, big.ToNearestAway},
+	{"subx472", "0.444444444444444", "-0.555555555555561", "1.00000000000001", true, 15, big.ToNearestAway},
 	// subx473 subtract '0.444444444444444'  '-0.555555555555560' -> '1.00000000000000' Inexact Rounded
-	{"subx473", "0.444444444444444", "-0.555555555555560", "1.00000000000000", 15, big.ToNearestAway},
+	{"subx473", "0.444444444444444", "-0.555555555555560", "1.00000000000000", true, 15, big.ToNearestAway},
 	// subx474 subtract '0.444444444444444'  '-0.555555555555559' -> '1.00000000000000' Inexact Rounded
-	{"subx474", "0.444444444444444", "-0.555555555555559", "1.00000000000000", 15, big.ToNearestAway},
+	{"subx474", "0.444444444444444", "-0.555555555555559", "1.00000000000000", true, 15, big.ToNearestAway},
 	// subx475 subtract '0.444444444444444'  '-0.555555555555558' -> '1.00000000000000' Inexact Rounded
-	{"subx475", "0.444444444444444", "-0.555555555555558", "1.00000000000000", 15, big.ToNearestAway},
+	{"subx475", "0.444444444444444", "-0.555555555555558", "1.00000000000000", true, 15, big.ToNearestAway},
 	// subx476 subtract '0.444444444444444'  '-0.555555555555557' -> '1.00000000000000' Inexact Rounded
-	{"subx476", "0.444444444444444", "-0.555555555555557", "1.00000000000000", 15, big.ToNearestAway},
+	{"subx476", "0.444444444444444", "-0.555555555555557", "1.00000000000000", true, 15, big.ToNearestAway},
 	// subx477 subtract '0.444444444444444'  '-0.555555555555556' -> '1.00000000000000' Rounded
-	{"subx477", "0.444444444444444", "-0.555555555555556", "1.00000000000000", 15, big.ToNearestAway},
+	{"subx477", "0.444444444444444", "-0.555555555555556", "1.00000000000000", false, 15, big.ToNearestAway},
 	// subx478 subtract '0.444444444444444'  '-0.555555555555555' -> '0.999999999999999'
-	{"subx478", "0.444444444444444", "-0.555555555555555", "0.999999999999999", 15, big.ToNearestAway},
+	{"subx478", "0.444444444444444", "-0.555555555555555", "0.999999999999999", false, 15, big.ToNearestAway},
 	// subx479 subtract '0.444444444444444'  '-0.555555555555554' -> '0.999999999999998'
-	{"subx479", "0.444444444444444", "-0.555555555555554", "0.999999999999998", 15, big.ToNearestAway},
+	{"subx479", "0.444444444444444", "-0.555555555555554", "0.999999999999998", false, 15, big.ToNearestAway},
 	// subx480 subtract '0.444444444444444'  '-0.555555555555553' -> '0.999999999999997'
-	{"subx480", "0.444444444444444", "-0.555555555555553", "0.999999999999997", 15, big.ToNearestAway},
+	{"subx480", "0.444444444444444", "-0.555555555555553", "0.999999999999997", false, 15, big.ToNearestAway},
 	// subx481 subtract '0.444444444444444'  '-0.555555555555552' -> '0.999999999999996'
-	{"subx481", "0.444444444444444", "-0.555555555555552", "0.999999999999996", 15, big.ToNearestAway},
+	{"subx481", "0.444444444444444", "-0.555555555555552", "0.999999999999996", false, 15, big.ToNearestAway},
 	// subx482 subtract '0.444444444444444'  '-0.555555555555551' -> '0.999999999999995'
-	{"subx482", "0.444444444444444", "-0.555555555555551", "0.999999999999995", 15, big.ToNearestAway},
+	{"subx482", "0.444444444444444", "-0.555555555555551", "0.999999999999995", false, 15, big.ToNearestAway},
 	// subx483 subtract '0.444444444444444'  '-0.555555555555550' -> '0.999999999999994'
-	{"subx483", "0.444444444444444", "-0.555555555555550", "0.999999999999994", 15, big.ToNearestAway},
+	{"subx483", "0.444444444444444", "-0.555555555555550", "0.999999999999994", false, 15, big.ToNearestAway},
 	// and some more, including residue effects and different roundings
 	// precision: 9
 	// rounding: half_up
 	// subx500 subtract '123456789' 0             -> '123456789'
-	{"subx500", "123456789", "0", "123456789", 9, big.ToNearestAway},
+	{"subx500", "123456789", "0", "123456789", false, 9, big.ToNearestAway},
 	// subx501 subtract '123456789' 0.000000001   -> '123456789' Inexact Rounded
-	{"subx501", "123456789", "0.000000001", "123456789", 9, big.ToNearestAway},
+	{"subx501", "123456789", "0.000000001", "123456789", true, 9, big.ToNearestAway},
 	// subx502 subtract '123456789' 0.000001      -> '123456789' Inexact Rounded
-	{"subx502", "123456789", "0.000001", "123456789", 9, big.ToNearestAway},
+	{"subx502", "123456789", "0.000001", "123456789", true, 9, big.ToNearestAway},
 	// subx503 subtract '123456789' 0.1           -> '123456789' Inexact Rounded
-	{"subx503", "123456789", "0.1", "123456789", 9, big.ToNearestAway},
+	{"subx503", "123456789", "0.1", "123456789", true, 9, big.ToNearestAway},
 	// subx504 subtract '123456789' 0.4           -> '123456789' Inexact Rounded
-	{"subx504", "123456789", "0.4", "123456789", 9, big.ToNearestAway},
+	{"subx504", "123456789", "0.4", "123456789", true, 9, big.ToNearestAway},
 	// subx505 subtract '123456789' 0.49          -> '123456789' Inexact Rounded
-	{"subx505", "123456789", "0.49", "123456789", 9, big.ToNearestAway},
+	{"subx505", "123456789", "0.49", "123456789", true, 9, big.ToNearestAway},
 	// subx506 subtract '123456789' 0.499999      -> '123456789' Inexact Rounded
-	{"subx506", "123456789", "0.499999", "123456789", 9, big.ToNearestAway},
+	{"subx506", "123456789", "0.499999", "123456789", true, 9, big.ToNearestAway},
 	// subx507 subtract '123456789' 0.499999999   -> '123456789' Inexact Rounded
-	{"subx507", "123456789", "0.499999999", "123456789", 9, big.ToNearestAway},
+	{"subx507", "123456789", "0.499999999", "123456789", true, 9, big.ToNearestAway},
 	// subx508 subtract '123456789' 0.5           -> '123456789' Inexact Rounded
-	{"subx508", "123456789", "0.5", "123456789", 9, big.ToNearestAway},
+	{"subx508", "123456789", "0.5", "123456789", true, 9, big.ToNearestAway},
 	// subx509 subtract '123456789' 0.500000001   -> '123456788' Inexact Rounded
-	{"subx509", "123456789", "0.500000001", "123456788", 9, big.ToNearestAway},
+	{"subx509", "123456789", "0.500000001", "123456788", true, 9, big.ToNearestAway},
 	// subx510 subtract '123456789' 0.500001      -> '123456788' Inexact Rounded
-	{"subx510", "123456789", "0.500001", "123456788", 9, big.ToNearestAway},
+	{"subx510", "123456789", "0.500001", "123456788", true, 9, big.ToNearestAway},
 	// subx511 subtract '123456789' 0.51          -> '123456788' Inexact Rounded
-	{"subx511", "123456789", "0.51", "123456788", 9, big.ToNearestAway},
+	{"subx511", "123456789", "0.51", "123456788", true, 9, big.ToNearestAway},
 	// subx512 subtract '123456789' 0.6           -> '123456788' Inexact Rounded
-	{"subx512", "123456789", "0.6", "123456788", 9, big.ToNearestAway},
+	{"subx512", "123456789", "0.6", "123456788", true, 9, big.ToNearestAway},
 	// subx513 subtract '123456789' 0.9           -> '123456788' Inexact Rounded
-	{"subx513", "123456789", "0.9", "123456788", 9, big.ToNearestAway},
+	{"subx513", "123456789", "0.9", "123456788", true, 9, big.ToNearestAway},
 	// subx514 subtract '123456789' 0.99999       -> '123456788' Inexact Rounded
-	{"subx514", "123456789", "0.99999", "123456788", 9, big.ToNearestAway},
+	{"subx514", "123456789", "0.99999", "123456788", true, 9, big.ToNearestAway},
 	// subx515 subtract '123456789' 0.999999999   -> '123456788' Inexact Rounded
-	{"subx515", "123456789", "0.999999999", "123456788", 9, big.ToNearestAway},
+	{"subx515", "123456789", "0.999999999", "123456788", true, 9, big.ToNearestAway},
 	// subx516 subtract '123456789' 1             -> '123456788'
-	{"subx516", "123456789", "1", "123456788", 9, big.ToNearestAway},
+	{"subx516", "123456789", "1", "123456788", false, 9, big.ToNearestAway},
 	// subx517 subtract '123456789' 1.000000001   -> '123456788' Inexact Rounded
-	{"subx517", "123456789", "1.000000001", "123456788", 9, big.ToNearestAway},
+	{"subx517", "123456789", "1.000000001", "123456788", true, 9, big.ToNearestAway},
 	// subx518 subtract '123456789' 1.00001       -> '123456788' Inexact Rounded
-	{"subx518", "123456789", "1.00001", "123456788", 9, big.ToNearestAway},
+	{"subx518", "123456789", "1.00001", "123456788", true, 9, big.ToNearestAway},
 	// subx519 subtract '123456789' 1.1           -> '123456788' Inexact Rounded
-	{"subx519", "123456789", "1.1", "123456788", 9, big.ToNearestAway},
+	{"subx519", "123456789", "1.1", "123456788", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// subx520 subtract '123456789' 0             -> '123456789'
-	{"subx520", "123456789", "0", "123456789", 9, big.ToNearestEven},
+	{"subx520", "123456789", "0", "123456789", false, 9, big.ToNearestEven},
 	// subx521 subtract '123456789' 0.000000001   -> '123456789' Inexact Rounded
-	{"subx521", "123456789", "0.000000001", "123456789", 9, big.ToNearestEven},
+	{"subx521", "123456789", "0.000000001", "123456789", true, 9, big.ToNearestEven},
 	// subx522 subtract '123456789' 0.000001      -> '123456789' Inexact Rounded
-	{"subx522", "123456789", "0.000001", "123456789", 9, big.ToNearestEven},
+	{"subx522", "123456789", "0.000001", "123456789", true, 9, big.ToNearestEven},
 	// subx523 subtract '123456789' 0.1           -> '123456789' Inexact Rounded
-	{"subx523", "123456789", "0.1", "123456789", 9, big.ToNearestEven},
+	{"subx523", "123456789", "0.1", "123456789", true, 9, big.ToNearestEven},
 	// subx524 subtract '123456789' 0.4           -> '123456789' Inexact Rounded
-	{"subx524", "123456789", "0.4", "123456789", 9, big.ToNearestEven},
+	{"subx524", "123456789", "0.4", "123456789", true, 9, big.ToNearestEven},
 	// subx525 subtract '123456789' 0.49          -> '123456789' Inexact Rounded
-	{"subx525", "123456789", "0.49", "123456789", 9, big.ToNearestEven},
+	{"subx525", "123456789", "0.49", "123456789", true, 9, big.ToNearestEven},
 	// subx526 subtract '123456789' 0.499999      -> '123456789' Inexact Rounded
-	{"subx526", "123456789", "0.499999", "123456789", 9, big.ToNearestEven},
+	{"subx526", "123456789", "0.499999", "123456789", true, 9, big.ToNearestEven},
 	// subx527 subtract '123456789' 0.499999999   -> '123456789' Inexact Rounded
-	{"subx527", "123456789", "0.499999999", "123456789", 9, big.ToNearestEven},
+	{"subx527", "123456789", "0.499999999", "123456789", true, 9, big.ToNearestEven},
 	// subx528 subtract '123456789' 0.5           -> '123456788' Inexact Rounded
-	{"subx528", "123456789", "0.5", "123456788", 9, big.ToNearestEven},
+	{"subx528", "123456789", "0.5", "123456788", true, 9, big.ToNearestEven},
 	// subx529 subtract '123456789' 0.500000001   -> '123456788' Inexact Rounded
-	{"subx529", "123456789", "0.500000001", "123456788", 9, big.ToNearestEven},
+	{"subx529", "123456789", "0.500000001", "123456788", true, 9, big.ToNearestEven},
 	// subx530 subtract '123456789' 0.500001      -> '123456788' Inexact Rounded
-	{"subx530", "123456789", "0.500001", "123456788", 9, big.ToNearestEven},
+	{"subx530", "123456789", "0.500001", "123456788", true, 9, big.ToNearestEven},
 	// subx531 subtract '123456789' 0.51          -> '123456788' Inexact Rounded
-	{"subx531", "123456789", "0.51", "123456788", 9, big.ToNearestEven},
+	{"subx531", "123456789", "0.51", "123456788", true, 9, big.ToNearestEven},
 	// subx532 subtract '123456789' 0.6           -> '123456788' Inexact Rounded
-	{"subx532", "123456789", "0.6", "123456788", 9, big.ToNearestEven},
+	{"subx532", "123456789", "0.6", "123456788", true, 9, big.ToNearestEven},
 	// subx533 subtract '123456789' 0.9           -> '123456788' Inexact Rounded
-	{"subx533", "123456789", "0.9", "123456788", 9, big.ToNearestEven},
+	{"subx533", "123456789", "0.9", "123456788", true, 9, big.ToNearestEven},
 	// subx534 subtract '123456789' 0.99999       -> '123456788' Inexact Rounded
-	{"subx534", "123456789", "0.99999", "123456788", 9, big.ToNearestEven},
+	{"subx534", "123456789", "0.99999", "123456788", true, 9, big.ToNearestEven},
 	// subx535 subtract '123456789' 0.999999999   -> '123456788' Inexact Rounded
-	{"subx535", "123456789", "0.999999999", "123456788", 9, big.ToNearestEven},
+	{"subx535", "123456789", "0.999999999", "123456788", true, 9, big.ToNearestEven},
 	// subx536 subtract '123456789' 1             -> '123456788'
-	{"subx536", "123456789", "1", "123456788", 9, big.ToNearestEven},
+	{"subx536", "123456789", "1", "123456788", false, 9, big.ToNearestEven},
 	// subx537 subtract '123456789' 1.00000001    -> '123456788' Inexact Rounded
-	{"subx537", "123456789", "1.00000001", "123456788", 9, big.ToNearestEven},
+	{"subx537", "123456789", "1.00000001", "123456788", true, 9, big.ToNearestEven},
 	// subx538 subtract '123456789' 1.00001       -> '123456788' Inexact Rounded
-	{"subx538", "123456789", "1.00001", "123456788", 9, big.ToNearestEven},
+	{"subx538", "123456789", "1.00001", "123456788", true, 9, big.ToNearestEven},
 	// subx539 subtract '123456789' 1.1           -> '123456788' Inexact Rounded
-	{"subx539", "123456789", "1.1", "123456788", 9, big.ToNearestEven},
+	{"subx539", "123456789", "1.1", "123456788", true, 9, big.ToNearestEven},
 	// critical few with even bottom digit...
 	// subx540 subtract '123456788' 0.499999999   -> '123456788' Inexact Rounded
-	{"subx540", "123456788", "0.499999999", "123456788", 9, big.ToNearestEven},
+	{"subx540", "123456788", "0.499999999", "123456788", true, 9, big.ToNearestEven},
 	// subx541 subtract '123456788' 0.5           -> '123456788' Inexact Rounded
-	{"subx541", "123456788", "0.5", "123456788", 9, big.ToNearestEven},
+	{"subx541", "123456788", "0.5", "123456788", true, 9, big.ToNearestEven},
 	// subx542 subtract '123456788' 0.500000001   -> '123456787' Inexact Rounded
-	{"subx542", "123456788", "0.500000001", "123456787", 9, big.ToNearestEven},
+	{"subx542", "123456788", "0.500000001", "123456787", true, 9, big.ToNearestEven},
 	// rounding: down
 	// subx550 subtract '123456789' 0             -> '123456789'
-	{"subx550", "123456789", "0", "123456789", 9, big.ToZero},
+	{"subx550", "123456789", "0", "123456789", false, 9, big.ToZero},
 	// subx551 subtract '123456789' 0.000000001   -> '123456788' Inexact Rounded
-	{"subx551", "123456789", "0.000000001", "123456788", 9, big.ToZero},
+	{"subx551", "123456789", "0.000000001", "123456788", true, 9, big.ToZero},
 	// subx552 subtract '123456789' 0.000001      -> '123456788' Inexact Rounded
-	{"subx552", "123456789", "0.000001", "123456788", 9, big.ToZero},
+	{"subx552", "123456789", "0.000001", "123456788", true, 9, big.ToZero},
 	// subx553 subtract '123456789' 0.1           -> '123456788' Inexact Rounded
-	{"subx553", "123456789", "0.1", "123456788", 9, big.ToZero},
+	{"subx553", "123456789", "0.1", "123456788", true, 9, big.ToZero},
 	// subx554 subtract '123456789' 0.4           -> '123456788' Inexact Rounded
-	{"subx554", "123456789", "0.4", "123456788", 9, big.ToZero},
+	{"subx554", "123456789", "0.4", "123456788", true, 9, big.ToZero},
 	// subx555 subtract '123456789' 0.49          -> '123456788' Inexact Rounded
-	{"subx555", "123456789", "0.49", "123456788", 9, big.ToZero},
+	{"subx555", "123456789", "0.49", "123456788", true, 9, big.ToZero},
 	// subx556 subtract '123456789' 0.499999      -> '123456788' Inexact Rounded
-	{"subx556", "123456789", "0.499999", "123456788", 9, big.ToZero},
+	{"subx556", "123456789", "0.499999", "123456788", true, 9, big.ToZero},
 	// subx557 subtract '123456789' 0.499999999   -> '123456788' Inexact Rounded
-	{"subx557", "123456789", "0.499999999", "123456788", 9, big.ToZero},
+	{"subx557", "123456789", "0.499999999", "123456788", true, 9, big.ToZero},
 	// subx558 subtract '123456789' 0.5           -> '123456788' Inexact Rounded
-	{"subx558", "123456789", "0.5", "123456788", 9, big.ToZero},
+	{"subx558", "123456789", "0.5", "123456788", true, 9, big.ToZero},
 	// subx559 subtract '123456789' 0.500000001   -> '123456788' Inexact Rounded
-	{"subx559", "123456789", "0.500000001", "123456788", 9, big.ToZero},
+	{"subx559", "123456789", "0.500000001", "123456788", true, 9, big.ToZero},
 	// subx560 subtract '123456789' 0.500001      -> '123456788' Inexact Rounded
-	{"subx560", "123456789", "0.500001", "123456788", 9, big.ToZero},
+	{"subx560", "123456789", "0.500001", "123456788", true, 9, big.ToZero},
 	// subx561 subtract '123456789' 0.51          -> '123456788' Inexact Rounded
-	{"subx561", "123456789", "0.51", "123456788", 9, big.ToZero},
+	{"subx561", "123456789", "0.51", "123456788", true, 9, big.ToZero},
 	// subx562 subtract '123456789' 0.6           -> '123456788' Inexact Rounded
-	{"subx562", "123456789", "0.6", "123456788", 9, big.ToZero},
+	{"subx562", "123456789", "0.6", "123456788", true, 9, big.ToZero},
 	// subx563 subtract '123456789' 0.9           -> '123456788' Inexact Rounded
-	{"subx563", "123456789", "0.9", "123456788", 9, big.ToZero},
+	{"subx563", "123456789", "0.9", "123456788", true, 9, big.ToZero},
 	// subx564 subtract '123456789' 0.99999       -> '123456788' Inexact Rounded
-	{"subx564", "123456789", "0.99999", "123456788", 9, big.ToZero},
+	{"subx564", "123456789", "0.99999", "123456788", true, 9, big.ToZero},
 	// subx565 subtract '123456789' 0.999999999   -> '123456788' Inexact Rounded
-	{"subx565", "123456789", "0.999999999", "123456788", 9, big.ToZero},
+	{"subx565", "123456789", "0.999999999", "123456788", true, 9, big.ToZero},
 	// subx566 subtract '123456789' 1             -> '123456788'
-	{"subx566", "123456789", "1", "123456788", 9, big.ToZero},
+	{"subx566", "123456789", "1", "123456788", false, 9, big.ToZero},
 	// subx567 subtract '123456789' 1.00000001    -> '123456787' Inexact Rounded
-	{"subx567", "123456789", "1.00000001", "123456787", 9, big.ToZero},
+	{"subx567", "123456789", "1.00000001", "123456787", true, 9, big.ToZero},
 	// subx568 subtract '123456789' 1.00001       -> '123456787' Inexact Rounded
-	{"subx568", "123456789", "1.00001", "123456787", 9, big.ToZero},
+	{"subx568", "123456789", "1.00001", "123456787", true, 9, big.ToZero},
 	// subx569 subtract '123456789' 1.1           -> '123456787' Inexact Rounded
-	{"subx569", "123456789", "1.1", "123456787", 9, big.ToZero},
+	{"subx569", "123456789", "1.1", "123456787", true, 9, big.ToZero},
 	// symmetry...
 	// rounding: half_up
 	// subx600 subtract 0             '123456789' -> '-123456789'
-	{"subx600", "0", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx600", "0", "123456789", "-123456789", false, 9, big.ToNearestAway},
 	// subx601 subtract 0.000000001   '123456789' -> '-123456789' Inexact Rounded
-	{"subx601", "0.000000001", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx601", "0.000000001", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx602 subtract 0.000001      '123456789' -> '-123456789' Inexact Rounded
-	{"subx602", "0.000001", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx602", "0.000001", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx603 subtract 0.1           '123456789' -> '-123456789' Inexact Rounded
-	{"subx603", "0.1", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx603", "0.1", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx604 subtract 0.4           '123456789' -> '-123456789' Inexact Rounded
-	{"subx604", "0.4", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx604", "0.4", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx605 subtract 0.49          '123456789' -> '-123456789' Inexact Rounded
-	{"subx605", "0.49", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx605", "0.49", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx606 subtract 0.499999      '123456789' -> '-123456789' Inexact Rounded
-	{"subx606", "0.499999", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx606", "0.499999", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx607 subtract 0.499999999   '123456789' -> '-123456789' Inexact Rounded
-	{"subx607", "0.499999999", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx607", "0.499999999", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx608 subtract 0.5           '123456789' -> '-123456789' Inexact Rounded
-	{"subx608", "0.5", "123456789", "-123456789", 9, big.ToNearestAway},
+	{"subx608", "0.5", "123456789", "-123456789", true, 9, big.ToNearestAway},
 	// subx609 subtract 0.500000001   '123456789' -> '-123456788' Inexact Rounded
-	{"subx609", "0.500000001", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx609", "0.500000001", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx610 subtract 0.500001      '123456789' -> '-123456788' Inexact Rounded
-	{"subx610", "0.500001", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx610", "0.500001", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx611 subtract 0.51          '123456789' -> '-123456788' Inexact Rounded
-	{"subx611", "0.51", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx611", "0.51", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx612 subtract 0.6           '123456789' -> '-123456788' Inexact Rounded
-	{"subx612", "0.6", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx612", "0.6", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx613 subtract 0.9           '123456789' -> '-123456788' Inexact Rounded
-	{"subx613", "0.9", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx613", "0.9", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx614 subtract 0.99999       '123456789' -> '-123456788' Inexact Rounded
-	{"subx614", "0.99999", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx614", "0.99999", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx615 subtract 0.999999999   '123456789' -> '-123456788' Inexact Rounded
-	{"subx615", "0.999999999", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx615", "0.999999999", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx616 subtract 1             '123456789' -> '-123456788'
-	{"subx616", "1", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx616", "1", "123456789", "-123456788", false, 9, big.ToNearestAway},
 	// subx617 subtract 1.000000001   '123456789' -> '-123456788' Inexact Rounded
-	{"subx617", "1.000000001", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx617", "1.000000001", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx618 subtract 1.00001       '123456789' -> '-123456788' Inexact Rounded
-	{"subx618", "1.00001", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx618", "1.00001", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// subx619 subtract 1.1           '123456789' -> '-123456788' Inexact Rounded
-	{"subx619", "1.1", "123456789", "-123456788", 9, big.ToNearestAway},
+	{"subx619", "1.1", "123456789", "-123456788", true, 9, big.ToNearestAway},
 	// rounding: half_even
 	// subx620 subtract 0             '123456789' -> '-123456789'
-	{"subx620", "0", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx620", "0", "123456789", "-123456789", false, 9, big.ToNearestEven},
 	// subx621 subtract 0.000000001   '123456789' -> '-123456789' Inexact Rounded
-	{"subx621", "0.000000001", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx621", "0.000000001", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx622 subtract 0.000001      '123456789' -> '-123456789' Inexact Rounded
-	{"subx622", "0.000001", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx622", "0.000001", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx623 subtract 0.1           '123456789' -> '-123456789' Inexact Rounded
-	{"subx623", "0.1", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx623", "0.1", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx624 subtract 0.4           '123456789' -> '-123456789' Inexact Rounded
-	{"subx624", "0.4", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx624", "0.4", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx625 subtract 0.49          '123456789' -> '-123456789' Inexact Rounded
-	{"subx625", "0.49", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx625", "0.49", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx626 subtract 0.499999      '123456789' -> '-123456789' Inexact Rounded
-	{"subx626", "0.499999", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx626", "0.499999", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx627 subtract 0.499999999   '123456789' -> '-123456789' Inexact Rounded
-	{"subx627", "0.499999999", "123456789", "-123456789", 9, big.ToNearestEven},
+	{"subx627", "0.499999999", "123456789", "-123456789", true, 9, big.ToNearestEven},
 	// subx628 subtract 0.5           '123456789' -> '-123456788' Inexact Rounded
-	{"subx628", "0.5", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx628", "0.5", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx629 subtract 0.500000001   '123456789' -> '-123456788' Inexact Rounded
-	{"subx629", "0.500000001", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx629", "0.500000001", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx630 subtract 0.500001      '123456789' -> '-123456788' Inexact Rounded
-	{"subx630", "0.500001", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx630", "0.500001", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx631 subtract 0.51          '123456789' -> '-123456788' Inexact Rounded
-	{"subx631", "0.51", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx631", "0.51", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx632 subtract 0.6           '123456789' -> '-123456788' Inexact Rounded
-	{"subx632", "0.6", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx632", "0.6", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx633 subtract 0.9           '123456789' -> '-123456788' Inexact Rounded
-	{"subx633", "0.9", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx633", "0.9", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx634 subtract 0.99999       '123456789' -> '-123456788' Inexact Rounded
-	{"subx634", "0.99999", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx634", "0.99999", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx635 subtract 0.999999999   '123456789' -> '-123456788' Inexact Rounded
-	{"subx635", "0.999999999", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx635", "0.999999999", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx636 subtract 1             '123456789' -> '-123456788'
-	{"subx636", "1", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx636", "1", "123456789", "-123456788", false, 9, big.ToNearestEven},
 	// subx637 subtract 1.00000001    '123456789' -> '-123456788' Inexact Rounded
-	{"subx637", "1.00000001", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx637", "1.00000001", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx638 subtract 1.00001       '123456789' -> '-123456788' Inexact Rounded
-	{"subx638", "1.00001", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx638", "1.00001", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// subx639 subtract 1.1           '123456789' -> '-123456788' Inexact Rounded
-	{"subx639", "1.1", "123456789", "-123456788", 9, big.ToNearestEven},
+	{"subx639", "1.1", "123456789", "-123456788", true, 9, big.ToNearestEven},
 	// critical few with even bottom digit...
 	// subx640 subtract 0.499999999   '123456788' -> '-123456788' Inexact Rounded
-	{"subx640", "0.499999999", "123456788", "-123456788", 9, big.ToNearestEven},
+	{"subx640", "0.499999999", "123456788", "-123456788", true, 9, big.ToNearestEven},
 	// subx641 subtract 0.5           '123456788' -> '-123456788' Inexact Rounded
-	{"subx641", "0.5", "123456788", "-123456788", 9, big.ToNearestEven},
+	{"subx641", "0.5", "123456788", "-123456788", true, 9, big.ToNearestEven},
 	// subx642 subtract 0.500000001   '123456788' -> '-123456787' Inexact Rounded
-	{"subx642", "0.500000001", "123456788", "-123456787", 9, big.ToNearestEven},
+	{"subx642", "0.500000001", "123456788", "-123456787", true, 9, big.ToNearestEven},
 	// rounding: down
 	// subx650 subtract 0             '123456789' -> '-123456789'
-	{"subx650", "0", "123456789", "-123456789", 9, big.ToZero},
+	{"subx650", "0", "123456789", "-123456789", false, 9, big.ToZero},
 	// subx651 subtract 0.000000001   '123456789' -> '-123456788' Inexact Rounded
-	{"subx651", "0.000000001", "123456789", "-123456788", 9, big.ToZero},
+	{"subx651", "0.000000001", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx652 subtract 0.000001      '123456789' -> '-123456788' Inexact Rounded
-	{"subx652", "0.000001", "123456789", "-123456788", 9, big.ToZero},
+	{"subx652", "0.000001", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx653 subtract 0.1           '123456789' -> '-123456788' Inexact Rounded
-	{"subx653", "0.1", "123456789", "-123456788", 9, big.ToZero},
+	{"subx653", "0.1", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx654 subtract 0.4           '123456789' -> '-123456788' Inexact Rounded
-	{"subx654", "0.4", "123456789", "-123456788", 9, big.ToZero},
+	{"subx654", "0.4", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx655 subtract 0.49          '123456789' -> '-123456788' Inexact Rounded
-	{"subx655", "0.49", "123456789", "-123456788", 9, big.ToZero},
+	{"subx655", "0.49", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx656 subtract 0.499999      '123456789' -> '-123456788' Inexact Rounded
-	{"subx656", "0.499999", "123456789", "-123456788", 9, big.ToZero},
+	{"subx656", "0.499999", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx657 subtract 0.499999999   '123456789' -> '-123456788' Inexact Rounded
-	{"subx657", "0.499999999", "123456789", "-123456788", 9, big.ToZero},
+	{"subx657", "0.499999999", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx658 subtract 0.5           '123456789' -> '-123456788' Inexact Rounded
-	{"subx658", "0.5", "123456789", "-123456788", 9, big.ToZero},
+	{"subx658", "0.5", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx659 subtract 0.500000001   '123456789' -> '-123456788' Inexact Rounded
-	{"subx659", "0.500000001", "123456789", "-123456788", 9, big.ToZero},
+	{"subx659", "0.500000001", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx660 subtract 0.500001      '123456789' -> '-123456788' Inexact Rounded
-	{"subx660", "0.500001", "123456789", "-123456788", 9, big.ToZero},
+	{"subx660", "0.500001", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx661 subtract 0.51          '123456789' -> '-123456788' Inexact Rounded
-	{"subx661", "0.51", "123456789", "-123456788", 9, big.ToZero},
+	{"subx661", "0.51", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx662 subtract 0.6           '123456789' -> '-123456788' Inexact Rounded
-	{"subx662", "0.6", "123456789", "-123456788", 9, big.ToZero},
+	{"subx662", "0.6", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx663 subtract 0.9           '123456789' -> '-123456788' Inexact Rounded
-	{"subx663", "0.9", "123456789", "-123456788", 9, big.ToZero},
+	{"subx663", "0.9", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx664 subtract 0.99999       '123456789' -> '-123456788' Inexact Rounded
-	{"subx664", "0.99999", "123456789", "-123456788", 9, big.ToZero},
+	{"subx664", "0.99999", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx665 subtract 0.999999999   '123456789' -> '-123456788' Inexact Rounded
-	{"subx665", "0.999999999", "123456789", "-123456788", 9, big.ToZero},
+	{"subx665", "0.999999999", "123456789", "-123456788", true, 9, big.ToZero},
 	// subx666 subtract 1             '123456789' -> '-123456788'
-	{"subx666", "1", "123456789", "-123456788", 9, big.ToZero},
+	{"subx666", "1", "123456789", "-123456788", false, 9, big.ToZero},
 	// subx667 subtract 1.00000001    '123456789' -> '-123456787' Inexact Rounded
-	{"subx667", "1.00000001", "123456789", "-123456787", 9, big.ToZero},
+	{"subx667", "1.00000001", "123456789", "-123456787", true, 9, big.ToZero},
 	// subx668 subtract 1.00001       '123456789' -> '-123456787' Inexact Rounded
-	{"subx668", "1.00001", "123456789", "-123456787", 9, big.ToZero},
+	{"subx668", "1.00001", "123456789", "-123456787", true, 9, big.ToZero},
 	// subx669 subtract 1.1           '123456789' -> '-123456787' Inexact Rounded
-	{"subx669", "1.1", "123456789", "-123456787", 9, big.ToZero},
+	{"subx669", "1.1", "123456789", "-123456787", true, 9, big.ToZero},
 	// lots of leading zeros in intermediate result, and showing effects of
 	// input rounding would have affected the following
 	// precision: 9
 	// rounding: half_up
 	// subx670 subtract '123456789' '123456788.1' -> 0.9
-	{"subx670", "123456789", "123456788.1", "0.9", 9, big.ToNearestAway},
+	{"subx670", "123456789", "123456788.1", "0.9", false, 9, big.ToNearestAway},
 	// subx671 subtract '123456789' '123456788.9' -> 0.1
-	{"subx671", "123456789", "123456788.9", "0.1", 9, big.ToNearestAway},
+	{"subx671", "123456789", "123456788.9", "0.1", false, 9, big.ToNearestAway},
 	// subx672 subtract '123456789' '123456789.1' -> -0.1
-	{"subx672", "123456789", "123456789.1", "-0.1", 9, big.ToNearestAway},
+	{"subx672", "123456789", "123456789.1", "-0.1", false, 9, big.ToNearestAway},
 	// subx673 subtract '123456789' '123456789.5' -> -0.5
-	{"subx673", "123456789", "123456789.5", "-0.5", 9, big.ToNearestAway},
+	{"subx673", "123456789", "123456789.5", "-0.5", false, 9, big.ToNearestAway},
 	// subx674 subtract '123456789' '123456789.9' -> -0.9
-	{"subx674", "123456789", "123456789.9", "-0.9", 9, big.ToNearestAway},
+	{"subx674", "123456789", "123456789.9", "-0.9", false, 9, big.ToNearestAway},
 	// rounding: half_even
 	// subx680 subtract '123456789' '123456788.1' -> 0.9
-	{"subx680", "123456789", "123456788.1", "0.9", 9, big.ToNearestEven},
+	{"subx680", "123456789", "123456788.1", "0.9", false, 9, big.ToNearestEven},
 	// subx681 subtract '123456789' '123456788.9' -> 0.1
-	{"subx681", "123456789", "123456788.9", "0.1", 9, big.ToNearestEven},
+	{"subx681", "123456789", "123456788.9", "0.1", false, 9, big.ToNearestEven},
 	// subx682 subtract '123456789' '123456789.1' -> -0.1
-	{"subx682", "123456789", "123456789.1", "-0.1", 9, big.ToNearestEven},
+	{"subx682", "123456789", "123456789.1", "-0.1", false, 9, big.ToNearestEven},
 	// subx683 subtract '123456789' '123456789.5' -> -0.5
-	{"subx683", "123456789", "123456789.5", "-0.5", 9, big.ToNearestEven},
+	{"subx683", "123456789", "123456789.5", "-0.5", false, 9, big.ToNearestEven},
 	// subx684 subtract '123456789' '123456789.9' -> -0.9
-	{"subx684", "123456789", "123456789.9", "-0.9", 9, big.ToNearestEven},
+	{"subx684", "123456789", "123456789.9", "-0.9", false, 9, big.ToNearestEven},
 	// subx685 subtract '123456788' '123456787.1' -> 0.9
-	{"subx685", "123456788", "123456787.1", "0.9", 9, big.ToNearestEven},
+	{"subx685", "123456788", "123456787.1", "0.9", false, 9, big.ToNearestEven},
 	// subx686 subtract '123456788' '123456787.9' -> 0.1
-	{"subx686", "123456788", "123456787.9", "0.1", 9, big.ToNearestEven},
+	{"subx686", "123456788", "123456787.9", "0.1", false, 9, big.ToNearestEven},
 	// subx687 subtract '123456788' '123456788.1' -> -0.1
-	{"subx687", "123456788", "123456788.1", "-0.1", 9, big.ToNearestEven},
+	{"subx687", "123456788", "123456788.1", "-0.1", false, 9, big.ToNearestEven},
 	// subx688 subtract '123456788' '123456788.5' -> -0.5
-	{"subx688", "123456788", "123456788.5", "-0.5", 9, big.ToNearestEven},
+	{"subx688", "123456788", "123456788.5", "-0.5", false, 9, big.ToNearestEven},
 	// subx689 subtract '123456788' '123456788.9' -> -0.9
-	{"subx689", "123456788", "123456788.9", "-0.9", 9, big.ToNearestEven},
+	{"subx689", "123456788", "123456788.9", "-0.9", false, 9, big.ToNearestEven},
 	// rounding: down
 	// subx690 subtract '123456789' '123456788.1' -> 0.9
-	{"subx690", "123456789", "123456788.1", "0.9", 9, big.ToZero},
+	{"subx690", "123456789", "123456788.1", "0.9", false, 9, big.ToZero},
 	// subx691 subtract '123456789' '123456788.9' -> 0.1
-	{"subx691", "123456789", "123456788.9", "0.1", 9, big.ToZero},
+	{"subx691", "123456789", "123456788.9", "0.1", false, 9, big.ToZero},
 	// subx692 subtract '123456789' '123456789.1' -> -0.1
-	{"subx692", "123456789", "123456789.1", "-0.1", 9, big.ToZero},
+	{"subx692", "123456789", "123456789.1", "-0.1", false, 9, big.ToZero},
 	// subx693 subtract '123456789' '123456789.5' -> -0.5
-	{"subx693", "123456789", "123456789.5", "-0.5", 9, big.ToZero},
+	{"subx693", "123456789", "123456789.5", "-0.5", false, 9, big.ToZero},
 	// subx694 subtract '123456789' '123456789.9' -> -0.9
-	{"subx694", "123456789", "123456789.9", "-0.9", 9, big.ToZero},
+	{"subx694", "123456789", "123456789.9", "-0.9", false, 9, big.ToZero},
 	// input preparation tests
 	// rounding: half_up
 	// precision: 3
 	// subx700 subtract '12345678900000'  -9999999999999 ->  '2.23E+13' Inexact Rounded
-	{"subx700", "12345678900000", "-9999999999999", "2.23E+13", 3, big.ToNearestAway},
+	{"subx700", "12345678900000", "-9999999999999", "2.23E+13", true, 3, big.ToNearestAway},
 	// subx701 subtract  '9999999999999' -12345678900000 ->  '2.23E+13' Inexact Rounded
-	{"subx701", "9999999999999", "-12345678900000", "2.23E+13", 3, big.ToNearestAway},
+	{"subx701", "9999999999999", "-12345678900000", "2.23E+13", true, 3, big.ToNearestAway},
 	// subx702 subtract '12E+3'  '-3456' ->  '1.55E+4' Inexact Rounded
-	{"subx702", "12E+3", "-3456", "1.55E+4", 3, big.ToNearestAway},
+	{"subx702", "12E+3", "-3456", "1.55E+4", true, 3, big.ToNearestAway},
 	// subx703 subtract '12E+3'  '-3446' ->  '1.54E+4' Inexact Rounded
-	{"subx703", "12E+3", "-3446", "1.54E+4", 3, big.ToNearestAway},
+	{"subx703", "12E+3", "-3446", "1.54E+4", true, 3, big.ToNearestAway},
 	// subx704 subtract '12E+3'  '-3454' ->  '1.55E+4' Inexact Rounded
-	{"subx704", "12E+3", "-3454", "1.55E+4", 3, big.ToNearestAway},
+	{"subx704", "12E+3", "-3454", "1.55E+4", true, 3, big.ToNearestAway},
 	// subx705 subtract '12E+3'  '-3444' ->  '1.54E+4' Inexact Rounded
-	{"subx705", "12E+3", "-3444", "1.54E+4", 3, big.ToNearestAway},
+	{"subx705", "12E+3", "-3444", "1.54E+4", true, 3, big.ToNearestAway},
 	// subx706 subtract '3456'  '-12E+3' ->  '1.55E+4' Inexact Rounded
-	{"subx706", "3456", "-12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"subx706", "3456", "-12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// subx707 subtract '3446'  '-12E+3' ->  '1.54E+4' Inexact Rounded
-	{"subx707", "3446", "-12E+3", "1.54E+4", 3, big.ToNearestAway},
+	{"subx707", "3446", "-12E+3", "1.54E+4", true, 3, big.ToNearestAway},
 	// subx708 subtract '3454'  '-12E+3' ->  '1.55E+4' Inexact Rounded
-	{"subx708", "3454", "-12E+3", "1.55E+4", 3, big.ToNearestAway},
+	{"subx708", "3454", "-12E+3", "1.55E+4", true, 3, big.ToNearestAway},
 	// subx709 subtract '3444'  '-12E+3' ->  '1.54E+4' Inexact Rounded
-	{"subx709", "3444", "-12E+3", "1.54E+4", 3, big.ToNearestAway},
+	{"subx709", "3444", "-12E+3", "1.54E+4", true, 3, big.ToNearestAway},
 	// overflow and underflow tests [subnormals now possible]
 	// maxexponent: 999999999
 	// minexponent: -999999999
 	// precision: 9
 	// rounding: down
 	// subx710 subtract 1E+999999999    -9E+999999999   -> 9.99999999E+999999999 Overflow Inexact Rounded
-	{"subx710", "1E+999999999", "-9E+999999999", "9.99999999E+999999999", 9, big.ToZero},
+	{"subx710", "1E+999999999", "-9E+999999999", "9.99999999E+999999999", true, 9, big.ToZero},
 	// subx711 subtract 9E+999999999    -1E+999999999   -> 9.99999999E+999999999 Overflow Inexact Rounded
-	{"subx711", "9E+999999999", "-1E+999999999", "9.99999999E+999999999", 9, big.ToZero},
+	{"subx711", "9E+999999999", "-1E+999999999", "9.99999999E+999999999", true, 9, big.ToZero},
 	// rounding: half_up
 	// subx712 subtract 1E+999999999    -9E+999999999   -> Infinity Overflow Inexact Rounded
-	{"subx712", "1E+999999999", "-9E+999999999", "Inf", 9, big.ToNearestAway},
+	{"subx712", "1E+999999999", "-9E+999999999", "Inf", true, 9, big.ToNearestAway},
 	// subx713 subtract 9E+999999999    -1E+999999999   -> Infinity Overflow Inexact Rounded
-	{"subx713", "9E+999999999", "-1E+999999999", "Inf", 9, big.ToNearestAway},
+	{"subx713", "9E+999999999", "-1E+999999999", "Inf", true, 9, big.ToNearestAway},
 	// subx714 subtract -1.1E-999999999 -1E-999999999   -> -1E-1000000000 Subnormal
-	{"subx714", "-1.1E-999999999", "-1E-999999999", "-1E-1000000000", 9, big.ToNearestAway},
+	{"subx714", "-1.1E-999999999", "-1E-999999999", "-1E-1000000000", false, 9, big.ToNearestAway},
 	// subx715 subtract 1E-999999999    +1.1e-999999999 -> -1E-1000000000 Subnormal
-	{"subx715", "1E-999999999", "+1.1e-999999999", "-1E-1000000000", 9, big.ToNearestAway},
+	{"subx715", "1E-999999999", "+1.1e-999999999", "-1E-1000000000", false, 9, big.ToNearestAway},
 	// subx716 subtract -1E+999999999   +9E+999999999   -> -Infinity Overflow Inexact Rounded
-	{"subx716", "-1E+999999999", "+9E+999999999", "-Inf", 9, big.ToNearestAway},
+	{"subx716", "-1E+999999999", "+9E+999999999", "-Inf", true, 9, big.ToNearestAway},
 	// subx717 subtract -9E+999999999   +1E+999999999   -> -Infinity Overflow Inexact Rounded
-	{"subx717", "-9E+999999999", "+1E+999999999", "-Inf", 9, big.ToNearestAway},
+	{"subx717", "-9E+999999999", "+1E+999999999", "-Inf", true, 9, big.ToNearestAway},
 	// subx718 subtract +1.1E-999999999 +1E-999999999   -> 1E-1000000000 Subnormal
-	{"subx718", "+1.1E-999999999", "+1E-999999999", "1E-1000000000", 9, big.ToNearestAway},
+	{"subx718", "+1.1E-999999999", "+1E-999999999", "1E-1000000000", false, 9, big.ToNearestAway},
 	// subx719 subtract -1E-999999999   -1.1e-999999999 -> 1E-1000000000 Subnormal
-	{"subx719", "-1E-999999999", "-1.1e-999999999", "1E-1000000000", 9, big.ToNearestAway},
+	{"subx719", "-1E-999999999", "-1.1e-999999999", "1E-1000000000", false, 9, big.ToNearestAway},
 	// precision: 3
 	// subx720 subtract 1  9.999E+999999999   -> -Infinity Inexact Overflow Rounded
-	{"subx720", "1", "9.999E+999999999", "-Inf", 3, big.ToNearestAway},
+	{"subx720", "1", "9.999E+999999999", "-Inf", true, 3, big.ToNearestAway},
 	// subx721 subtract 1 -9.999E+999999999   ->  Infinity Inexact Overflow Rounded
-	{"subx721", "1", "-9.999E+999999999", "Inf", 3, big.ToNearestAway},
+	{"subx721", "1", "-9.999E+999999999", "Inf", true, 3, big.ToNearestAway},
 	// subx722 subtract    9.999E+999999999 1 ->  Infinity Inexact Overflow Rounded
-	{"subx722", "9.999E+999999999", "1", "Inf", 3, big.ToNearestAway},
+	{"subx722", "9.999E+999999999", "1", "Inf", true, 3, big.ToNearestAway},
 	// subx723 subtract   -9.999E+999999999 1 -> -Infinity Inexact Overflow Rounded
-	{"subx723", "-9.999E+999999999", "1", "-Inf", 3, big.ToNearestAway},
+	{"subx723", "-9.999E+999999999", "1", "-Inf", true, 3, big.ToNearestAway},
 	// subx724 subtract 1  9.999E+999999999   -> -Infinity Inexact Overflow Rounded
-	{"subx724", "1", "9.999E+999999999", "-Inf", 3, big.ToNearestAway},
+	{"subx724", "1", "9.999E+999999999", "-Inf", true, 3, big.ToNearestAway},
 	// subx725 subtract 1 -9.999E+999999999   ->  Infinity Inexact Overflow Rounded
-	{"subx725", "1", "-9.999E+999999999", "Inf", 3, big.ToNearestAway},
+	{"subx725", "1", "-9.999E+999999999", "Inf", true, 3, big.ToNearestAway},
 	// subx726 subtract    9.999E+999999999 1 ->  Infinity Inexact Overflow Rounded
-	{"subx726", "9.999E+999999999", "1", "Inf", 3, big.ToNearestAway},
+	{"subx726", "9.999E+999999999", "1", "Inf", true, 3, big.ToNearestAway},
 	// subx727 subtract   -9.999E+999999999 1 -> -Infinity Inexact Overflow Rounded
-	{"subx727", "-9.999E+999999999", "1", "-Inf", 3, big.ToNearestAway},
+	{"subx727", "-9.999E+999999999", "1", "-Inf", true, 3, big.ToNearestAway},
 	// [more below]
 	// long operand checks
 	// maxexponent: 999
 	// minexponent: -999
 	// precision: 9
 	// sub731 subtract 12345678000 0 ->  1.23456780E+10 Rounded
-	{"sub731", "12345678000", "0", "1.23456780E+10", 9, big.ToNearestAway},
+	{"sub731", "12345678000", "0", "1.23456780E+10", false, 9, big.ToNearestAway},
 	// sub732 subtract 0 12345678000 -> -1.23456780E+10 Rounded
-	{"sub732", "0", "12345678000", "-1.23456780E+10", 9, big.ToNearestAway},
+	{"sub732", "0", "12345678000", "-1.23456780E+10", false, 9, big.ToNearestAway},
 	// sub733 subtract 1234567800  0 ->  1.23456780E+9 Rounded
-	{"sub733", "1234567800", "0", "1.23456780E+9", 9, big.ToNearestAway},
+	{"sub733", "1234567800", "0", "1.23456780E+9", false, 9, big.ToNearestAway},
 	// sub734 subtract 0 1234567800  -> -1.23456780E+9 Rounded
-	{"sub734", "0", "1234567800", "-1.23456780E+9", 9, big.ToNearestAway},
+	{"sub734", "0", "1234567800", "-1.23456780E+9", false, 9, big.ToNearestAway},
 	// sub735 subtract 1234567890  0 ->  1.23456789E+9 Rounded
-	{"sub735", "1234567890", "0", "1.23456789E+9", 9, big.ToNearestAway},
+	{"sub735", "1234567890", "0", "1.23456789E+9", false, 9, big.ToNearestAway},
 	// sub736 subtract 0 1234567890  -> -1.23456789E+9 Rounded
-	{"sub736", "0", "1234567890", "-1.23456789E+9", 9, big.ToNearestAway},
+	{"sub736", "0", "1234567890", "-1.23456789E+9", false, 9, big.ToNearestAway},
 	// sub737 subtract 1234567891  0 ->  1.23456789E+9 Inexact Rounded
-	{"sub737", "1234567891", "0", "1.23456789E+9", 9, big.ToNearestAway},
+	{"sub737", "1234567891", "0", "1.23456789E+9", true, 9, big.ToNearestAway},
 	// sub738 subtract 0 1234567891  -> -1.23456789E+9 Inexact Rounded
-	{"sub738", "0", "1234567891", "-1.23456789E+9", 9, big.ToNearestAway},
+	{"sub738", "0", "1234567891", "-1.23456789E+9", true, 9, big.ToNearestAway},
 	// sub739 subtract 12345678901 0 ->  1.23456789E+10 Inexact Rounded
-	{"sub739", "12345678901", "0", "1.23456789E+10", 9, big.ToNearestAway},
+	{"sub739", "12345678901", "0", "1.23456789E+10", true, 9, big.ToNearestAway},
 	// sub740 subtract 0 12345678901 -> -1.23456789E+10 Inexact Rounded
-	{"sub740", "0", "12345678901", "-1.23456789E+10", 9, big.ToNearestAway},
+	{"sub740", "0", "12345678901", "-1.23456789E+10", true, 9, big.ToNearestAway},
 	// sub741 subtract 1234567896  0 ->  1.23456790E+9 Inexact Rounded
-	{"sub741", "1234567896", "0", "1.23456790E+9", 9, big.ToNearestAway},
+	{"sub741", "1234567896", "0", "1.23456790E+9", true, 9, big.ToNearestAway},
 	// sub742 subtract 0 1234567896  -> -1.23456790E+9 Inexact Rounded
-	{"sub742", "0", "1234567896", "-1.23456790E+9", 9, big.ToNearestAway},
+	{"sub742", "0", "1234567896", "-1.23456790E+9", true, 9, big.ToNearestAway},
 	// precision: 15
 	// sub751 subtract 12345678000 0 ->  12345678000
-	{"sub751", "12345678000", "0", "12345678000", 15, big.ToNearestAway},
+	{"sub751", "12345678000", "0", "12345678000", false, 15, big.ToNearestAway},
 	// sub752 subtract 0 12345678000 -> -12345678000
-	{"sub752", "0", "12345678000", "-12345678000", 15, big.ToNearestAway},
+	{"sub752", "0", "12345678000", "-12345678000", false, 15, big.ToNearestAway},
 	// sub753 subtract 1234567800  0 ->  1234567800
-	{"sub753", "1234567800", "0", "1234567800", 15, big.ToNearestAway},
+	{"sub753", "1234567800", "0", "1234567800", false, 15, big.ToNearestAway},
 	// sub754 subtract 0 1234567800  -> -1234567800
-	{"sub754", "0", "1234567800", "-1234567800", 15, big.ToNearestAway},
+	{"sub754", "0", "1234567800", "-1234567800", false, 15, big.ToNearestAway},
 	// sub755 subtract 1234567890  0 ->  1234567890
-	{"sub755", "1234567890", "0", "1234567890", 15, big.ToNearestAway},
+	{"sub755", "1234567890", "0", "1234567890", false, 15, big.ToNearestAway},
 	// sub756 subtract 0 1234567890  -> -1234567890
-	{"sub756", "0", "1234567890", "-1234567890", 15, big.ToNearestAway},
+	{"sub756", "0", "1234567890", "-1234567890", false, 15, big.ToNearestAway},
 	// sub757 subtract 1234567891  0 ->  1234567891
-	{"sub757", "1234567891", "0", "1234567891", 15, big.ToNearestAway},
+	{"sub757", "1234567891", "0", "1234567891", false, 15, big.ToNearestAway},
 	// sub758 subtract 0 1234567891  -> -1234567891
-	{"sub758", "0", "1234567891", "-1234567891", 15, big.ToNearestAway},
+	{"sub758", "0", "1234567891", "-1234567891", false, 15, big.ToNearestAway},
 	// sub759 subtract 12345678901 0 ->  12345678901
-	{"sub759", "12345678901", "0", "12345678901", 15, big.ToNearestAway},
+	{"sub759", "12345678901", "0", "12345678901", false, 15, big.ToNearestAway},
 	// sub760 subtract 0 12345678901 -> -12345678901
-	{"sub760", "0", "12345678901", "-12345678901", 15, big.ToNearestAway},
+	{"sub760", "0", "12345678901", "-12345678901", false, 15, big.ToNearestAway},
 	// sub761 subtract 1234567896  0 ->  1234567896
-	{"sub761", "1234567896", "0", "1234567896", 15, big.ToNearestAway},
+	{"sub761", "1234567896", "0", "1234567896", false, 15, big.ToNearestAway},
 	// sub762 subtract 0 1234567896  -> -1234567896
-	{"sub762", "0", "1234567896", "-1234567896", 15, big.ToNearestAway},
+	{"sub762", "0", "1234567896", "-1234567896", false, 15, big.ToNearestAway},
 	// Specials
 	// subx780 subtract -Inf   Inf   -> -Infinity
-	{"subx780", "-Inf", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx780", "-Inf", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx781 subtract -Inf   1000  -> -Infinity
-	{"subx781", "-Inf", "1000", "-Inf", 15, big.ToNearestAway},
+	{"subx781", "-Inf", "1000", "-Inf", false, 15, big.ToNearestAway},
 	// subx782 subtract -Inf   1     -> -Infinity
-	{"subx782", "-Inf", "1", "-Inf", 15, big.ToNearestAway},
+	{"subx782", "-Inf", "1", "-Inf", false, 15, big.ToNearestAway},
 	// subx783 subtract -Inf  -0     -> -Infinity
-	{"subx783", "-Inf", "-0", "-Inf", 15, big.ToNearestAway},
+	{"subx783", "-Inf", "-0", "-Inf", false, 15, big.ToNearestAway},
 	// subx784 subtract -Inf  -1     -> -Infinity
-	{"subx784", "-Inf", "-1", "-Inf", 15, big.ToNearestAway},
+	{"subx784", "-Inf", "-1", "-Inf", false, 15, big.ToNearestAway},
 	// subx785 subtract -Inf  -1000  -> -Infinity
-	{"subx785", "-Inf", "-1000", "-Inf", 15, big.ToNearestAway},
+	{"subx785", "-Inf", "-1000", "-Inf", false, 15, big.ToNearestAway},
 	// subx787 subtract -1000  Inf   -> -Infinity
-	{"subx787", "-1000", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx787", "-1000", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx788 subtract -Inf   Inf   -> -Infinity
-	{"subx788", "-Inf", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx788", "-Inf", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx789 subtract -1     Inf   -> -Infinity
-	{"subx789", "-1", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx789", "-1", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx790 subtract  0     Inf   -> -Infinity
-	{"subx790", "0", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx790", "0", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx791 subtract  1     Inf   -> -Infinity
-	{"subx791", "1", "Inf", "-Inf", 15, big.ToNearestAway},
+	{"subx791", "1", "Inf", "-Inf", false, 15, big.ToNearestAway},
 	// subx792 subtract  1000  Inf   -> -Infinity
-	{"subx792", "1000", "Inf", "-Inf", 15, big.ToNearestAway},
-	// SKIP: subx800 subtract  Inf   Inf   ->  NaN  Invalid_operation
+	{"subx792", "1000", "Inf", "-Inf", false, 15, big.ToNearestAway},
+	// SKIP (NaN): subx800 subtract  Inf   Inf   ->  NaN  Invalid_operation
 	// subx801 subtract  Inf   1000  ->  Infinity
-	{"subx801", "Inf", "1000", "Inf", 15, big.ToNearestAway},
+	{"subx801", "Inf", "1000", "Inf", false, 15, big.ToNearestAway},
 	// subx802 subtract  Inf   1     ->  Infinity
-	{"subx802", "Inf", "1", "Inf", 15, big.ToNearestAway},
+	{"subx802", "Inf", "1", "Inf", false, 15, big.ToNearestAway},
 	// subx803 subtract  Inf   0     ->  Infinity
-	{"subx803", "Inf", "0", "Inf", 15, big.ToNearestAway},
+	{"subx803", "Inf", "0", "Inf", false, 15, big.ToNearestAway},
 	// subx804 subtract  Inf  -0     ->  Infinity
-	{"subx804", "Inf", "-0", "Inf", 15, big.ToNearestAway},
+	{"subx804", "Inf", "-0", "Inf", false, 15, big.ToNearestAway},
 	// subx805 subtract  Inf  -1     ->  Infinity
-	{"subx805", "Inf", "-1", "Inf", 15, big.ToNearestAway},
+	{"subx805", "Inf", "-1", "Inf", false, 15, big.ToNearestAway},
 	// subx806 subtract  Inf  -1000  ->  Infinity
-	{"subx806", "Inf", "-1000", "Inf", 15, big.ToNearestAway},
+	{"subx806", "Inf", "-1000", "Inf", false, 15, big.ToNearestAway},
 	// subx807 subtract  Inf  -Inf   ->  Infinity
-	{"subx807", "Inf", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx807", "Inf", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx808 subtract -1000 -Inf   ->  Infinity
-	{"subx808", "-1000", "-Inf", "Inf", 15, big.ToNearestAway},
-	// SKIP: subx809 subtract -Inf  -Inf   ->  NaN  Invalid_operation
+	{"subx808", "-1000", "-Inf", "Inf", false, 15, big.ToNearestAway},
+	// SKIP (NaN): subx809 subtract -Inf  -Inf   ->  NaN  Invalid_operation
 	// subx810 subtract -1    -Inf   ->  Infinity
-	{"subx810", "-1", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx810", "-1", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx811 subtract -0    -Inf   ->  Infinity
-	{"subx811", "-0", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx811", "-0", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx812 subtract  0    -Inf   ->  Infinity
-	{"subx812", "0", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx812", "0", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx813 subtract  1    -Inf   ->  Infinity
-	{"subx813", "1", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx813", "1", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx814 subtract  1000 -Inf   ->  Infinity
-	{"subx814", "1000", "-Inf", "Inf", 15, big.ToNearestAway},
+	{"subx814", "1000", "-Inf", "Inf", false, 15, big.ToNearestAway},
 	// subx815 subtract  Inf  -Inf   ->  Infinity
-	{"subx815", "Inf", "-Inf", "Inf", 15, big.ToNearestAway},
-	// SKIP: subx821 subtract  NaN   Inf   ->  NaN
-	// SKIP: subx822 subtract -NaN   1000  -> -NaN
-	// SKIP: subx823 subtract  NaN   1     ->  NaN
-	// SKIP: subx824 subtract  NaN   0     ->  NaN
-	// SKIP: subx825 subtract  NaN  -0     ->  NaN
-	// SKIP: subx826 subtract  NaN  -1     ->  NaN
-	// SKIP: subx827 subtract  NaN  -1000  ->  NaN
-	// SKIP: subx828 subtract  NaN  -Inf   ->  NaN
-	// SKIP: subx829 subtract -NaN   NaN   -> -NaN
-	// SKIP: subx830 subtract -Inf   NaN   ->  NaN
-	// SKIP: subx831 subtract -1000  NaN   ->  NaN
-	// SKIP: subx832 subtract -1     NaN   ->  NaN
-	// SKIP: subx833 subtract -0     NaN   ->  NaN
-	// SKIP: subx834 subtract  0     NaN   ->  NaN
-	// SKIP: subx835 subtract  1     NaN   ->  NaN
-	// SKIP: subx836 subtract  1000 -NaN   -> -NaN
-	// SKIP: subx837 subtract  Inf   NaN   ->  NaN
-	// SKIP: subx841 subtract  sNaN  Inf   ->  NaN  Invalid_operation
-	// SKIP: subx842 subtract -sNaN  1000  -> -NaN  Invalid_operation
-	// SKIP: subx843 subtract  sNaN  1     ->  NaN  Invalid_operation
-	// SKIP: subx844 subtract  sNaN  0     ->  NaN  Invalid_operation
-	// SKIP: subx845 subtract  sNaN -0     ->  NaN  Invalid_operation
-	// SKIP: subx846 subtract  sNaN -1     ->  NaN  Invalid_operation
-	// SKIP: subx847 subtract  sNaN -1000  ->  NaN  Invalid_operation
-	// SKIP: subx848 subtract  sNaN  NaN   ->  NaN  Invalid_operation
-	// SKIP: subx849 subtract  sNaN sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx850 subtract  NaN  sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx851 subtract -Inf -sNaN   -> -NaN  Invalid_operation
-	// SKIP: subx852 subtract -1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx853 subtract -1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx854 subtract -0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx855 subtract  0    sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx856 subtract  1    sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx857 subtract  1000 sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx858 subtract  Inf  sNaN   ->  NaN  Invalid_operation
-	// SKIP: subx859 subtract  NaN  sNaN   ->  NaN  Invalid_operation
+	{"subx815", "Inf", "-Inf", "Inf", false, 15, big.ToNearestAway},
+	// SKIP (NaN): subx821 subtract  NaN   Inf   ->  NaN
+	// SKIP (NaN): subx822 subtract -NaN   1000  -> -NaN
+	// SKIP (NaN): subx823 subtract  NaN   1     ->  NaN
+	// SKIP (NaN): subx824 subtract  NaN   0     ->  NaN
+	// SKIP (NaN): subx825 subtract  NaN  -0     ->  NaN
+	// SKIP (NaN): subx826 subtract  NaN  -1     ->  NaN
+	// SKIP (NaN): subx827 subtract  NaN  -1000  ->  NaN
+	// SKIP (NaN): subx828 subtract  NaN  -Inf   ->  NaN
+	// SKIP (NaN): subx829 subtract -NaN   NaN   -> -NaN
+	// SKIP (NaN): subx830 subtract -Inf   NaN   ->  NaN
+	// SKIP (NaN): subx831 subtract -1000  NaN   ->  NaN
+	// SKIP (NaN): subx832 subtract -1     NaN   ->  NaN
+	// SKIP (NaN): subx833 subtract -0     NaN   ->  NaN
+	// SKIP (NaN): subx834 subtract  0     NaN   ->  NaN
+	// SKIP (NaN): subx835 subtract  1     NaN   ->  NaN
+	// SKIP (NaN): subx836 subtract  1000 -NaN   -> -NaN
+	// SKIP (NaN): subx837 subtract  Inf   NaN   ->  NaN
+	// SKIP (NaN): subx841 subtract  sNaN  Inf   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx842 subtract -sNaN  1000  -> -NaN  Invalid_operation
+	// SKIP (NaN): subx843 subtract  sNaN  1     ->  NaN  Invalid_operation
+	// SKIP (NaN): subx844 subtract  sNaN  0     ->  NaN  Invalid_operation
+	// SKIP (NaN): subx845 subtract  sNaN -0     ->  NaN  Invalid_operation
+	// SKIP (NaN): subx846 subtract  sNaN -1     ->  NaN  Invalid_operation
+	// SKIP (NaN): subx847 subtract  sNaN -1000  ->  NaN  Invalid_operation
+	// SKIP (NaN): subx848 subtract  sNaN  NaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx849 subtract  sNaN sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx850 subtract  NaN  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx851 subtract -Inf -sNaN   -> -NaN  Invalid_operation
+	// SKIP (NaN): subx852 subtract -1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx853 subtract -1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx854 subtract -0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx855 subtract  0    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx856 subtract  1    sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx857 subtract  1000 sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx858 subtract  Inf  sNaN   ->  NaN  Invalid_operation
+	// SKIP (NaN): subx859 subtract  NaN  sNaN   ->  NaN  Invalid_operation
 	// propagating NaNs
-	// SKIP: subx861 subtract  NaN01   -Inf     ->  NaN1
-	// SKIP: subx862 subtract -NaN02   -1000    -> -NaN2
-	// SKIP: subx863 subtract  NaN03    1000    ->  NaN3
-	// SKIP: subx864 subtract  NaN04    Inf     ->  NaN4
-	// SKIP: subx865 subtract  NaN05    NaN61   ->  NaN5
-	// SKIP: subx866 subtract -Inf     -NaN71   -> -NaN71
-	// SKIP: subx867 subtract -1000     NaN81   ->  NaN81
-	// SKIP: subx868 subtract  1000     NaN91   ->  NaN91
-	// SKIP: subx869 subtract  Inf      NaN101  ->  NaN101
-	// SKIP: subx871 subtract  sNaN011  -Inf    ->  NaN11  Invalid_operation
-	// SKIP: subx872 subtract  sNaN012  -1000   ->  NaN12  Invalid_operation
-	// SKIP: subx873 subtract -sNaN013   1000   -> -NaN13  Invalid_operation
-	// SKIP: subx874 subtract  sNaN014   NaN171 ->  NaN14  Invalid_operation
-	// SKIP: subx875 subtract  sNaN015  sNaN181 ->  NaN15  Invalid_operation
-	// SKIP: subx876 subtract  NaN016   sNaN191 ->  NaN191 Invalid_operation
-	// SKIP: subx877 subtract -Inf      sNaN201 ->  NaN201 Invalid_operation
-	// SKIP: subx878 subtract -1000     sNaN211 ->  NaN211 Invalid_operation
-	// SKIP: subx879 subtract  1000    -sNaN221 -> -NaN221 Invalid_operation
-	// SKIP: subx880 subtract  Inf      sNaN231 ->  NaN231 Invalid_operation
-	// SKIP: subx881 subtract  NaN025   sNaN241 ->  NaN241 Invalid_operation
+	// SKIP (NaN): subx861 subtract  NaN01   -Inf     ->  NaN1
+	// SKIP (NaN): subx862 subtract -NaN02   -1000    -> -NaN2
+	// SKIP (NaN): subx863 subtract  NaN03    1000    ->  NaN3
+	// SKIP (NaN): subx864 subtract  NaN04    Inf     ->  NaN4
+	// SKIP (NaN): subx865 subtract  NaN05    NaN61   ->  NaN5
+	// SKIP (NaN): subx866 subtract -Inf     -NaN71   -> -NaN71
+	// SKIP (NaN): subx867 subtract -1000     NaN81   ->  NaN81
+	// SKIP (NaN): subx868 subtract  1000     NaN91   ->  NaN91
+	// SKIP (NaN): subx869 subtract  Inf      NaN101  ->  NaN101
+	// SKIP (NaN): subx871 subtract  sNaN011  -Inf    ->  NaN11  Invalid_operation
+	// SKIP (NaN): subx872 subtract  sNaN012  -1000   ->  NaN12  Invalid_operation
+	// SKIP (NaN): subx873 subtract -sNaN013   1000   -> -NaN13  Invalid_operation
+	// SKIP (NaN): subx874 subtract  sNaN014   NaN171 ->  NaN14  Invalid_operation
+	// SKIP (NaN): subx875 subtract  sNaN015  sNaN181 ->  NaN15  Invalid_operation
+	// SKIP (NaN): subx876 subtract  NaN016   sNaN191 ->  NaN191 Invalid_operation
+	// SKIP (NaN): subx877 subtract -Inf      sNaN201 ->  NaN201 Invalid_operation
+	// SKIP (NaN): subx878 subtract -1000     sNaN211 ->  NaN211 Invalid_operation
+	// SKIP (NaN): subx879 subtract  1000    -sNaN221 -> -NaN221 Invalid_operation
+	// SKIP (NaN): subx880 subtract  Inf      sNaN231 ->  NaN231 Invalid_operation
+	// SKIP (NaN): subx881 subtract  NaN025   sNaN241 ->  NaN241 Invalid_operation
 	// edge case spills
 	// subx901 subtract  2.E-3  1.002  -> -1.000
-	{"subx901", "2.E-3", "1.002", "-1.000", 15, big.ToNearestAway},
+	{"subx901", "2.E-3", "1.002", "-1.000", false, 15, big.ToNearestAway},
 	// subx902 subtract  2.0E-3  1.002  -> -1.0000
-	{"subx902", "2.0E-3", "1.002", "-1.0000", 15, big.ToNearestAway},
+	{"subx902", "2.0E-3", "1.002", "-1.0000", false, 15, big.ToNearestAway},
 	// subx903 subtract  2.00E-3  1.0020  -> -1.00000
-	{"subx903", "2.00E-3", "1.0020", "-1.00000", 15, big.ToNearestAway},
+	{"subx903", "2.00E-3", "1.0020", "-1.00000", false, 15, big.ToNearestAway},
 	// subx904 subtract  2.000E-3  1.00200  -> -1.000000
-	{"subx904", "2.000E-3", "1.00200", "-1.000000", 15, big.ToNearestAway},
+	{"subx904", "2.000E-3", "1.00200", "-1.000000", false, 15, big.ToNearestAway},
 	// subx905 subtract  2.0000E-3  1.002000  -> -1.0000000
-	{"subx905", "2.0000E-3", "1.002000", "-1.0000000", 15, big.ToNearestAway},
+	{"subx905", "2.0000E-3", "1.002000", "-1.0000000", false, 15, big.ToNearestAway},
 	// subx906 subtract  2.00000E-3  1.0020000  -> -1.00000000
-	{"subx906", "2.00000E-3", "1.0020000", "-1.00000000", 15, big.ToNearestAway},
+	{"subx906", "2.00000E-3", "1.0020000", "-1.00000000", false, 15, big.ToNearestAway},
 	// subx907 subtract  2.000000E-3  1.00200000  -> -1.000000000
-	{"subx907", "2.000000E-3", "1.00200000", "-1.000000000", 15, big.ToNearestAway},
+	{"subx907", "2.000000E-3", "1.00200000", "-1.000000000", false, 15, big.ToNearestAway},
 	// subx908 subtract  2.0000000E-3  1.002000000  -> -1.0000000000
-	{"subx908", "2.0000000E-3", "1.002000000", "-1.0000000000", 15, big.ToNearestAway},
+	{"subx908", "2.0000000E-3", "1.002000000", "-1.0000000000", false, 15, big.ToNearestAway},
 	// subnormals and underflows
 	// precision: 3
 	// maxexponent: 999
 	// minexponent: -999
 	// subx1010 subtract  0  1.00E-999       ->  -1.00E-999
-	{"subx1010", "0", "1.00E-999", "-1.00E-999", 3, big.ToNearestAway},
+	{"subx1010", "0", "1.00E-999", "-1.00E-999", false, 3, big.ToNearestAway},
 	// subx1011 subtract  0  0.1E-999        ->  -1E-1000   Subnormal
-	{"subx1011", "0", "0.1E-999", "-1E-1000", 3, big.ToNearestAway},
+	{"subx1011", "0", "0.1E-999", "-1E-1000", false, 3, big.ToNearestAway},
 	// subx1012 subtract  0  0.10E-999       ->  -1.0E-1000 Subnormal
-	{"subx1012", "0", "0.10E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1012", "0", "0.10E-999", "-1.0E-1000", false, 3, big.ToNearestAway},
 	// subx1013 subtract  0  0.100E-999      ->  -1.0E-1000 Subnormal Rounded
-	{"subx1013", "0", "0.100E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1013", "0", "0.100E-999", "-1.0E-1000", false, 3, big.ToNearestAway},
 	// subx1014 subtract  0  0.01E-999       ->  -1E-1001   Subnormal
-	{"subx1014", "0", "0.01E-999", "-1E-1001", 3, big.ToNearestAway},
+	{"subx1014", "0", "0.01E-999", "-1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Emin
 	// subx1015 subtract  0  0.999E-999      ->  -1.00E-999 Inexact Rounded Subnormal Underflow
-	{"subx1015", "0", "0.999E-999", "-1.00E-999", 3, big.ToNearestAway},
+	{"subx1015", "0", "0.999E-999", "-1.00E-999", true, 3, big.ToNearestAway},
 	// subx1016 subtract  0  0.099E-999      ->  -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"subx1016", "0", "0.099E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1016", "0", "0.099E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// subx1017 subtract  0  0.009E-999      ->  -1E-1001   Inexact Rounded Subnormal Underflow
-	{"subx1017", "0", "0.009E-999", "-1E-1001", 3, big.ToNearestAway},
+	{"subx1017", "0", "0.009E-999", "-1E-1001", true, 3, big.ToNearestAway},
 	// subx1018 subtract  0  0.001E-999      ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1018", "0", "0.001E-999", "-0E-1001", 3, big.ToNearestAway},
+	{"subx1018", "0", "0.001E-999", "-0E-1001", true, 3, big.ToNearestAway},
 	// subx1019 subtract  0  0.0009E-999     ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1019", "0", "0.0009E-999", "-0E-1001", 3, big.ToNearestAway},
+	{"subx1019", "0", "0.0009E-999", "-0E-1001", true, 3, big.ToNearestAway},
 	// subx1020 subtract  0  0.0001E-999     ->  -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1020", "0", "0.0001E-999", "-0E-1001", 3, big.ToNearestAway},
+	{"subx1020", "0", "0.0001E-999", "-0E-1001", true, 3, big.ToNearestAway},
 	// subx1030 subtract  0 -1.00E-999       ->   1.00E-999
-	{"subx1030", "0", "-1.00E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"subx1030", "0", "-1.00E-999", "1.00E-999", false, 3, big.ToNearestAway},
 	// subx1031 subtract  0 -0.1E-999        ->   1E-1000   Subnormal
-	{"subx1031", "0", "-0.1E-999", "1E-1000", 3, big.ToNearestAway},
+	{"subx1031", "0", "-0.1E-999", "1E-1000", false, 3, big.ToNearestAway},
 	// subx1032 subtract  0 -0.10E-999       ->   1.0E-1000 Subnormal
-	{"subx1032", "0", "-0.10E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"subx1032", "0", "-0.10E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// subx1033 subtract  0 -0.100E-999      ->   1.0E-1000 Subnormal Rounded
-	{"subx1033", "0", "-0.100E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"subx1033", "0", "-0.100E-999", "1.0E-1000", false, 3, big.ToNearestAway},
 	// subx1034 subtract  0 -0.01E-999       ->   1E-1001   Subnormal
-	{"subx1034", "0", "-0.01E-999", "1E-1001", 3, big.ToNearestAway},
+	{"subx1034", "0", "-0.01E-999", "1E-1001", false, 3, big.ToNearestAway},
 	// next is rounded to Emin
 	// subx1035 subtract  0 -0.999E-999      ->   1.00E-999 Inexact Rounded Subnormal Underflow
-	{"subx1035", "0", "-0.999E-999", "1.00E-999", 3, big.ToNearestAway},
+	{"subx1035", "0", "-0.999E-999", "1.00E-999", true, 3, big.ToNearestAway},
 	// subx1036 subtract  0 -0.099E-999      ->   1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"subx1036", "0", "-0.099E-999", "1.0E-1000", 3, big.ToNearestAway},
+	{"subx1036", "0", "-0.099E-999", "1.0E-1000", true, 3, big.ToNearestAway},
 	// subx1037 subtract  0 -0.009E-999      ->   1E-1001   Inexact Rounded Subnormal Underflow
-	{"subx1037", "0", "-0.009E-999", "1E-1001", 3, big.ToNearestAway},
+	{"subx1037", "0", "-0.009E-999", "1E-1001", true, 3, big.ToNearestAway},
 	// subx1038 subtract  0 -0.001E-999      ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1038", "0", "-0.001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"subx1038", "0", "-0.001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// subx1039 subtract  0 -0.0009E-999     ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1039", "0", "-0.0009E-999", "0E-1001", 3, big.ToNearestAway},
+	{"subx1039", "0", "-0.0009E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// subx1040 subtract  0 -0.0001E-999     ->   0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1040", "0", "-0.0001E-999", "0E-1001", 3, big.ToNearestAway},
+	{"subx1040", "0", "-0.0001E-999", "0E-1001", true, 3, big.ToNearestAway},
 	// some non-zero subnormal subtracts
 	// subx1056 is a tricky case
 	// rounding: half_up
 	// subx1050 subtract  1.00E-999   0.1E-999  ->   9.0E-1000  Subnormal
-	{"subx1050", "1.00E-999", "0.1E-999", "9.0E-1000", 3, big.ToNearestAway},
+	{"subx1050", "1.00E-999", "0.1E-999", "9.0E-1000", false, 3, big.ToNearestAway},
 	// subx1051 subtract  0.1E-999    0.1E-999  ->   0E-1000
-	{"subx1051", "0.1E-999", "0.1E-999", "0E-1000", 3, big.ToNearestAway},
+	{"subx1051", "0.1E-999", "0.1E-999", "0E-1000", false, 3, big.ToNearestAway},
 	// subx1052 subtract  0.10E-999   0.1E-999  ->   0E-1001
-	{"subx1052", "0.10E-999", "0.1E-999", "0E-1001", 3, big.ToNearestAway},
+	{"subx1052", "0.10E-999", "0.1E-999", "0E-1001", false, 3, big.ToNearestAway},
 	// subx1053 subtract  0.100E-999  0.1E-999  ->   0E-1001    Clamped
-	{"subx1053", "0.100E-999", "0.1E-999", "0E-1001", 3, big.ToNearestAway},
+	{"subx1053", "0.100E-999", "0.1E-999", "0E-1001", false, 3, big.ToNearestAway},
 	// subx1054 subtract  0.01E-999   0.1E-999  ->   -9E-1001   Subnormal
-	{"subx1054", "0.01E-999", "0.1E-999", "-9E-1001", 3, big.ToNearestAway},
+	{"subx1054", "0.01E-999", "0.1E-999", "-9E-1001", false, 3, big.ToNearestAway},
 	// subx1055 subtract  0.999E-999  0.1E-999  ->   9.0E-1000  Inexact Rounded Subnormal Underflow
-	{"subx1055", "0.999E-999", "0.1E-999", "9.0E-1000", 3, big.ToNearestAway},
+	{"subx1055", "0.999E-999", "0.1E-999", "9.0E-1000", true, 3, big.ToNearestAway},
 	// subx1056 subtract  0.099E-999  0.1E-999  ->   -0E-1001   Inexact Rounded Subnormal Underflow Clamped
-	{"subx1056", "0.099E-999", "0.1E-999", "-0E-1001", 3, big.ToNearestAway},
+	{"subx1056", "0.099E-999", "0.1E-999", "-0E-1001", true, 3, big.ToNearestAway},
 	// subx1057 subtract  0.009E-999  0.1E-999  ->   -9E-1001   Inexact Rounded Subnormal Underflow
-	{"subx1057", "0.009E-999", "0.1E-999", "-9E-1001", 3, big.ToNearestAway},
+	{"subx1057", "0.009E-999", "0.1E-999", "-9E-1001", true, 3, big.ToNearestAway},
 	// subx1058 subtract  0.001E-999  0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"subx1058", "0.001E-999", "0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1058", "0.001E-999", "0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// subx1059 subtract  0.0009E-999 0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"subx1059", "0.0009E-999", "0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1059", "0.0009E-999", "0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// subx1060 subtract  0.0001E-999 0.1E-999  ->   -1.0E-1000 Inexact Rounded Subnormal Underflow
-	{"subx1060", "0.0001E-999", "0.1E-999", "-1.0E-1000", 3, big.ToNearestAway},
+	{"subx1060", "0.0001E-999", "0.1E-999", "-1.0E-1000", true, 3, big.ToNearestAway},
 	// check for double-rounded subnormals
 	// precision: 5
 	// maxexponent: 79
 	// minexponent: -79
 	// subx1101 subtract  0 1.52444E-80 -> -1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1101", "0", "1.52444E-80", "-1.524E-80", 5, big.ToNearestAway},
+	{"subx1101", "0", "1.52444E-80", "-1.524E-80", true, 5, big.ToNearestAway},
 	// subx1102 subtract  0 1.52445E-80 -> -1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1102", "0", "1.52445E-80", "-1.524E-80", 5, big.ToNearestAway},
+	{"subx1102", "0", "1.52445E-80", "-1.524E-80", true, 5, big.ToNearestAway},
 	// subx1103 subtract  0 1.52446E-80 -> -1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1103", "0", "1.52446E-80", "-1.524E-80", 5, big.ToNearestAway},
+	{"subx1103", "0", "1.52446E-80", "-1.524E-80", true, 5, big.ToNearestAway},
 	// subx1104 subtract  1.52444E-80 0 ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1104", "1.52444E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"subx1104", "1.52444E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// subx1105 subtract  1.52445E-80 0 ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1105", "1.52445E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"subx1105", "1.52445E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// subx1106 subtract  1.52446E-80 0 ->  1.524E-80 Inexact Rounded Subnormal Underflow
-	{"subx1106", "1.52446E-80", "0", "1.524E-80", 5, big.ToNearestAway},
+	{"subx1106", "1.52446E-80", "0", "1.524E-80", true, 5, big.ToNearestAway},
 	// subx1111 subtract  1.2345678E-80  1.2345671E-80 ->  0E-83 Inexact Rounded Subnormal Underflow Clamped
-	{"subx1111", "1.2345678E-80", "1.2345671E-80", "0E-83", 5, big.ToNearestAway},
+	{"subx1111", "1.2345678E-80", "1.2345671E-80", "0E-83", true, 5, big.ToNearestAway},
 	// subx1112 subtract  1.2345678E-80  1.2345618E-80 ->  0E-83 Inexact Rounded Subnormal Underflow Clamped
-	{"subx1112", "1.2345678E-80", "1.2345618E-80", "0E-83", 5, big.ToNearestAway},
+	{"subx1112", "1.2345678E-80", "1.2345618E-80", "0E-83", true, 5, big.ToNearestAway},
 	// subx1113 subtract  1.2345678E-80  1.2345178E-80 ->  0E-83 Inexact Rounded Subnormal Underflow Clamped
-	{"subx1113", "1.2345678E-80", "1.2345178E-80", "0E-83", 5, big.ToNearestAway},
+	{"subx1113", "1.2345678E-80", "1.2345178E-80", "0E-83", true, 5, big.ToNearestAway},
 	// subx1114 subtract  1.2345678E-80  1.2341678E-80 ->  0E-83 Inexact Rounded Subnormal Underflow Clamped
-	{"subx1114", "1.2345678E-80", "1.2341678E-80", "0E-83", 5, big.ToNearestAway},
+	{"subx1114", "1.2345678E-80", "1.2341678E-80", "0E-83", true, 5, big.ToNearestAway},
 	// subx1115 subtract  1.2345678E-80  1.2315678E-80 ->  3E-83         Rounded Subnormal
-	{"subx1115", "1.2345678E-80", "1.2315678E-80", "3E-83", 5, big.ToNearestAway},
+	{"subx1115", "1.2345678E-80", "1.2315678E-80", "3E-83", false, 5, big.ToNearestAway},
 	// subx1116 subtract  1.2345678E-80  1.2145678E-80 ->  2.0E-82       Rounded Subnormal
-	{"subx1116", "1.2345678E-80", "1.2145678E-80", "2.0E-82", 5, big.ToNearestAway},
+	{"subx1116", "1.2345678E-80", "1.2145678E-80", "2.0E-82", false, 5, big.ToNearestAway},
 	// subx1117 subtract  1.2345678E-80  1.1345678E-80 ->  1.00E-81      Rounded Subnormal
-	{"subx1117", "1.2345678E-80", "1.1345678E-80", "1.00E-81", 5, big.ToNearestAway},
+	{"subx1117", "1.2345678E-80", "1.1345678E-80", "1.00E-81", false, 5, big.ToNearestAway},
 	// subx1118 subtract  1.2345678E-80  0.2345678E-80 ->  1.000E-80     Rounded Subnormal
-	{"subx1118", "1.2345678E-80", "0.2345678E-80", "1.000E-80", 5, big.ToNearestAway},
+	{"subx1118", "1.2345678E-80", "0.2345678E-80", "1.000E-80", false, 5, big.ToNearestAway},
 	// precision: 34
 	// rounding: half_up
 	// maxexponent: 6144
 	// minexponent: -6143
 	// Examples from SQL proposal (Krishna Kulkarni)
 	// subx1125  subtract 130E-2  120E-2 -> 0.10
-	{"subx1125", "130E-2", "120E-2", "0.10", 34, big.ToNearestAway},
+	{"subx1125", "130E-2", "120E-2", "0.10", false, 34, big.ToNearestAway},
 	// subx1126  subtract 130E-2  12E-1  -> 0.10
-	{"subx1126", "130E-2", "12E-1", "0.10", 34, big.ToNearestAway},
+	{"subx1126", "130E-2", "12E-1", "0.10", false, 34, big.ToNearestAway},
 	// subx1127  subtract 130E-2  1E0    -> 0.30
-	{"subx1127", "130E-2", "1E0", "0.30", 34, big.ToNearestAway},
+	{"subx1127", "130E-2", "1E0", "0.30", false, 34, big.ToNearestAway},
 	// subx1128  subtract 1E2     1E4    -> -9.9E+3
-	{"subx1128", "1E2", "1E4", "-9.9E+3", 34, big.ToNearestAway},
+	{"subx1128", "1E2", "1E4", "-9.9E+3", false, 34, big.ToNearestAway},
 	// Null tests
-	// SKIP: subx9990 subtract 10  # -> NaN Invalid_operation
-	// SKIP: subx9991 subtract  # 10 -> NaN Invalid_operation
+	// SKIP (NaN): subx9990 subtract 10  # -> NaN Invalid_operation
+	// SKIP (NaN): subx9991 subtract  # 10 -> NaN Invalid_operation
 }
