@@ -80,7 +80,7 @@ minx021 minus         NaN  -> -NaN
 	// 	// Sanity check
 	// 	// minx001 minus       +7.50  -> -7.50
 	// 	{"minx001", "+7.50", "-7.50", 9, big.ToNearestAway},
-	// 	// SKIP: minx021 minus         NaN  -> -NaN
+	// 	// SKIP (NaN): minx021 minus         NaN  -> -NaN
 	// }
 }
 
@@ -150,10 +150,10 @@ basx748 toSci "+InFinity" -> Infinity
 	// 	{"basx001", "0", "0", 16, big.ToNearestAway},
 	// 	// basx500 toSci '1..2' -> NaN Conversion_syntax
 	// 	{"basx500", "1..2", "", 16, big.ToNearestAway},
-	// 	// SKIP: basx302 toEng 10e12  -> 10E+12
-	// 	// SKIP: emax006 toSci   -1   -> -1
+	// 	// SKIP (toeng not supported): basx302 toEng 10e12  -> 10E+12
+	// 	// SKIP (emax not supported): emax006 toSci   -1   -> -1
 	// 	// precision: 9
-	// 	// SKIP: basx748 toSci "+InFinity" -> Infinity
+	// 	// SKIP (infinity test): basx748 toSci "+InFinity" -> Infinity
 	// }
 }
 

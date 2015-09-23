@@ -76,12 +76,12 @@ func generate(in io.Reader, out io.Writer) error {
 				}
 			}
 
-			testLine := op.testDataFunc(t, &env)
-			if testLine != "" {
+			testLine, ok := op.testDataFunc(t, &env)
+			if ok {
 				fmt.Fprintf(w, "\t// %s\n", t.src)
 				fmt.Fprintf(w, "\t{%s},\n", testLine)
 			} else {
-				fmt.Fprintf(w, "\t// SKIP: %s\n", t.src)
+				fmt.Fprintf(w, "\t// SKIP (%s): %s\n", testLine, t.src)
 			}
 
 		case *directive:
