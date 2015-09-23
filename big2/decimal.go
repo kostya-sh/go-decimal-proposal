@@ -291,6 +291,7 @@ func (z *Decimal) Set(x *Decimal) *Decimal {
 			z.scale = x.scale
 			z.abs.Set(&x.abs)
 		}
+		z.acc = big.Exact
 		if z.prec == 0 {
 			z.prec = x.prec
 		} else if z.prec < x.prec {
@@ -472,7 +473,13 @@ func (z *Decimal) Add(x, y *Decimal) *Decimal {
 			z.scale = x.scale
 		}
 	}
-	if z.prec != 0 {
+	z.acc = big.Exact
+	if z.prec == 0 {
+		z.prec = x.prec
+		if y.prec > z.prec {
+			z.prec = y.prec
+		}
+	} else {
 		z.round()
 	}
 	return z
@@ -518,7 +525,13 @@ func (z *Decimal) Sub(x, y *Decimal) *Decimal {
 		z.scale = x.scale
 	}
 
-	if z.prec != 0 {
+	z.acc = big.Exact
+	if z.prec == 0 {
+		z.prec = x.prec
+		if y.prec > z.prec {
+			z.prec = y.prec
+		}
+	} else {
 		z.round()
 	}
 

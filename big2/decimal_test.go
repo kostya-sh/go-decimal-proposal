@@ -1,6 +1,9 @@
 package big2
 
-import "testing"
+import (
+	"math/big"
+	"testing"
+)
 
 //go:generate bash -c "dectest < ~/tmp/dectest/abs.decTest > abs_test.go"
 func TestAbs(t *testing.T) {
@@ -41,9 +44,17 @@ func TestAbs(t *testing.T) {
 
 		if out.Cmp(r) != 0 {
 			t.Errorf("%s: Abs(%s) got: %s want: %s", test.id, test.in, r.String(), out.String())
+			continue
 		}
-
-		// TODO: check accuracy
+		if test.inexact {
+			if r.Acc() == big.Exact {
+				t.Errorf("%s: expected inaccurate result", test.id)
+			}
+		} else {
+			if r.Acc() != big.Exact {
+				t.Errorf("%s: expected accurate result", test.id)
+			}
+		}
 	}
 }
 
@@ -91,9 +102,17 @@ func TestMinus(t *testing.T) {
 
 		if out.Cmp(r) != 0 {
 			t.Errorf("%s: Neg(%s) got: %s want: %s", test.id, test.in, r.String(), out.String())
+			continue
 		}
-
-		// TODO: check accuracy
+		if test.inexact {
+			if r.Acc() == big.Exact {
+				t.Errorf("%s: expected inaccurate result", test.id)
+			}
+		} else {
+			if r.Acc() != big.Exact {
+				t.Errorf("%s: expected accurate result", test.id)
+			}
+		}
 	}
 }
 
@@ -169,17 +188,17 @@ func TestCompareInfinities(t *testing.T) {
 //go:generate bash -c "dectest < ~/tmp/dectest/add.decTest > add_test.go"
 func TestAdd(t *testing.T) {
 	for _, test := range addTests {
-		op1 := new(Decimal)
-		_, ok := op1.SetString(test.op1)
+		in1 := new(Decimal)
+		_, ok := in1.SetString(test.in1)
 		if !ok {
-			t.Errorf("%s: failed to parse '%s'", test.id, test.op1)
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in1)
 			continue
 		}
 
-		op2 := new(Decimal)
-		_, ok = op2.SetString(test.op2)
+		in2 := new(Decimal)
+		_, ok = in2.SetString(test.in2)
 		if !ok {
-			t.Errorf("%s: failed to parse '%s'", test.id, test.op2)
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in2)
 			continue
 		}
 
@@ -193,33 +212,41 @@ func TestAdd(t *testing.T) {
 		r := new(Decimal)
 		r.SetPrec(test.prec)
 		r.SetMode(test.mode)
-		r2 := r.Add(op1, op2)
+		r2 := r.Add(in1, in2)
 		if r != r2 {
 			t.Errorf("%s: return value got: %p want: %d", test.id, r, r2)
 		}
 
 		if out.Cmp(r) != 0 {
-			t.Errorf("%s: Add(%s, %s) got: %s want: %s", test.id, test.op1, test.op2, r.String(), test.out)
+			t.Errorf("%s: Add(%s, %s) got: %s want: %s", test.id, test.in1, test.in2, r.String(), test.out)
+			continue
 		}
-
-		// TODO: check accuracy
+		if test.inexact {
+			if r.Acc() == big.Exact {
+				t.Errorf("%s: expected inaccurate result", test.id)
+			}
+		} else {
+			if r.Acc() != big.Exact {
+				t.Errorf("%s: expected accurate result", test.id)
+			}
+		}
 	}
 }
 
 //go:generate bash -c "dectest < ~/tmp/dectest/subtract.decTest > subtract_test.go"
 func TestSubtract(t *testing.T) {
 	for _, test := range subtractTests {
-		op1 := new(Decimal)
-		_, ok := op1.SetString(test.op1)
+		in1 := new(Decimal)
+		_, ok := in1.SetString(test.in1)
 		if !ok {
-			t.Errorf("%s: failed to parse '%s'", test.id, test.op1)
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in1)
 			continue
 		}
 
-		op2 := new(Decimal)
-		_, ok = op2.SetString(test.op2)
+		in2 := new(Decimal)
+		_, ok = in2.SetString(test.in2)
 		if !ok {
-			t.Errorf("%s: failed to parse '%s'", test.id, test.op2)
+			t.Errorf("%s: failed to parse '%s'", test.id, test.in2)
 			continue
 		}
 
@@ -233,15 +260,23 @@ func TestSubtract(t *testing.T) {
 		r := new(Decimal)
 		r.SetPrec(test.prec)
 		r.SetMode(test.mode)
-		r2 := r.Sub(op1, op2)
+		r2 := r.Sub(in1, in2)
 		if r != r2 {
 			t.Errorf("%s: return value got: %p want: %d", test.id, r, r2)
 		}
 
 		if out.Cmp(r) != 0 {
-			t.Errorf("%s: Sub(%s, %s) got: %s want: %s", test.id, test.op1, test.op2, r.String(), test.out)
+			t.Errorf("%s: Sub(%s, %s) got: %s want: %s", test.id, test.in1, test.in2, r.String(), test.out)
+			continue
 		}
-
-		// TODO: check accuracy
+		if test.inexact {
+			if r.Acc() == big.Exact {
+				t.Errorf("%s: expected inaccurate result", test.id)
+			}
+		} else {
+			if r.Acc() != big.Exact {
+				t.Errorf("%s: expected accurate result", test.id)
+			}
+		}
 	}
 }

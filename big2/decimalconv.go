@@ -54,9 +54,14 @@ func (z *Decimal) round() {
 	}
 
 	d := int(s[z.prec] - '0')
+	incAcc, decAcc := big.Above, big.Below
+	if z.neg {
+		incAcc, decAcc = big.Below, big.Above
+	}
 	switch z.mode {
 	case big.ToNearestEven:
 		if d > 5 {
+			z.acc = incAcc
 			inc(&z.abs)
 		} else if d == 5 {
 			exact := true
@@ -70,27 +75,43 @@ func (z *Decimal) round() {
 			if exact {
 				switch s[z.prec-1] {
 				case '1', '3', '5', '7', '9':
+					z.acc = incAcc
 					inc(&z.abs)
+				default:
+					z.acc = decAcc
 				}
 			} else {
+				z.acc = incAcc
 				inc(&z.abs)
 			}
+		} else {
+			z.acc = decAcc
 		}
 	case big.ToNearestAway:
 		if d >= 5 {
+			z.acc = incAcc
 			inc(&z.abs)
+		} else {
+			z.acc = decAcc
 		}
 	case big.ToZero:
-		break
+		z.acc = decAcc
 	case big.AwayFromZero:
+		z.acc = incAcc
 		inc(&z.abs)
 	case big.ToNegativeInf:
 		if z.neg {
+			z.acc = incAcc
 			inc(&z.abs)
+		} else {
+			z.acc = decAcc
 		}
 	case big.ToPositiveInf:
 		if !z.neg {
+			z.acc = incAcc
 			inc(&z.abs)
+		} else {
+			z.acc = decAcc
 		}
 	}
 
@@ -171,6 +192,7 @@ func (z *Decimal) SetString(s string) (*Decimal, bool) {
 	}
 
 	// precision
+	z.acc = big.Exact
 	if z.prec == 0 {
 		z.prec = uint32(len((&z.abs).String()))
 	} else {
