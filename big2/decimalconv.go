@@ -59,8 +59,20 @@ func (z *Decimal) round() {
 		if d > 5 {
 			inc(&z.abs)
 		} else if d == 5 {
-			switch s[z.prec-1] {
-			case '1', '3', '5', '7', '9':
+			exact := true
+			for _, d2 := range s[z.prec+1:] {
+				if d2 != '0' {
+					exact = false
+					break
+				}
+			}
+
+			if exact {
+				switch s[z.prec-1] {
+				case '1', '3', '5', '7', '9':
+					inc(&z.abs)
+				}
+			} else {
 				inc(&z.abs)
 			}
 		}
