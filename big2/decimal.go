@@ -558,26 +558,72 @@ func (z *Decimal) Quo(x, y *Decimal) *Decimal {
 	return z
 }
 
+// mulPow10 returns x * 10^n, i is not modified.
+// TODO: optimize
+func mulPow10(x *big.Int, n int) *big.Int {
+	ten := new(big.Int).SetInt64(10)
+	r := new(big.Int).Set(x)
+	for i := 0; i < n; i++ {
+		r.Mul(r, ten)
+	}
+	return r
+}
+
+// isZero checks if x is 0
+func (x *Decimal) isZero() bool {
+	return !x.inf && x.abs.BitLen() == 0
+}
+
+// realPrec returns the precision of x, i.e. the number of digits in the
+// unscaled value.
+// TODO: optimize (probably store as part of Decimal)
+func (x *Decimal) realPrec() int {
+	return len((&x.abs).String())
+}
+
+// ucmp compares absolute values of x and y assuming that both are finite
+// numbers
+func (x *Decimal) ucmp(y *Decimal) int {
+	// compare adjusted exponents first
+	xe := int64(x.realPrec()) - int64(x.scale)
+	ye := int64(y.realPrec()) - int64(y.scale)
+	if xe > ye {
+		return 1
+	}
+	if xe < ye {
+		return -1
+	}
+
+	xa := &x.abs
+	ya := &y.abs
+
+	sdiff := int64(x.scale) - int64(y.scale)
+	// TODO: think if casting to int below is safe
+	if sdiff < 0 {
+		// re-scale x
+		xa = mulPow10(xa, -int(sdiff))
+	} else if sdiff > 0 {
+		// re-scale y
+		ya = mulPow10(ya, int(sdiff))
+	}
+
+	return xa.Cmp(ya)
+}
+
 // Cmp compares x and y and returns:
 //
 //   -1 if x <  y
 //    0 if x == y (incl. -0 == 0, -Inf == -Inf, and +Inf == +Inf)
 //   +1 if x >  y
 //
-// TODO: implement properly and add tests
 func (x *Decimal) Cmp(y *Decimal) int {
-	// TODO: should Cmp support nils?
-	if x.inf && y.inf && x.neg == y.neg {
+	// 0 == 0
+	if x.isZero() && y.isZero() {
 		return 0
 	}
-	if x.inf {
-		if x.neg {
-			return -1
-		} else {
-			return 1
-		}
-	}
-	if y.inf {
+
+	// compare only signs if they are different
+	if x.neg != y.neg {
 		if y.neg {
 			return 1
 		} else {
@@ -585,42 +631,30 @@ func (x *Decimal) Cmp(y *Decimal) int {
 		}
 	}
 
-	if x.abs.BitLen() == 0 && y.abs.BitLen() == 0 {
-		// both x and y = 0
+	// +Inf == +Inf or -Inf == -Inf
+	if x.inf && y.inf {
 		return 0
 	}
 
-	if !x.neg && y.neg {
-		return 1
-	}
-	if x.neg && !y.neg {
-		return -1
-	}
-
-	var absCmp int
-	if x.scale != y.scale {
-		// really naive but should work for now
-		if x.scale < y.scale {
-			return -y.Cmp(x)
-		}
-		ya := new(big.Int).Set(&y.abs)
-		ten := new(big.Int).SetInt64(10)
-		if x.scale-y.scale > 10000 {
-			// TODO: just a little hack for now to avoild long running Cmp
-			absCmp = 1
+	if x.inf {
+		if x.neg {
+			return -1 // -Inf < a finite number
 		} else {
-			for i := y.scale; i < x.scale; i++ {
-				ya.Mul(ya, ten)
-			}
-			xa := &x.abs
-			absCmp = xa.Cmp(ya)
+			return 1 // +Inf < a finite number
 		}
-	} else {
-		absCmp = (&x.abs).Cmp(&y.abs)
 	}
-	if x.neg { // and y.neg
-		return -absCmp
+	if y.inf {
+		if y.neg {
+			return 1 // a finite number > -Inf
+		} else {
+			return -1 // a finite number < +Inf
+		}
 	}
 
-	return absCmp
+	// now both x and y have the same sing and are finite
+	r := x.ucmp(y)
+	if x.neg {
+		return -r
+	}
+	return r
 }

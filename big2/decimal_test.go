@@ -119,15 +119,6 @@ func TestMinus(t *testing.T) {
 //go:generate bash -c "dectest < ~/tmp/dectest/compare.decTest > compare_test.go"
 func TestCompare(t *testing.T) {
 	for _, test := range compareTests {
-		switch test.id {
-		case "comx880", "comx881", "comx882", "comx883", "comx889", "comx890", "comx891",
-			"comx892", "comx893", "comx894", "comx895", "comx896", "comx897",
-			"comx898", "comx899", "comx900", "comx901", "comx904", "comx905", "comx908":
-			// TODO: implement
-			t.Logf("not implemented (big scale diff)")
-			continue
-		}
-
 		in1 := new(Decimal)
 		_, ok := in1.SetString(test.in1)
 		if !ok {
