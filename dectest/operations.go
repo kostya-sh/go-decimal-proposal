@@ -41,9 +41,9 @@ func findOperation(name string) *operation {
 			importMathBig: true,
 		}
 
-	case "compare":
+	case "compare", "comparetotal":
 		return &operation{
-			name: "compare",
+			name: name,
 			structFields: []string{
 				"id  string",
 				"in1 string",

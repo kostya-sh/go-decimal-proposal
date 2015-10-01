@@ -658,3 +658,32 @@ func (x *Decimal) Cmp(y *Decimal) int {
 	}
 	return r
 }
+
+// CmpTotal compares x and y using their abstract representation rather than
+// their numerical value.
+//
+// TODO: update docs // (http://speleotrove.com/decimal/damisc.html#refcotot)
+func (x *Decimal) CmpTotal(y *Decimal) int {
+	// compare signs first to override zero-comparison in Cmp
+	if x.neg && !y.neg {
+		return -1
+	}
+	if !x.neg && y.neg {
+		return 1
+	}
+
+	r := x.Cmp(y)
+	if r != 0 {
+		return r
+	}
+
+	if x.scale < y.scale {
+		r = 1
+	} else if x.scale > y.scale {
+		r = -1
+	}
+	if x.neg {
+		r = -r
+	}
+	return r
+}
