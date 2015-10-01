@@ -9,6 +9,17 @@ import (
 	"math/big"
 )
 
+// TODO: use math/big.ErrNaN
+// An ErrNaN panic is raised by a Float operation that would lead to
+// a NaN under IEEE-754 rules. An ErrNaN implements the error interface.
+type ErrNaN struct {
+	msg string
+}
+
+func (err ErrNaN) Error() string {
+	return err.msg
+}
+
 // TODO: update docs
 // A nonzero finite Float represents a multi-precision floating point number
 //
@@ -413,6 +424,49 @@ func (z *Decimal) Neg(x *Decimal) *Decimal {
 //
 // See also: https://play.golang.org/p/RtH3UCt5IH
 
+// add sets z to the unrounded sum x+y and returns z. x and y must
+// be non-zero finite numbers
+// TODO: better docs
+// TODO: should 0 be a special case?
+func (z *Decimal) add(x *Decimal, y *Decimal) {
+	sdiff := int64(x.scale) - int64(y.scale)
+	if sdiff > 10000 || sdiff < -10000 {
+		// TODO: implement
+		return
+	}
+
+	xa := &x.abs
+	ya := &y.abs
+	// TODO: think if casting to int below is safe
+	z.scale = x.scale
+	if sdiff < 0 {
+		// re-scale x
+		xa = mulPow10(xa, -int(sdiff))
+		z.scale = y.scale
+	} else if sdiff > 0 {
+		// re-scale y
+		ya = mulPow10(ya, int(sdiff))
+		z.scale = x.scale
+	}
+
+	if x.neg == y.neg {
+		z.abs.Add(xa, ya)
+		z.neg = x.neg
+	} else {
+		if y.neg {
+			z.abs.Sub(xa, ya)
+		} else {
+			z.abs.Sub(ya, xa)
+		}
+		z.neg = false
+		if z.abs.Sign() < 0 {
+			z.neg = true
+			z.abs.Neg(&z.abs)
+		}
+	}
+}
+
+// TODO: update docs
 // Add sets z to the rounded sum x+y and returns z. If z's precision is 0,
 // it is changed to the larger of x's or y's precision before the operation.
 // Rounding is performed according to z's precision and rounding mode; and
@@ -420,64 +474,53 @@ func (z *Decimal) Neg(x *Decimal) *Decimal {
 // result. Add panics with ErrNaN if x and y are infinities with opposite
 // signs. The value of z is undefined in that case.
 //
-// BUG(gri) When rounding ToNegativeInf, the sign of Float values rounded to 0 is incorrect.
+// TODO: implement properly
 func (z *Decimal) Add(x, y *Decimal) *Decimal {
-	// TODO: implement properly
-	// TODO: panic if x.inf and y.inf and x.neg = !y.neg
+	z.acc = big.Exact
+
+	if x.inf && y.inf && x.neg != y.neg {
+		panic(ErrNaN{"addition of infinities with opposite signs"})
+	}
+
+	// +Inf + y = +Inf or -Inf + y = -Inf
 	if x.inf {
 		z.inf = true
 		z.neg = x.neg
 		return z
 	}
+	// x + +Inf = +Inf or x + (-Inf) = -Inf
 	if y.inf {
 		z.inf = true
 		z.neg = y.neg
 		return z
 	}
 
-	if x.abs.BitLen() == 0 {
+	// TODO: 0 + -0, -0 + -0, -0 + 0
+	if x.isZero() {
+		// 0 + y = y
 		z.neg = y.neg
 		z.scale = y.scale
 		z.abs.Set(&y.abs)
-	} else if y.abs.BitLen() == 0 {
+	} else if y.isZero() {
+		// x + 0 = x
 		z.neg = x.neg
 		z.scale = x.scale
 		z.abs.Set(&x.abs)
 	} else {
-		if !x.neg && y.neg {
-			return z.Sub(x, y)
-		}
-		if x.neg && !y.neg {
-			return z.Sub(y, x)
-		}
-		// x.neg == y.neg here
-		if x.scale < y.scale {
-			if y.scale-x.scale > 10000 {
-				// TODO: implement
-				return z
-			}
-			ten := new(big.Int).SetInt64(10)
-			xa := new(big.Int)
-			xa.Set(&x.abs)
-			for i := x.scale; i < y.scale; i++ {
-				xa.Mul(xa, ten)
-			}
-			z.abs.Add(xa, &y.abs)
-			z.neg = x.neg
-			z.scale = y.scale
-		} else if x.scale > y.scale {
-			return z.Add(y, x)
-		} else { // x.scale == y.scale
-			z.abs.Add(&x.abs, &y.abs)
-			z.neg = x.neg
-			z.scale = x.scale
-		}
+		z.add(x, y)
 	}
-	z.acc = big.Exact
+
 	if z.prec == 0 {
-		z.prec = x.prec
+		// TODO: optimize using max(x.prec, y.prec)+1? 99+1=100
+		// TODO: what if x.prec = 0 and/or y.prec = 0?
+		// TODO: do we need to set prec here at all?
+		// TODO: round after setting prec?
+		z.prec = z.actualPrec()
+		if x.prec > z.prec {
+			z.prec = x.prec
+		}
 		if y.prec > z.prec {
-			z.prec = y.prec
+			z.prec = x.prec
 		}
 	} else {
 		z.round()
@@ -491,51 +534,10 @@ func (z *Decimal) Add(x, y *Decimal) *Decimal {
 // Sub panics with ErrNaN if x and y are infinities with equal
 // signs. The value of z is undefined in that case.
 func (z *Decimal) Sub(x, y *Decimal) *Decimal {
-	// TODO: implement
-	if x.scale < y.scale {
-		if y.scale-x.scale > 10000 {
-			// TODO: implement
-			return z
-		}
-		ten := new(big.Int).SetInt64(10)
-		xa := new(big.Int)
-		xa.Set(&x.abs)
-		for i := x.scale; i < y.scale; i++ {
-			xa.Mul(xa, ten)
-		}
-		z.abs.Sub(xa, &y.abs)
-		if z.abs.Sign() < 0 {
-			z.neg = true
-			z.abs.Neg(&z.abs)
-		} else {
-			z.neg = false
-		}
-		z.scale = y.scale
-	} else if x.scale > y.scale {
-		z = z.Sub(y, x)
-		return z.Neg(z)
-	} else { // x.scale == y.scale
-		z.abs.Sub(&x.abs, &y.abs)
-		if z.abs.Sign() < 0 {
-			z.neg = true
-			z.abs.Neg(&z.abs)
-		} else {
-			z.neg = false
-		}
-		z.scale = x.scale
-	}
-
-	z.acc = big.Exact
-	if z.prec == 0 {
-		z.prec = x.prec
-		if y.prec > z.prec {
-			z.prec = y.prec
-		}
-	} else {
-		z.round()
-	}
-
-	return z
+	// TODO: avoid copying y
+	ny := new(Decimal).Set(y)
+	ny.Neg(ny)
+	return z.Add(x, ny)
 }
 
 // TODO: update docs
@@ -574,19 +576,19 @@ func (x *Decimal) isZero() bool {
 	return !x.inf && x.abs.BitLen() == 0
 }
 
-// realPrec returns the precision of x, i.e. the number of digits in the
+// actualPrec returns the precision of x, i.e. the number of digits in the
 // unscaled value.
 // TODO: optimize (probably store as part of Decimal)
-func (x *Decimal) realPrec() int {
-	return len((&x.abs).String())
+func (x *Decimal) actualPrec() uint32 {
+	return uint32(len((&x.abs).String()))
 }
 
 // ucmp compares absolute values of x and y assuming that both are finite
 // numbers
 func (x *Decimal) ucmp(y *Decimal) int {
 	// compare adjusted exponents first
-	xe := int64(x.realPrec()) - int64(x.scale)
-	ye := int64(y.realPrec()) - int64(y.scale)
+	xe := int64(x.actualPrec()) - int64(x.scale)
+	ye := int64(y.actualPrec()) - int64(y.scale)
 	if xe > ye {
 		return 1
 	}
